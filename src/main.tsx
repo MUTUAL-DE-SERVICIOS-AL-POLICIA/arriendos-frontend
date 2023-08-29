@@ -1,10 +1,51 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
+
+import ReactDOM from 'react-dom/client';
+import { App } from './App';
+
+import './styles.css';
+
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+import { createPalette } from './utils/create-palette';
+import React from 'react';
+
+const theme = createTheme({
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 900,
+      lg: 1200,
+      xl: 1440
+    }
+  },
+  palette: createPalette(),
+  typography: {
+    fontFamily: 'poppins',
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: '10px', // Establece el radio de los bordes para todos los botones
+        },
+      },
+    },
+  },
+});
+// Carga la fuente personalizada
+const fontStyle = new FontFace('poppins', `url(./src/assets/fonts/Poppins-Regular.woff2)`);
+
+// Aplica la fuente personalizada
+fontStyle.load().then(() => {
+  document.fonts.add(fontStyle);
+});
+
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
+  // <React.StrictMode>
+  <ThemeProvider theme={theme}>
     <App />
-  </React.StrictMode>,
+  </ThemeProvider>
+  // </React.StrictMode>
 )
