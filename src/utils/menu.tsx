@@ -18,7 +18,7 @@ export const menu = () => {
                     permission: "show-halls"
                 },
                 {
-                    path: "/rent/ratesView",
+                    path: "/ratesView",
                     title: "Tarifas",
                     icon: <Wifi />,
                     permission: "show-rates"
@@ -26,6 +26,12 @@ export const menu = () => {
                 {
                     path: "/rent/ratesView",
                     title: "Productos",
+                    icon: <Wifi />,
+                    permission: "show-rates"
+                },
+                {
+                    path: "/leasesView",
+                    title: "Arriendos",
                     icon: <Wifi />,
                     permission: "show-rates"
                 }

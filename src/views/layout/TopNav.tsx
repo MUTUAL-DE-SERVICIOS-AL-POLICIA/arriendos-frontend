@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 import { MenuOutlined } from '@mui/icons-material';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 import { usePopover } from '@/hooks';
 import { AccountPopover } from '@/components';
 
@@ -18,7 +18,7 @@ const TOP_NAV_HEIGHT = 64;
 
 export const TopNav = (({ onNavOpen }: { onNavOpen: any }) => {
 
-    const { data } = useSelector((state: any) => state.auth);
+    // const { data } = useSelector((state: any) => state.auth);
     const theme = useTheme();
     const lgUp = useMediaQuery(theme.breakpoints.up('md'));
 

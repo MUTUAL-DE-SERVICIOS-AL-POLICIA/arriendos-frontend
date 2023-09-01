@@ -9,11 +9,12 @@ import { UsersView } from '@/views/pages/users';
 import { PropertiesView } from '@/views/pages/properties';
 import { CustomersView } from '@/views/pages/customers';
 import { TypesCustomersView } from '@/views/pages/typesCustomers';
+import { RatesView } from '@/views/pages/rates';
+import { LeasesView } from '@/views/pages/leases';
 
 export const AppRouter = () => {
 
     const { status, checkAuthToken } = useAuthStore();
-
     useEffect(() => {
         checkAuthToken();
     }, []);
@@ -26,6 +27,8 @@ export const AppRouter = () => {
                 <Routes>
                     <Route path="/dashboardView" element={<DashboardView />} />
                     <Route path="/propertiesView" element={<PropertiesView />} />
+                    <Route path="/ratesView" element={<RatesView />} />
+                    <Route path="/leasesView" element={<LeasesView />} />
                     {/* module customers */}
                     <Route path="/customersView" element={<CustomersView />} />
                     <Route path="/typeCustomersView" element={<TypesCustomersView />} />

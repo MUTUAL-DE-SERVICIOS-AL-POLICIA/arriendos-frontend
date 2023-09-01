@@ -1,10 +1,11 @@
 import { ComponentInput } from "@/components";
-import { useCustomerStore, useSelectorStore } from "@/hooks";
+import { useSelectorStore } from "@/hooks";
+import { useRateStore } from "@/hooks/useRateStore";
 import { DeleteOutline, EditOutlined } from "@mui/icons-material";
 import { Checkbox, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 
-export const CustomerTable = (props: any) => {
+export const RateTable = (props: any) => {
     const {
         stateSelect = false,
         stateMultiple = false,
@@ -35,15 +36,18 @@ export const CustomerTable = (props: any) => {
 
     /*DATA */
     const { selections = [], selectOne, deselectOne } = useSelectorStore();
-    const { customers, flag, getCustomers } = useCustomerStore();
-
+    // const { customers, flag, getCustomers } = useCustomerStore();
+    const { rates = [], flag, getRates } = useRateStore();
 
     const [total, setTotal] = useState(0);
     const [page, setPage] = useState(0);
     const [limit, setLimit] = useState(limitInit)
 
     useEffect(() => {//escucha si "page", "limit" o "flag" se modifico
-        getCustomers({ page, limit }).then((total) => setTotal(total))
+        getRates({ page, limit }).then((total) => {
+            console.log('TODO BIEN')
+            setTotal(total);
+        })
     }, [page, limit, flag]);
 
     /* CONTROLADORES DE LA PAGINACIÓN */
@@ -60,7 +64,7 @@ export const CustomerTable = (props: any) => {
         <Stack sx={{ paddingRight: '10px' }}>
             <ComponentInput
                 type="text"
-                label="Buscar Cliente"
+                label="Buscar Tarifa"
                 name="search"
                 value={query}
                 onChange={handleInputChange}
@@ -69,16 +73,14 @@ export const CustomerTable = (props: any) => {
                 <Table sx={{ minWidth: 350 }} size="small">
                     <TableHead>
                         <TableRow>
-                            <TableCell>Carnet</TableCell>
-                            <TableCell>Nombre</TableCell>
-                            <TableCell>Apellido</TableCell>
-                            <TableCell>Teléfono</TableCell>
-                            <TableCell>Tipo de Cliente</TableCell>
+                            <TableCell>Inmueble</TableCell>
+                            <TableCell>Ambiente</TableCell>
+                            <TableCell>Tarifa</TableCell>
                             <TableCell>Acciones</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {customers.map((item: any) => {
+                        {rates.map((item: any) => {
                             const isSelected = selections.includes(item.id);
                             return (
                                 <TableRow
@@ -104,11 +106,9 @@ export const CustomerTable = (props: any) => {
                                             />
                                         </TableCell>
                                     }
-                                    <TableCell>{item.ci}</TableCell>
+                                    <TableCell>{item.room.property.name}</TableCell>
+                                    <TableCell>{item.room.name}</TableCell>
                                     <TableCell>{item.name}</TableCell>
-                                    <TableCell>{item.last_name}</TableCell>
-                                    <TableCell>{item.phone}</TableCell>
-                                    <TableCell>{item.customer_type.name}</TableCell>
                                     <TableCell>
                                         <Stack
                                             alignItems="center"
