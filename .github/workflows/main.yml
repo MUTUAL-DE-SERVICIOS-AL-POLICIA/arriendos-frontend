@@ -1,0 +1,8 @@
+name: First github actions
+run-name: ${{ github.actor }} is testing out Github Actions
+on: [pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - run: echo Hello world!
