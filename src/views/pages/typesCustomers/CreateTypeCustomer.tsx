@@ -15,7 +15,7 @@ export const CreateTypeCustomer = (props: any) => {
         handleClose,
         item,
     } = props;
-    const { createTypeCustomer, editTypeCustomer } = useTypeCustomerStore();
+    const { postCreateTypeCustomer, patchEditTypeCustomer } = useTypeCustomerStore();
 
     const [formSubmitted, setFormSubmitted] = useState(false);
     const { name, onInputChange, isFormValid, nameValid, onResetForm } = useForm(item ?? formFields, formValidations);
@@ -25,9 +25,9 @@ export const CreateTypeCustomer = (props: any) => {
         setFormSubmitted(true);
         if (!isFormValid) return;
         if (item == null) {
-            createTypeCustomer({ name });
+            postCreateTypeCustomer({ name: name.trim() });
         } else {
-            editTypeCustomer(item.id, { name });
+            patchEditTypeCustomer(item.id, { name });
         }
         handleClose();
         onResetForm();
@@ -37,7 +37,7 @@ export const CreateTypeCustomer = (props: any) => {
     return (
         <>
             <Dialog open={open} onClose={handleClose} >
-                <DialogTitle>{item == null ? 'Nuevo Tipo de Cliente' : item.name}</DialogTitle>
+                <DialogTitle>{item == null ? 'Nuevo Tipo de Cliente' : `Tipo de cliente: ${item.name}`}</DialogTitle>
                 <form onSubmit={sendSubmit}>
                     <DialogContent sx={{ display: 'flex' }}>
                         <ComponentInput

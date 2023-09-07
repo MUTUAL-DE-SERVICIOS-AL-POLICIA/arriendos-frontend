@@ -10,14 +10,13 @@ import {
     TablePagination,
     TableRow,
 } from '@mui/material';
-import { DeleteOutline, EditOutlined } from '@mui/icons-material';
+import { DeleteOutline } from '@mui/icons-material';
 import { ComponentInput } from '@/components';
 import { useCallback, useEffect, useState } from 'react';
 import { useUserStore } from '@/hooks';
 
 export const UserTable = (props: any) => {
     const {
-        handleEdit,
         onDelete,
         limitInit = 10
     } = props;
@@ -97,11 +96,6 @@ export const UserTable = (props: any) => {
                                                 direction="row"
                                                 spacing={2}
                                             >
-                                                <IconButton
-                                                    onClick={() => handleEdit(user)}
-                                                >
-                                                    <EditOutlined color="info" />
-                                                </IconButton>
                                                 <IconButton
                                                     onClick={() => onDelete(user.id)}
                                                 >

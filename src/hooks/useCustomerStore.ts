@@ -15,7 +15,7 @@ export const useCustomerStore = () => {
         return data.total
     }
 
-    const createCustomer = async (body: object) => {
+    const postCreateCustomer = async (body: object) => {
         try {
             console.log('CREANDO UN NUEVO CLIENTE');
             console.log(body)
@@ -28,7 +28,7 @@ export const useCustomerStore = () => {
         }
     }
 
-    const editCustomer = async (id: number, body: object) => {
+    const patchEditCustomer = async (id: number, body: object) => {
         try {
             console.log('EDITANDO TIPO DE CLIENTE');
             const { data } = await coffeApiKevin.patch(`/customers/${id}`, body);
@@ -46,7 +46,7 @@ export const useCustomerStore = () => {
         flag,
         //* Métodos
         getCustomers,
-        createCustomer,
-        editCustomer
+        postCreateCustomer,
+        patchEditCustomer
     }
 }

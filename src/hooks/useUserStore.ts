@@ -1,10 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { coffeApiKevin } from '@/services';
-import { setUsers, refreshUsers } from '@/store';
+import { setUsers, refreshUsers, setUsersLdap } from '@/store';
 import Swal from 'sweetalert2';
 
 export const useUserStore = () => {
-    const { users, flag } = useSelector((state: any) => state.users);
+    const { usersLDAP, users, flag } = useSelector((state: any) => state.users);
     const dispatch = useDispatch();
 
     const getUsers = async ({ page, limit }: { page: number, limit: number }) => {
@@ -15,21 +15,23 @@ export const useUserStore = () => {
             dispatch(setUsers({ users: data.users }));
             return data.total
         } catch (error: any) {
-            Swal.fire('Oops ocurrio algo', error.response, 'error');
+            Swal.fire('Oops ocurrio algo', error.response.data.detail, 'error');
         }
     }
 
-    const searchUserLdap = async (body: object) => {
+    const getUsersLdap = async () => {
         try {
-            console.log('BUSCANDO AL USUARIO EN LDAP');
-            const { data } = await coffeApiKevin.post('users/get_user/', body);
+            console.log('OBTENIENDO TODOS LOS USUARIOS EN LDAP');
+            const { data } = await coffeApiKevin.get('login/users_ldap/');
             console.log(data)
+            dispatch(setUsersLdap({ usersLDAP: data.users }));
             return data;
         } catch (error: any) {
-            Swal.fire('Oops ocurrio algo', error.response, 'error');
+            Swal.fire('Oops ocurrio algo', error.response.data.detail, 'error');
         }
     }
-    const createUser = async (body: object) => {
+
+    const postCreateUser = async (body: object) => {
         try {
             console.log('CREANDO UN NUEVO USUARIO');
             const { data } = await coffeApiKevin.post(`/users/`, body);
@@ -37,7 +39,7 @@ export const useUserStore = () => {
             dispatch(refreshUsers());
             Swal.fire('Usuario creado correctamente', '', 'success');
         } catch (error: any) {
-            Swal.fire('Oops ocurrio algo', error.response, 'error');
+            throw Swal.fire('Oops ocurrio algo', error.response.data.detail, 'error');
         }
     }
 
@@ -49,18 +51,19 @@ export const useUserStore = () => {
             dispatch(refreshUsers());
             Swal.fire('Usuario editado correctamente', '', 'success');
         } catch (error: any) {
-            Swal.fire('Oops ocurrio algo', error.response, 'error');
+            Swal.fire('Oops ocurrio algo', error.response.data.detail, 'error');
         }
     }
 
     return {
         //* Propiedades
+        usersLDAP,
         users,
         flag,
         //* Métodos
         getUsers,
-        searchUserLdap,
-        createUser,
+        getUsersLdap,
+        postCreateUser,
         editUser
     }
 

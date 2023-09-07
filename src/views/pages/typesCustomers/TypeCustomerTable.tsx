@@ -20,6 +20,10 @@ export const TypeCustomerTable = (props: any) => {
     const [page, setPage] = useState(0);
     const [limit, setLimit] = useState(limitInit)
 
+    // useEffect(() => {
+    //     deselectAll(typesCustomers.map((e: any) => e.id));
+    // }, [])
+
     useEffect(() => {//escucha si "page", "limit" o "flag" se modifico
         getTypesCustomers({ page, limit }).then((total) => setTotal(total))
     }, [page, limit, flag]);
@@ -64,7 +68,7 @@ export const TypeCustomerTable = (props: any) => {
                                                     checked={isSelected}
                                                     onChange={(value) => {
                                                         if (value.target.checked) {
-                                                            deselectAll?.(typesCustomers.map((e: any) => e.id));
+                                                            deselectAll(typesCustomers.map((e: any) => e.id));
                                                             selectOne(item.id);
                                                             itemSelect(item);
                                                         } else {

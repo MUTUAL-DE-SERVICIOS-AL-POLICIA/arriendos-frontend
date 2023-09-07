@@ -27,7 +27,7 @@ export const CreateCustomer = (props: any) => {
         item,
     } = props;
 
-    const { createCustomer } = useCustomerStore();
+    const { postCreateCustomer, patchEditCustomer } = useCustomerStore();
 
     const [formSubmitted, setFormSubmitted] = useState(false);
     const [modal, setModal] = useState(false);
@@ -38,8 +38,8 @@ export const CreateCustomer = (props: any) => {
                 {
                     ...item,
                     lastName: item.last_name,
-                    typeCustomer: '',
-                    typeCustomerId: '',
+                    typeCustomer: item.customer_type.name,
+                    typeCustomerId: item.customer_type.id
                 } : formFields)
     }, [item])
 
@@ -52,7 +52,11 @@ export const CreateCustomer = (props: any) => {
         event.preventDefault();
         setFormSubmitted(true);
         if (!isFormValid) return;
-        createCustomer({ name, last_name: lastName, ci, phone, customer_type: form.typeCustomerId });
+        if (item == null) {
+            postCreateCustomer({ name, last_name: lastName, ci, phone, customer_type: form.typeCustomerId });
+        } else {
+            patchEditCustomer(item.id, { name, last_name: lastName, ci, phone, customer_type: form.typeCustomerId });
+        }
         handleClose();
         onResetForm();
     }
@@ -84,8 +88,8 @@ export const CreateCustomer = (props: any) => {
                     </ModalSelectComponent> :
                     <></>
             }
-            <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>{item == null ? 'Nuevo Cliente' : item.name}</DialogTitle>
+            <Dialog open={open} onClose={handleClose} >
+                <DialogTitle>{item == null ? 'Nuevo Cliente' : `Cliente: ${item.name} ${item.last_name}`}</DialogTitle>
                 <form onSubmit={sendSubmit}>
                     <DialogContent>
                         <Grid container>

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 // import { useSelector } from 'react-redux';
 import { useAuthStore } from '@/hooks';
 
-export const AccountPopover = ({ anchorEl, onClose, open }: { anchorEl: any, onClose: any, open: boolean }) => {
+export const AccountPopover = ({ anchorEl, onClose, open,onTapSettings }: { anchorEl: any, onClose: any, open: boolean,onTapSettings:any }) => {
 
     const navigate = useNavigate();
     const { startLogout } = useAuthStore();
@@ -49,6 +49,11 @@ export const AccountPopover = ({ anchorEl, onClose, open }: { anchorEl: any, onC
                     }
                 }}
             >
+                <MenuItem
+                    onClick={()=>onTapSettings()}
+                >
+                    Configuraciones
+                </MenuItem>
                 <MenuItem>
                     Cambiar contraseña
                 </MenuItem>

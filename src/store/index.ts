@@ -6,5 +6,6 @@ export * from './customers/customerSlice';
 export * from './typesCustomers/typeCustomerSlice';
 export * from './properties/propertieSlice';
 export * from './rooms/roomSlice';
+export * from './rates/rateSlice';
 
 export * from './store';

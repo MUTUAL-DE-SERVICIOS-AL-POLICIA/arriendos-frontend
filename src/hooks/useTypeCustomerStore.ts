@@ -19,7 +19,7 @@ export const useTypeCustomerStore = () => {
         }
     }
 
-    const createTypeCustomer = async (body: object) => {
+    const postCreateTypeCustomer = async (body: object) => {
         try {
             console.log('CREANDO UN NUEVO TIPO DE CLIENTE');
             const { data } = await coffeApiKevin.post(`/customers/type/`, body);
@@ -31,7 +31,7 @@ export const useTypeCustomerStore = () => {
         }
     }
 
-    const editTypeCustomer = async (id: number, body: object) => {
+    const patchEditTypeCustomer = async (id: number, body: object) => {
         try {
             console.log('EDITANDO TIPO DE CLIENTE');
             const { data } = await coffeApiKevin.patch(`/customers/type/${id}`, body);
@@ -49,7 +49,7 @@ export const useTypeCustomerStore = () => {
         flag,
         //* Métodos
         getTypesCustomers,
-        createTypeCustomer,
-        editTypeCustomer,
+        postCreateTypeCustomer,
+        patchEditTypeCustomer,
     }
 }
