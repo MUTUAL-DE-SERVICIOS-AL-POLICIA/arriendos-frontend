@@ -1,11 +1,11 @@
-import { Group, Person, Wifi } from "@mui/icons-material"
+import { Assessment, BarChart, Bento, Group, Home, Receipt, Wifi } from "@mui/icons-material"
 
 export const menu = () => {
     return [
         {
             path: "/dashboardView",
             title: "Inicio",
-            icon: <Wifi />
+            icon: <Home />
         },
         {
             title: "Gestión de Arriendos",
@@ -14,25 +14,19 @@ export const menu = () => {
                 {
                     path: "/propertiesView",
                     title: "Inmuebles",
-                    icon: <Wifi />,
+                    icon: <Home />,
                     permission: "show-halls"
-                },
-                {
-                    path: "/ratesView",
-                    title: "Tarifas",
-                    icon: <Wifi />,
-                    permission: "show-rates"
                 },
                 {
                     path: "/rent/ratesView",
                     title: "Productos",
-                    icon: <Wifi />,
+                    icon: <Bento />,
                     permission: "show-rates"
                 },
                 {
                     path: "/leasesView",
                     title: "Arriendos",
-                    icon: <Wifi />,
+                    icon: <Receipt />,
                     permission: "show-rates"
                 }
             ]
@@ -59,30 +53,6 @@ export const menu = () => {
                     icon: <Group />,
                     permission: "show-halls"
                 },
-                {
-                    path: "/typeCustomersView",
-                    title: "Tipos de Clientes",
-                    icon: <Wifi />,
-                    permission: "show-halls"
-                }
-            ]
-        },
-        {
-            title: "Gestión de Uuarios",
-            permission: "show-rent",
-            group: [
-                {
-                    path: "/usersView",
-                    title: "Usuarios",
-                    icon: <Person />,
-                    permission: "show-users"
-                },
-                {
-                    path: "/users/rolesView",
-                    title: "Roles",
-                    icon: <Wifi />,
-                    permission: "show-roles"
-                }
             ]
         },
         {
@@ -92,7 +62,7 @@ export const menu = () => {
                 {
                     path: "/rent/hallsView",
                     title: "Reportes",
-                    icon: <Wifi />,
+                    icon: <Assessment />,
                     permission: "show-halls"
                 }
             ]

@@ -1,22 +1,11 @@
-import { useLocation } from 'react-router-dom';
-import {
-    Box,
-    Drawer,
-    Stack,
-    Typography,
-    useMediaQuery,
-    useTheme,
-} from '@mui/material';
-import { SideNavItem } from '@/components';
-import { menu } from '@/utils/menu';
-import logo from '@/assets/images/muserpol-logo.png';
+import { SideNavItem } from "@/components";
+import { menuSettings } from "@/utils/menuSettings";
+import { Box, Drawer, Stack, Typography } from "@mui/material";
+import { useLocation } from "react-router-dom";
 
-export const SideNav = ({ open, onClose }: { open: boolean, onClose: any }) => {
-
-
+export const SettingsNav = ({ open, onClose }: { open: boolean, onClose: any }) => {
     const { pathname } = useLocation();
-    const theme = useTheme();
-    const lgUp = useMediaQuery(theme.breakpoints.up('md'));
+
 
     const content = (
         <Box component="nav" >
@@ -29,8 +18,7 @@ export const SideNav = ({ open, onClose }: { open: boolean, onClose: any }) => {
                     py: 3
                 }}
             >
-                <img src={logo} alt="logo" style={{ objectFit: 'cover' }} />
-                {menu().map((item) => (
+                {menuSettings().map((item:any) => (
                     <Box
                         key={item.title}
                         sx={{
@@ -55,7 +43,7 @@ export const SideNav = ({ open, onClose }: { open: boolean, onClose: any }) => {
                                         {item.title}
                                     </Typography>
                                     {
-                                        item.group!.map((element: any) => {
+                                        item.group.map((element: any) => {
                                             const active = element.path ? (pathname === element.path) : false;
                                             return (
                                                 <SideNavItem
@@ -76,29 +64,9 @@ export const SideNav = ({ open, onClose }: { open: boolean, onClose: any }) => {
             </Stack>
         </Box>
     );
-
-    if (lgUp) {
-        return (
-            <Drawer
-                anchor="left"
-                open
-                PaperProps={{
-                    sx: {
-                        backgroundColor: '#1E635A',
-                        color: 'white',
-                        width: 220
-                    }
-                }}
-                variant="permanent"
-            >
-                {content}
-            </Drawer>
-        );
-    }
-
     return (
         <Drawer
-            anchor="left"
+            anchor="right"
             onClose={onClose}
             open={open}
             PaperProps={{
@@ -114,4 +82,4 @@ export const SideNav = ({ open, onClose }: { open: boolean, onClose: any }) => {
             {content}
         </Drawer>
     );
-};
+}

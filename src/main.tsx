@@ -6,7 +6,7 @@ import './styles.css';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-import { createPalette } from './utils/create-palette';
+import { createPalette } from './utils/createPalette';
 // import React from 'react';
 
 const theme = createTheme({

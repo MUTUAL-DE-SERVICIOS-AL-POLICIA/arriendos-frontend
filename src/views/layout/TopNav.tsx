@@ -10,13 +10,13 @@ import { alpha, useTheme } from '@mui/material/styles';
 import { MenuOutlined } from '@mui/icons-material';
 // import { useSelector } from 'react-redux';
 import { usePopover } from '@/hooks';
-import { AccountPopover } from '@/components';
-
+import { AccountPopover } from '.';
+import noimage from '@/assets/images/profile.png';
 
 const SIDE_NAV_WIDTH = 200;
 const TOP_NAV_HEIGHT = 64;
 
-export const TopNav = (({ onNavOpen }: { onNavOpen: any }) => {
+export const TopNav = (({ onNavOpen,onTapSettings }: { onNavOpen: any,onTapSettings:any }) => {
 
     // const { data } = useSelector((state: any) => state.auth);
     const theme = useTheme();
@@ -66,18 +66,12 @@ export const TopNav = (({ onNavOpen }: { onNavOpen: any }) => {
                     <Stack
                         alignItems="center"
                         direction="row"
-                        spacing={2}
                     >
                         <Avatar
                             onClick={accountPopover.handleOpen}
                             ref={accountPopover.anchorRef}
-                            sx={{
-                                cursor: 'pointer',
-                                height: 40,
-                                width: 40
-                            }}
-                            src="/static/images/avatar/1.jpg"
-                        // src={data.image}
+                            sx={{cursor: 'pointer',width: 45, height: 45 }}
+                            src={noimage}
                         />
                     </Stack>
                 </Stack>
@@ -86,6 +80,10 @@ export const TopNav = (({ onNavOpen }: { onNavOpen: any }) => {
                 anchorEl={accountPopover.anchorRef.current}
                 open={accountPopover.open}
                 onClose={accountPopover.handleClose}
+                onTapSettings={()=>{
+                    accountPopover.handleClose();
+                    onTapSettings();
+                }}
             />
         </>
     );
