@@ -34,18 +34,11 @@ export const ComponentInput = memo((
             label={label}
             name={name}
             value={value}
-            autoComplete='off'
             onChange={onChange}
-            style={{
-                width: '100%',
-            }}
+            autoComplete='off'
+            style={{ width: '100%' }}
             error={error}
             helperText={helperText}
-            InputLabelProps={{
-                style: {
-                    color: 'grey',
-                },
-            }}
             InputProps={{
                 endAdornment,
                 style: {
@@ -63,12 +56,8 @@ export const ComponentInput = memo((
                 '& .MuiOutlinedInput-root': {
                     borderRadius: '10px',
                     height: 'fit-content',
-                    '& fieldset': {
-                        borderColor: '#2F3746',
-                    },
-                    '&:hover fieldset': {
-                        borderColor: '#0B815A',
-                    },
+                    '& fieldset': { borderColor: '#2F3746' },
+                    '&:hover fieldset': { borderColor: '#0B815A' },
                 },
             }}
         />

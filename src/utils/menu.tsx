@@ -18,7 +18,7 @@ export const menu = () => {
                     permission: "show-halls"
                 },
                 {
-                    path: "/rent/ratesView",
+                    path: "/productsView",
                     title: "Productos",
                     icon: <Bento />,
                     permission: "show-rates"

@@ -10,7 +10,7 @@ const loginFormFields = {
 }
 const formValidations = {
     username: [(value: any) => value.length >= 1, 'Debe ingresar su cuenta'],
-    password: [(value: any) => value.length >= 6, 'La contraseña debe de tener más de 6 letras.'],
+    password: [(value: any) => value.length >= 4, 'La contraseña debe de tener más de 6 letras.'],
 }
 
 export const AuthPage = () => {

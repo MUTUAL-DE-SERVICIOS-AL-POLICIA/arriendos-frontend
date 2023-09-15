@@ -1,30 +1,30 @@
-import * as React from 'react';
-import Accordion from '@mui/material/Accordion';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import Typography from '@mui/material/Typography';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { ComponentButton, ItemPaper } from '@/components';
+import { usePropertieStore } from '@/hooks';
+import { Add, Delete, Edit, InfoOutlined } from '@mui/icons-material';
+import { Grid, IconButton, Stack, SvgIcon, Typography } from '@mui/material';
+import { useCallback, useEffect, useState } from 'react';
+import { CreatePropertie, RoomTable } from '.';
+import { PropertieModel } from '@/models';
 
-import { Stack, SvgIcon } from '@mui/material';
-import { ComponentButton } from '@/components';
-import { Add } from '@mui/icons-material';
-import { usePropertieStore, useRoomStore } from '@/hooks';
-import { RoomsView } from '.';
+
 
 export const PropertiesView = () => {
 
-    const { properties, getProperties } = usePropertieStore();
-    const { getRooms } = useRoomStore();
-    React.useEffect(() => {
-        getProperties();
+    const { properties = [], getPropertiesRooms } = usePropertieStore();
+    const [openDialog, setopenDialog] = useState(false);
+    const [itemEdit, setItemEdit] = useState<PropertieModel | null>(null);
+
+    useEffect(() => {
+        getPropertiesRooms();
     }, []);
 
-    const [expanded, setExpanded] = React.useState<number | false>(false);
+    /*CONTROLADOR DEL DIALOG PARA CREAR O EDITAR */
+    const handleDialog = useCallback((value: boolean) => {
+        if (!value) setItemEdit(null);
+        setopenDialog(value);
+    }, []);
 
-    const handleChange = (panel: number) => (_: any, isExpanded: boolean) => {
-        setExpanded(isExpanded ? panel : false);
-        if (isExpanded) getRooms(panel)
-    };
+
 
     return (
         <>
@@ -37,39 +37,54 @@ export const PropertiesView = () => {
                 </Stack>
                 <ComponentButton
                     text="Nuevo Inmueble"
-                    onClick={() => { }}
+                    onClick={() => handleDialog(true)}
                     startIcon={<SvgIcon fontSize="small"><Add /></SvgIcon>} />
             </Stack>
+            {properties.map((propertie: PropertieModel) => {
+                return (
+                    <ItemPaper key={propertie.id} elevation={2}>
+                        <Grid container>
+                            <Grid item xs={12} sm={3} sx={{ padding: '5px' }}>
+                                <Typography sx={{ fontWeight: 'bold' }}>{propertie.name}</Typography>
+                                <img src={propertie.photo} alt="Descripción de la imagen" style={{ height: '180px', width: '170px', objectFit: 'cover', }} />
+                            </Grid>
+                            <Grid item xs={12} sm={8} sx={{ padding: '5px' }}>
+                                {propertie.rooms != null && <RoomTable rooms={propertie.rooms} />}
+                            </Grid>
+                            <Grid item xs={12} sm={1} sx={{ padding: '5px', display: 'flex', flexDirection: { xs: 'row', sm: 'column' } }}>
+                                <Grid item xs={12} sm={4}>
+                                    <IconButton color="info">
+                                        <InfoOutlined />
+                                    </IconButton>
+                                </Grid>
+                                <Grid item xs={12} sm={4} >
+                                    <IconButton
+                                        color="success"
+                                        onClick={() => {
+                                            setItemEdit(propertie);
+                                            handleDialog(true);
+                                        }}
+                                    >
+                                        <Edit />
+                                    </IconButton>
+                                </Grid>
+                                <Grid item xs={12} sm={4} >
+                                    <IconButton color="error">
+                                        <Delete />
+                                    </IconButton>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </ItemPaper>
+                );
+            })}
             {
-                properties.map((propertie: any) => (
-                    <Accordion key={propertie.id} expanded={expanded === propertie.id} onChange={handleChange(propertie.id)}>
-                        <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            aria-controls="panel1bh-content"
-                            id="panel1bh-header"
-                        >
-                            <img src={propertie.photo} alt="Descripción de la imagen" style={{ height: '180px', width: '170px', objectFit: 'cover', }} />
-                            <Typography sx={{ width: '33%', flexShrink: 0, padding: '5px' }}>
-                                {propertie.name}
-                            </Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <Stack
-                                direction="row"
-                                justifyContent="space-between"
-                            >
-                                <Stack spacing={1}>
-                                    <Typography variant="h6">Ambientes</Typography>
-                                </Stack>
-                                <ComponentButton
-                                    text="Nuevo Ambiente"
-                                    onClick={() => { }}
-                                    startIcon={<SvgIcon fontSize="small"><Add /></SvgIcon>} />
-                            </Stack>
-                            <RoomsView />
-                        </AccordionDetails>
-                    </Accordion>
-                ))
+                openDialog &&
+                <CreatePropertie
+                    open={openDialog}
+                    handleClose={() => handleDialog(false)}
+                    propertie={itemEdit}
+                />
             }
         </>
     );

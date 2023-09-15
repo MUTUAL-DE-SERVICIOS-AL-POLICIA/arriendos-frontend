@@ -20,3 +20,6 @@ export * from './usePropertieStore'
 
 /* ROOMS STORE */
 export * from './useRoomStore';
+
+/* SELECTED PRODUCTS STORE */
+export * from './useSelectedProductStore';

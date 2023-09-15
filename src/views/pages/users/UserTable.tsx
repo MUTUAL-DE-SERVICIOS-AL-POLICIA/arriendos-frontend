@@ -14,6 +14,7 @@ import { DeleteOutline } from '@mui/icons-material';
 import { ComponentInput } from '@/components';
 import { useCallback, useEffect, useState } from 'react';
 import { useUserStore } from '@/hooks';
+import { UserModel } from '@/models';
 
 export const UserTable = (props: any) => {
     const {
@@ -21,7 +22,7 @@ export const UserTable = (props: any) => {
         limitInit = 10
     } = props;
     const [query, setQuery] = useState<string>('');
-    const [typingTimeout, setTypingTimeout] = useState<number | null>(null);
+    const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
 
     const handleInputChange = (event: any) => {
         const inputQuery = event.target.value;
@@ -35,7 +36,6 @@ export const UserTable = (props: any) => {
             // Aquí podrías llamar a tu función de búsqueda con el valor actual de 'query'
             console.log('Realizar búsqueda con:', inputQuery);
         }, 2000);
-
         setTypingTimeout(newTypingTimeout);
     };
 
@@ -80,7 +80,7 @@ export const UserTable = (props: any) => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {users.map((user: any) => {
+                            {users.map((user: UserModel) => {
                                 return (
                                     <TableRow
                                         hover

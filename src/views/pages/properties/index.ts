@@ -1,2 +1,3 @@
 export * from './PropertiesView';
-export * from './RoomsView';
+export * from './CreatePropertie';
+export * from './RoomTable';

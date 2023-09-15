@@ -4,10 +4,11 @@ import { useCallback, useEffect, useState } from "react";
 import { useForm, useUserStore } from "@/hooks";
 import { ComponentSelect, ModalSelectComponent } from "@/components";
 import { UserLdapTable } from ".";
+import { FormUserModel, FormUserValidations } from "@/models";
 
-const formFields = { username: '' }
+const formFields: FormUserModel = { username: '' }
 
-const formValidations = {
+const formValidations: FormUserValidations = {
     username: [(value: any) => value.length >= 1, 'Debe ingresar la cuenta'],
 }
 

@@ -1,5 +1,7 @@
 export * from './LeasesView';
 export * from './Calendar';
 export * from './CalendarEvent';
-export * from './CreateLease';
-export * from './FormLease';
+export * from './CartSelectedProduct';
+
+export * from './PropertieTable';
+export * from './RoomsView';

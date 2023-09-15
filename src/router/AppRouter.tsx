@@ -11,6 +11,9 @@ import { CustomersView } from '@/views/pages/customers';
 import { TypesCustomersView } from '@/views/pages/typesCustomers';
 import { RatesView } from '@/views/pages/rates';
 import { LeasesView } from '@/views/pages/leases';
+import { HourRangeView } from '@/views/pages/hourRanges/HourRangeView';
+import { RequirementsView } from '@/views/pages/requirements/RequirementsView';
+import { ProductsView } from '@/views/pages/products/ProductsView';
 
 export const AppRouter = () => {
 
@@ -25,16 +28,26 @@ export const AppRouter = () => {
             :
             <Layout>
                 <Routes>
+                    {/* dashboard */}
                     <Route path="/dashboardView" element={<DashboardView />} />
+                    {/* inmuebles */}
                     <Route path="/propertiesView" element={<PropertiesView />} />
-                    <Route path="/ratesView" element={<RatesView />} />
+                    {/* productos */}
+                    <Route path="/productsView" element={<ProductsView />} />
+                    {/* arriendos */}
                     <Route path="/leasesView" element={<LeasesView />} />
-                    {/* module customers */}
+                    {/* rangos de horas */}
+                    <Route path="/hourRangesView" element={<HourRangeView />} />
+                    {/* tarifas */}
+                    <Route path="/ratesView" element={<RatesView />} />
+                    {/* requisitos */}
+                    <Route path="/requirementsView" element={<RequirementsView />} />
+                    {/* clientes */}
                     <Route path="/customersView" element={<CustomersView />} />
+                    {/* tipos de clientes */}
                     <Route path="/typeCustomersView" element={<TypesCustomersView />} />
-                    {/* module users */}
+                    {/* usuarios */}
                     <Route path="/usersView" element={<UsersView />} />
-
                     {/*  */}
                     <Route path="/*" element={<Navigate to={"/dashboardView"} />} />
                 </Routes>

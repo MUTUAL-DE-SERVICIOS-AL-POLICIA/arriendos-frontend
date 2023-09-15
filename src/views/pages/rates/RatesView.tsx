@@ -27,20 +27,20 @@ export const RatesView = () => {
                     onClick={() => handleDialog(true)}
                     startIcon={<SvgIcon fontSize="small"><Add /></SvgIcon>} />
             </Stack>
-            <RateTable
+            {/* <RateTable
                 handleEdit={(v: any) => {
                     setItemEdit(v)
                     handleDialog(true)
                 }}
-            />
-            {
+            /> */}
+            {/* {
                 openDialog &&
                 <CreateRate
                     open={openDialog}
                     handleClose={() => handleDialog(false)}
                     item={itemEdit}
                 />
-            }
+            } */}
         </>
     )
 }
