@@ -1,4 +1,4 @@
-import { useForm, useRoomStore, useSelectorStore } from "@/hooks";
+import { useForm, useRoomStore } from "@/hooks";
 import { Grid, Typography } from "@mui/material"
 import { useCallback, useState } from "react";
 import { CartSelectedProduct } from ".";
@@ -14,13 +14,10 @@ const formFields: FormRentalModel = {
 
 export const RentalView = () => {
 
-  const { selectionsRooms } = useSelectorStore();
-
-
   const { room, onInputChange, onResetForm } = useForm(formFields);
 
   const [modal, setModal] = useState(false);
-  const { RoomSelection, selectRoom, deselectRoom } = useRoomStore();
+  const { RoomSelection = {}, selectRoom, deselectRoom } = useRoomStore();
   const handleModal = useCallback((value: boolean) => {
     setModal(value);
   }, []);
@@ -39,7 +36,7 @@ export const RentalView = () => {
             <PropertieTable
               stateSelect={true}
               itemSelect={(v) => {
-                if (RoomSelection == v) {
+                if (RoomSelection.id == v.id) {
                   deselectRoom();
                   onResetForm();
                 } else {
@@ -64,7 +61,7 @@ export const RentalView = () => {
               error={false}
               helperText={''}
             />
-            <CalendarComponent select={selectionsRooms.length > 0} />
+            <CalendarComponent select={Object.keys(RoomSelection).length != 0} />
           </div>
         </Grid>
         <Grid item xs={12} sm={5}>

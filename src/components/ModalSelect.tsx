@@ -54,7 +54,7 @@ export const ModalSelectComponent = React.memo((props: any) => {
                 <div style={{ padding: '16px' }}>
                     {React.Children.map(children, child => {
                         return React.cloneElement(child, {
-
+                            stateMultiple: stateMultiple,
                         });
                     })}
                 </div>

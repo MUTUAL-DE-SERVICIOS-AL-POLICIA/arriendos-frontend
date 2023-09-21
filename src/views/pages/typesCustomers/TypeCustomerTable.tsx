@@ -1,3 +1,4 @@
+import { SeverityPill } from "@/components";
 import { useSelectorStore, useTypeCustomerStore } from "@/hooks";
 import { TypeCustomerModel } from "@/models";
 import { DeleteOutline, EditOutlined } from "@mui/icons-material";
@@ -7,6 +8,7 @@ import { useCallback, useEffect, useState } from "react";
 export const TypeCustomerTable = (props: any) => {
     const {
         stateSelect = false,
+        stateMultiple,
         handleEdit,
         onDelete,
         itemSelect,
@@ -46,6 +48,7 @@ export const TypeCustomerTable = (props: any) => {
                         <TableHead>
                             <TableRow>
                                 <TableCell>Nombre</TableCell>
+                                <TableCell>Institución</TableCell>
                                 {
                                     !stateSelect && <TableCell>Acciones</TableCell>
                                 }
@@ -55,6 +58,7 @@ export const TypeCustomerTable = (props: any) => {
                             {typesCustomers.map((typeCustomer: TypeCustomerModel) => {
                                 // console.log(selections)
                                 const isSelected = selections.includes(typeCustomer.id);
+                                const isInstitution = typeCustomer.is_institution;
                                 return (
                                     <TableRow
                                         hover
@@ -77,6 +81,11 @@ export const TypeCustomerTable = (props: any) => {
                                             </TableCell>
                                         }
                                         <TableCell>{typeCustomer.name}</TableCell>
+                                        <TableCell>
+                                            <SeverityPill color={isInstitution ? 'success' : 'error'}>
+                                                {isInstitution ? 'SI' : 'No'}
+                                            </SeverityPill>
+                                        </TableCell>
                                         {
                                             !stateSelect && <TableCell align="right">
                                                 <Stack

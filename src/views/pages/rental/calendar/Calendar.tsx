@@ -45,6 +45,7 @@ export const CalendarComponent = ({ select }: { select: boolean }) => {
     const selectedDate = slotInfo.start;
     selectedDate.setHours(0, 0, 0, 0);
     if (selectedDate < currentDate) return;
+    console.log(slotInfo)
     if (selectedProducts.map((e: any) => e.start.getTime()).includes(slotInfo.start.getTime())) {
       unsetSElectedProduct(slotInfo);
     } else {
