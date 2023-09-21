@@ -10,7 +10,7 @@ export const useRateStore = () => {
     const getRates = async ({ page, limit }: { page: number, limit: number }) => {
         try {
             console.log('OBTENIENDO TODAS LAS TARIFAS')
-            const { data } = await coffeApiKevin.get(`/product/rates/?page=${page}&limit=${limit}`);
+            const { data } = await coffeApiKevin.get(`/requirements/allrates/?page=${page}&limit=${limit}`);
             console.log(data)
             dispatch(setRates({ rates: data.rates }));
             return data.total;

@@ -1,50 +1,44 @@
 import { ComponentInput } from "@/components";
-import { useForm } from "@/hooks";
-import { useRateStore } from "@/hooks/useRateStore";
+import { useForm, useRequirementStore } from "@/hooks";
+import { FormRequirementModel, FormRequirementValidations } from "@/models";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import { useState } from "react";
 
+const formFields: FormRequirementModel = { name: '' }
 
-const formFields = {
-    name: '',
-}
-const formValidations = {
-    name: [(value: any) => value.length >= 1, 'Debe ingresar la tarifa'],
+const formValidations: FormRequirementValidations = {
+    name: [(value: any) => value.length >= 1, 'Debe ingresar el nombre'],
 }
 
-export const CreateRate = (props: any) => {
+export const CreateRequirement = (props: any) => {
     const {
         open,
         handleClose,
         item,
     } = props;
-
-    const { postCreateRate, patchEditRate } = useRateStore();
+    const { postCreateRequirement, patchEditRequirement } = useRequirementStore();
 
     const [formSubmitted, setFormSubmitted] = useState(false);
-
-    const {
-        name,
-        onInputChange, isFormValid, onResetForm,
-        nameValid } = useForm(formFields, formValidations);
+    const { name, onInputChange, isFormValid, nameValid, onResetForm } = useForm(item ?? formFields, formValidations);
 
     const sendSubmit = (event: any) => {
         event.preventDefault();
         setFormSubmitted(true);
         if (!isFormValid) return;
         if (item == null) {
-            postCreateRate({ name });
+            postCreateRequirement({ requirement_name: name.trim() });
         } else {
-            patchEditRate(item.id, { name });
+            patchEditRequirement(item.id, { requirement_name: name.trim() });
         }
         handleClose();
         onResetForm();
     }
 
+
     return (
         <>
             <Dialog open={open} onClose={handleClose} >
-                <DialogTitle>{item == null ? 'Nueva Tarifa' : `Tarifa: ${item.name}`}</DialogTitle>
+                <DialogTitle>{item == null ? 'Nuevo Requisito' : `Tipo de cliente: ${item.name}`}</DialogTitle>
                 <form onSubmit={sendSubmit}>
                     <DialogContent sx={{ display: 'flex' }}>
                         <ComponentInput
@@ -58,7 +52,10 @@ export const CreateRate = (props: any) => {
                         />
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleClose}>Cancelar</Button>
+                        <Button onClick={() => {
+                            onResetForm();
+                            handleClose()
+                        }}>Cancelar</Button>
                         <Button type="submit">
                             {item == null ? 'CREAR' : 'EDITAR'}
                         </Button>

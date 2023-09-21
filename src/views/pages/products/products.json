@@ -1,0 +1,96 @@
+{
+    "products": [
+        {
+            "id": 1,
+            "room": {
+                "id": 1,
+                "name": "Salón Biógrafo",
+                "capacity": 200,
+                "warranty": 1200,
+                "is_active": true,
+                "propertie": {
+                    "id": 1,
+                    "name": "Gran Hotel París"
+                }
+            },
+            "rate": {
+                "id": 1,
+                "name": "Tarifa Regular"
+            },
+            "range": {
+                "id": 1,
+                "range": "4hrs"
+            },
+            "price": 2300
+        },
+        {
+            "id": 2,
+            "room": {
+                "id": 1,
+                "name": "Salón Biógrafo",
+                "capacity": 200,
+                "warranty": 1200,
+                "is_active": true,
+                "propertie": {
+                    "id": 1,
+                    "name": "Gran Hotel París"
+                }
+            },
+            "rate": {
+                "id": 1,
+                "name": "Tarifa Regular"
+            },
+            "range": {
+                "id": 1,
+                "range": "8hrs"
+            },
+            "price": 2300
+        },
+        {
+            "id": 4,
+            "room": {
+                "id": 1,
+                "name": "Salón Biógrafo",
+                "capacity": 200,
+                "warranty": 1200,
+                "is_active": true,
+                "propertie": {
+                    "id": 1,
+                    "name": "Gran Hotel París"
+                }
+            },
+            "rate": {
+                "id": 1,
+                "name": "Tarifa Preferencial"
+            },
+            "range": {
+                "id": 1,
+                "range": "4hrs"
+            },
+            "price": 2300
+        },
+        {
+            "id": 5,
+            "room": {
+                "id": 1,
+                "name": "Salón Biógrafo",
+                "capacity": 200,
+                "warranty": 1200,
+                "is_active": true,
+                "propertie": {
+                    "id": 1,
+                    "name": "Gran Hotel París"
+                }
+            },
+            "rate": {
+                "id": 1,
+                "name": "Tarifa Preferencial"
+            },
+            "range": {
+                "id": 1,
+                "range": "8hrs"
+            },
+            "price": 2300
+        }
+    ]
+}

@@ -13,12 +13,6 @@ export const usePropertieStore = () => {
         console.log(data.properties);
         dispatch(setProperties({ properties: data.properties }))
     }
-    const getProperties = async () => {
-        console.log('OBTENIENDO TODOS LOS INMUEBLES')
-        const { data } = await coffeApiKevin.get(`/rooms/properties/`);
-        console.log(data)
-        dispatch(setProperties({ properties: data }))
-    }
 
     const postCreatePropertie = async (body: object) => {
         try {
@@ -51,7 +45,6 @@ export const usePropertieStore = () => {
         properties,
         //* Métodos
         getPropertiesRooms,
-        getProperties,
         postCreatePropertie,
         patchUpdatePropertie,
     }

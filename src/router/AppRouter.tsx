@@ -4,16 +4,16 @@ import { useAuthStore } from '@/hooks';
 import { Layout } from '@/views/layout';
 /* Rutas */
 import { AuthPage } from '@/views/auth/AuthPage';
-import { DashboardView } from '@/views/pages/dashboard/DashboardView';
+import { DashboardView } from '@/views/pages/dashboard';
 import { UsersView } from '@/views/pages/users';
 import { PropertiesView } from '@/views/pages/properties';
 import { CustomersView } from '@/views/pages/customers';
 import { TypesCustomersView } from '@/views/pages/typesCustomers';
 import { RatesView } from '@/views/pages/rates';
-import { LeasesView } from '@/views/pages/leases';
-import { HourRangeView } from '@/views/pages/hourRanges/HourRangeView';
-import { RequirementsView } from '@/views/pages/requirements/RequirementsView';
-import { ProductsView } from '@/views/pages/products/ProductsView';
+import { RentalView } from '@/views/pages/rental';
+import { HourRangeView } from '@/views/pages/hourRanges';
+import { RequirementsView } from '@/views/pages/requirements';
+import { ProductsView } from '@/views/pages/products';
 
 export const AppRouter = () => {
 
@@ -35,7 +35,7 @@ export const AppRouter = () => {
                     {/* productos */}
                     <Route path="/productsView" element={<ProductsView />} />
                     {/* arriendos */}
-                    <Route path="/leasesView" element={<LeasesView />} />
+                    <Route path="/rentalView" element={<RentalView />} />
                     {/* rangos de horas */}
                     <Route path="/hourRangesView" element={<HourRangeView />} />
                     {/* tarifas */}

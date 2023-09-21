@@ -1,17 +1,13 @@
 import { ComponentInput } from "@/components";
-import { useSelectorStore } from "@/hooks";
 import { useRateStore } from "@/hooks/useRateStore";
+import { RateModel } from "@/models";
 import { DeleteOutline, EditOutlined } from "@mui/icons-material";
-import { Checkbox, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from "@mui/material";
+import { IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Typography } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
-
 export const RateTable = (props: any) => {
     const {
-        stateSelect = false,
-        stateMultiple = false,
         handleEdit,
         onDelete,
-        itemSelect,
         limitInit = 10
     } = props;
     /*BUSCADOR */
@@ -19,24 +15,22 @@ export const RateTable = (props: any) => {
     const [typingTimeout, setTypingTimeout] = useState<number | null>(null);
 
     const handleInputChange = (event: any) => {
-        const inputQuery = event.target.value;
-        setQuery(inputQuery);
+        // const inputQuery = event.target.value;
+        // setQuery(inputQuery);
 
-        // Limpiamos el timeout anterior si existe
-        if (typingTimeout) clearTimeout(typingTimeout);
+        // // Limpiamos el timeout anterior si existe
+        // if (typingTimeout) clearTimeout(typingTimeout);
 
-        // Configuramos un nuevo timeout para realizar la búsqueda después de 2 segundos
-        const newTypingTimeout = setTimeout(() => {
-            // Aquí podrías llamar a tu función de búsqueda con el valor actual de 'query'
-            console.log('Realizar búsqueda con:', inputQuery);
-        }, 1500);
+        // // Configuramos un nuevo timeout para realizar la búsqueda después de 2 segundos
+        // const newTypingTimeout = setTimeout(() => {
+        //     // Aquí podrías llamar a tu función de búsqueda con el valor actual de 'query'
+        //     console.log('Realizar búsqueda con:', inputQuery);
+        // }, 1500);
 
-        setTypingTimeout(newTypingTimeout);
+        // setTypingTimeout(newTypingTimeout);
     };
 
     /*DATA */
-    const { selections = [], selectOne, deselectOne } = useSelectorStore();
-    // const { customers, flag, getCustomers } = useCustomerStore();
     const { rates = [], flag, getRates } = useRateStore();
 
     const [total, setTotal] = useState(0);
@@ -44,12 +38,8 @@ export const RateTable = (props: any) => {
     const [limit, setLimit] = useState(limitInit)
 
     useEffect(() => {//escucha si "page", "limit" o "flag" se modifico
-        getRates({ page, limit }).then((total) => {
-            console.log('TODO BIEN')
-            setTotal(total);
-        })
+        getRates({ page, limit }).then((total) => setTotal(total))
     }, [page, limit, flag]);
-
     /* CONTROLADORES DE LA PAGINACIÓN */
     const handlePageChange = useCallback((_: any, value: number) => {//cuando se cambia la pagina < o >
         setPage(value)
@@ -73,63 +63,41 @@ export const RateTable = (props: any) => {
                 <Table sx={{ minWidth: 350 }} size="small">
                     <TableHead>
                         <TableRow>
-                            <TableCell>Inmueble</TableCell>
-                            <TableCell>Ambiente</TableCell>
-                            <TableCell>Tarifa</TableCell>
+                            <TableCell>Nombre</TableCell>
+                            <TableCell>Tipos de clientes</TableCell>
+                            <TableCell>Requisitos</TableCell>
                             <TableCell>Acciones</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rates.map((item: any) => {
-                            const isSelected = selections.includes(item.id);
-                            return (
-                                <TableRow
-                                    hover
-                                    key={item.id}
-                                >
-                                    {
-                                        stateSelect && <TableCell padding="checkbox">
-                                            <Checkbox
-                                                checked={isSelected}
-                                                onChange={(value) => {
-                                                    if (stateMultiple) {
-                                                        if (value.target.checked) {
-                                                            console.log(item)
-                                                            selectOne(item.id);
-                                                        } else {
-                                                            deselectOne(item.id);
-                                                        }
-                                                    } else {
-                                                        itemSelect(item)
-                                                    }
-                                                }}
-                                            />
-                                        </TableCell>
-                                    }
-                                    <TableCell>{item.room.property.name}</TableCell>
-                                    <TableCell>{item.room.name}</TableCell>
-                                    <TableCell>{item.name}</TableCell>
-                                    <TableCell>
-                                        <Stack
-                                            alignItems="center"
-                                            direction="row"
-                                            spacing={2}
+                        {rates.map((rate: RateModel) => (
+                            <TableRow
+                                hover
+                                key={rate.id}
+                            >
+                                <TableCell>{rate.name}</TableCell>
+                                <TableCell>{rate.customer_type.map((typeCustomer, index) => (<Typography key={index}>{typeCustomer}</Typography>))}</TableCell>
+                                <TableCell>{rate.requirements.map((requirement, index) => (<Typography key={index}>-{requirement}</Typography>))}</TableCell>
+                                <TableCell>
+                                    <Stack
+                                        alignItems="center"
+                                        direction="row"
+                                        spacing={2}
+                                    >
+                                        <IconButton
+                                            onClick={() => handleEdit(rate)}
                                         >
-                                            <IconButton
-                                                onClick={() => handleEdit(item)}
-                                            >
-                                                <EditOutlined color="info" />
-                                            </IconButton>
-                                            <IconButton
-                                                onClick={() => onDelete(item.id)}
-                                            >
-                                                <DeleteOutline color="error" />
-                                            </IconButton>
-                                        </Stack>
-                                    </TableCell>
-                                </TableRow>
-                            );
-                        })}
+                                            <EditOutlined color="info" />
+                                        </IconButton>
+                                        <IconButton
+                                            onClick={() => onDelete(rate.id)}
+                                        >
+                                            <DeleteOutline color="error" />
+                                        </IconButton>
+                                    </Stack>
+                                </TableCell>
+                            </TableRow>
+                        ))}
                     </TableBody>
                 </Table>
             </TableContainer>

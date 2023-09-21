@@ -3,8 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 export const selectionSlice = createSlice({
     name: 'selection',
     initialState: {
-        selections:<Array<any>>[],
-        selectionsRooms:<Array<any>>[],
+        selections: <Array<any>>[],
     },
     reducers: {
         /*ARRAY DE SELECTORES */
@@ -23,16 +22,7 @@ export const selectionSlice = createSlice({
         setClearAll: (state, /* action */) => {
             state.selections = [];
         },
-        /*ARRAY DE SELECTORES DE AMBIENTES */
-        setSelectRoomAdd:(state,action)=> {
-            state.selectionsRooms = [...state.selectionsRooms,action.payload.selectRoom];
-        },
-        setDeselectRoomOne:(state,action)=> {
-            state.selectionsRooms = [...state.selectionsRooms.filter((e: any) => e !== action.payload.selectRoom)];
-        },
-        setClearRoomAll: (state, /* action */) => {
-            state.selectionsRooms = [];
-        },
+
     }
 });
 
@@ -45,8 +35,4 @@ export const {
     setDeselectAll,
     setDeselectOne,
     setClearAll,
-    /*METODOS DE SELECCION DE AMBIENTES*/
-    setSelectRoomAdd,
-    setDeselectRoomOne,
-    setClearRoomAll,
 } = selectionSlice.actions;

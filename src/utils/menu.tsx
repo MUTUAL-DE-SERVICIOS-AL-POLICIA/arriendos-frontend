@@ -1,4 +1,4 @@
-import { Assessment, BarChart, Bento, Group, Home, Receipt, Wifi } from "@mui/icons-material"
+import { Assessment, Bento, Group, Home, Receipt, Wifi } from "@mui/icons-material"
 
 export const menu = () => {
     return [
@@ -24,7 +24,7 @@ export const menu = () => {
                     permission: "show-rates"
                 },
                 {
-                    path: "/leasesView",
+                    path: "/rentalView",
                     title: "Arriendos",
                     icon: <Receipt />,
                     permission: "show-rates"
