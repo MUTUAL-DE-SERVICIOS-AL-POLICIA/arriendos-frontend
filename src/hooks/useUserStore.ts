@@ -22,7 +22,7 @@ export const useUserStore = () => {
     const getUsersLdap = async () => {
         try {
             console.log('OBTENIENDO TODOS LOS USUARIOS EN LDAP');
-            const { data } = await coffeApiKevin.get('login/users_ldap/');
+            const { data } = await coffeApiKevin.get('/login/users_ldap/');
             console.log(data)
             dispatch(setUsersLdap({ usersLDAP: data.users }));
             return data;

@@ -1,35 +1,43 @@
-import { Person, Wifi } from "@mui/icons-material"
+import { DocumentScanner, HourglassBottom, Person, Wifi } from "@mui/icons-material"
 
 export const menuSettings = () => {
     return [
-        {
-            path: "/typeCustomersView",
-            title: "Tipos de Clientes",
-            icon: <Wifi />
-        },
         {
             title: "Ajustes de productos",
             permission: "show-rent",
             group: [
                 {
-                    path: "/propertiesView",
+                    path: "/hourRangesView",
                     title: "Rangos de horas",
-                    icon: <Wifi />,
+                    icon: <HourglassBottom />,
                     permission: "show-halls"
                 },
                 {
-                    path: "/propertiesView",
+                    path: "/ratesView",
                     title: "Tarifas",
                     icon: <Wifi />,
                     permission: "show-halls"
-                },{
-                    path: "/propertiesView",
+                }, {
+                    path: "/requirementsView",
                     title: "Requisitos",
-                    icon: <Wifi />,
+                    icon: <DocumentScanner />,
                     permission: "show-halls"
                 },
             ]
         },
+        {
+            title: "Ajustes de Clienes",
+            permission: "show-rent",
+            group: [
+                {
+                    title: "Tipos de Clientes",
+                    permission: "show-rent",
+                    path: "/typeCustomersView",
+                    icon: <Wifi />
+                },
+            ]
+        },
+
         {
             title: "Gestión de Usuarios",
             permission: "show-rent",

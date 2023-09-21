@@ -4,7 +4,7 @@ export const roomSlice = createSlice({
     name: 'room',
     initialState: {
         rooms: [],
-        roomSelections:<Array<any>>[],
+        RoomSelection: {}
     },
     reducers: {
         clearRooms: (state) => {
@@ -13,12 +13,23 @@ export const roomSlice = createSlice({
         setRoom: (state, action) => {
             state.rooms = action.payload.rooms;
         },
-        setSelectRoom: (state, action) => {
-            state.roomSelections = [...state.roomSelections,action.payload.select];
+        /*ARRAY DE SELECTORES DE AMBIENTES */
+        setRoomSelect: (state, action) => {
+            state.RoomSelection = action.payload.room;
+        },
+        setClearSelect: (state, /* action */) => {
+            state.RoomSelection = {};
         },
     }
 });
 
 
 // Action creators are generated for each case reducer function
-export const { clearRooms, setRoom, setSelectRoom } = roomSlice.actions;
+export const {
+    clearRooms,
+    setRoom,
+
+    /*METODOS DE SELECCION DE AMBIENTES*/
+    setRoomSelect,
+    setClearSelect,
+} = roomSlice.actions;

@@ -8,8 +8,8 @@ export const RatesView = () => {
     const [openDialog, setopenDialog] = useState(false);
     const [itemEdit, setItemEdit] = useState<any>(null);
 
-    /*CONTROLADOR DEL DIALOG PARA CREAR O EDITAR */
 
+    /*CONTROLADOR DEL DIALOG PARA CREAR O EDITAR */
     const handleDialog = useCallback((value: any) => {
         if (!value) setItemEdit(null)
         setopenDialog(value);

@@ -5,3 +5,5 @@ export * from './SeverityPill';
 export * from './Select';
 export * from './ModalSelect';
 export * from './Date';
+
+export * from './Paper';

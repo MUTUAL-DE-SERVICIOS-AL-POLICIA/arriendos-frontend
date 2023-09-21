@@ -1,16 +1,13 @@
 
 import { Box, Divider, MenuItem, MenuList, Popover, Typography } from '@mui/material';
-
-
 import { useNavigate } from 'react-router-dom';
-// import { useSelector } from 'react-redux';
 import { useAuthStore } from '@/hooks';
 
-export const AccountPopover = ({ anchorEl, onClose, open,onTapSettings }: { anchorEl: any, onClose: any, open: boolean,onTapSettings:any }) => {
+export const AccountPopover = ({ anchorEl, onClose, open, onTapSettings }: { anchorEl: any, onClose: any, open: boolean, onTapSettings: any }) => {
 
     const navigate = useNavigate();
     const { startLogout } = useAuthStore();
-    // const { data } = useSelector((state: any) => state.auth);
+    const { user } = useAuthStore();
 
     return (
         <Popover
@@ -31,12 +28,12 @@ export const AccountPopover = ({ anchorEl, onClose, open,onTapSettings }: { anch
                 <Typography variant="overline">
                     Cuenta
                 </Typography>
-                {/* <Typography
+                <Typography
                     color="text.secondary"
                     variant="body2"
                 >
-                    {data.name}
-                </Typography> */}
+                    {user}
+                </Typography>
             </Box>
             <Divider />
             <MenuList
@@ -50,12 +47,9 @@ export const AccountPopover = ({ anchorEl, onClose, open,onTapSettings }: { anch
                 }}
             >
                 <MenuItem
-                    onClick={()=>onTapSettings()}
+                    onClick={() => onTapSettings()}
                 >
                     Configuraciones
-                </MenuItem>
-                <MenuItem>
-                    Cambiar contraseña
                 </MenuItem>
                 <MenuItem
                     onClick={() => {

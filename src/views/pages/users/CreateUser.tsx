@@ -4,10 +4,11 @@ import { useCallback, useEffect, useState } from "react";
 import { useForm, useUserStore } from "@/hooks";
 import { ComponentSelect, ModalSelectComponent } from "@/components";
 import { UserLdapTable } from ".";
+import { FormUserModel, FormUserValidations } from "@/models";
 
-const formFields = { username: '' }
+const formFields: FormUserModel = { username: '' }
 
-const formValidations = {
+const formValidations: FormUserValidations = {
     username: [(value: any) => value.length >= 1, 'Debe ingresar la cuenta'],
 }
 
@@ -21,8 +22,7 @@ export const CreateUser = (props: any) => {
 
     const [formSubmitted, setFormSubmitted] = useState(false);
     const [userInfo, setUserInfo] = useState<any>(null);
-    const [form, setForm] = useState(formFields)
-    const { username, isFormValid, usernameValid, onResetForm } = useForm(form, formValidations);
+    const { username, onInputChange, isFormValid, usernameValid, onResetForm } = useForm(formFields, formValidations);
     useEffect(() => {
         getUsersLdap();
     }, [])
@@ -63,7 +63,7 @@ export const CreateUser = (props: any) => {
                             stateSelect={true}
                             limitInit={5}
                             itemSelect={(v: any) => {
-                                setForm({ username: v.username });
+                                onInputChange({ target: { name: 'username', value: v.username } });
                                 setUserInfo(v);
                                 handleModal(false)
                             }}
@@ -74,13 +74,12 @@ export const CreateUser = (props: any) => {
             <Dialog open={open} onClose={handleClose} >
                 <DialogTitle>Nuevo Usuario</DialogTitle>
                 <form onSubmit={sendSubmit}>
-                    <DialogContent sx={{ display: 'flex' }}>
+                    <DialogContent>
                         <Box sx={{ flexDirection: 'column' }}>
                             <ComponentSelect
+                                label={username != '' ? 'Cuenta' : ''}
                                 labelChip={['name']}
-                                title='Cuenta'
-                                name="username"
-                                value={username}
+                                title={username != '' ? username : 'Cuenta'}
                                 onPressed={() => handleModal(true)}
                                 error={!!usernameValid && formSubmitted}
                                 helperText={formSubmitted ? usernameValid : ''}
@@ -88,9 +87,9 @@ export const CreateUser = (props: any) => {
                             {
                                 userInfo &&
                                 <>
-                                    < Typography > NOMBRES: {userInfo.first_name}</Typography>
-                                    < Typography > APELLIDOS: {userInfo.last_name}</Typography>
-                                    < Typography > CORREO: {userInfo.email}</Typography>
+                                    <Typography>NOMBRES: {userInfo.first_name}</Typography>
+                                    <Typography>APELLIDOS: {userInfo.last_name}</Typography>
+                                    <Typography>CORREO: {userInfo.email}</Typography>
                                 </>
                             }
                         </Box>

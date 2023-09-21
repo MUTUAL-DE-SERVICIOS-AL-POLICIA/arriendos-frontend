@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 
 export const useSelectorStore = () => {
-    const { selections } = useSelector((state: any) => state.selections);
+    const { selections = [], selectionsRooms = [] } = useSelector((state: any) => state.selections);
     const dispatch = useDispatch();
 
     const selectAll = (data: any) => {
@@ -25,13 +25,13 @@ export const useSelectorStore = () => {
     return {
         //* Propiedades
         selections,
-        //* Métodos
+        selectionsRooms,
+        //* Métodos de selector
         selectAll,
         selectOne,
         deselectAll,
         deselectOne,
         clearSelect,
-
     }
 
 }

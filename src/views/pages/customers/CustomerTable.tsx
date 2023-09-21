@@ -1,5 +1,6 @@
 import { ComponentInput } from "@/components";
 import { useCustomerStore, useSelectorStore } from "@/hooks";
+import { CustomerModel } from "@/models";
 import { DeleteOutline, EditOutlined } from "@mui/icons-material";
 import { Checkbox, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
@@ -15,7 +16,7 @@ export const CustomerTable = (props: any) => {
     } = props;
     /*BUSCADOR */
     const [query, setQuery] = useState<string>('');
-    const [typingTimeout, setTypingTimeout] = useState<number | null>(null);
+    const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
 
     const handleInputChange = (event: any) => {
         const inputQuery = event.target.value;
@@ -78,12 +79,12 @@ export const CustomerTable = (props: any) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {customers.map((item: any) => {
-                            const isSelected = selections.includes(item.id);
+                        {customers.map((customer: CustomerModel) => {
+                            const isSelected = selections.includes(customer.id);
                             return (
                                 <TableRow
                                     hover
-                                    key={item.id}
+                                    key={customer.id}
                                 >
                                     {
                                         stateSelect && <TableCell padding="checkbox">
@@ -92,23 +93,23 @@ export const CustomerTable = (props: any) => {
                                                 onChange={(value) => {
                                                     if (stateMultiple) {
                                                         if (value.target.checked) {
-                                                            console.log(item)
-                                                            selectOne(item.id);
+                                                            console.log(customer)
+                                                            selectOne(customer.id);
                                                         } else {
-                                                            deselectOne(item.id);
+                                                            deselectOne(customer.id);
                                                         }
                                                     } else {
-                                                        itemSelect(item)
+                                                        itemSelect(customer)
                                                     }
                                                 }}
                                             />
                                         </TableCell>
                                     }
-                                    <TableCell>{item.ci}</TableCell>
-                                    <TableCell>{item.name}</TableCell>
-                                    <TableCell>{item.last_name}</TableCell>
-                                    <TableCell>{item.phone}</TableCell>
-                                    <TableCell>{item.customer_type.name}</TableCell>
+                                    <TableCell>{customer.ci}</TableCell>
+                                    <TableCell>{customer.name}</TableCell>
+                                    <TableCell>{customer.last_name}</TableCell>
+                                    <TableCell>{customer.phone}</TableCell>
+                                    <TableCell>{customer.customer_type.name}</TableCell>
                                     <TableCell>
                                         <Stack
                                             alignItems="center"
@@ -116,12 +117,12 @@ export const CustomerTable = (props: any) => {
                                             spacing={2}
                                         >
                                             <IconButton
-                                                onClick={() => handleEdit(item)}
+                                                onClick={() => handleEdit(customer)}
                                             >
                                                 <EditOutlined color="info" />
                                             </IconButton>
                                             <IconButton
-                                                onClick={() => onDelete(item.id)}
+                                                onClick={() => onDelete(customer.id)}
                                             >
                                                 <DeleteOutline color="error" />
                                             </IconButton>

@@ -1,23 +1,22 @@
 
 import { useSelectorStore } from '@/hooks';
-import { Chip } from '@mui/material';
+import { Button, Chip, Typography } from '@mui/material';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { ComponentInput } from '.';
 
 export const ComponentSelect = React.memo((
     {
+        label,
         labelChip,
         title,
         onPressed,
         items = [],
         select = 'id',
         error = false,
-        helperText = '',
-        name,
-        value
+        helperText,
     }:
         {
+            label: string,
             labelChip: any,
             title: string,
             onPressed: any,
@@ -25,8 +24,6 @@ export const ComponentSelect = React.memo((
             select?: string,
             error?: boolean,
             helperText?: string,
-            name: any,
-            value: any
         }) => {
     const { deselectOne } = useSelectorStore();
     const { selection = [] } = useSelector((state: any) => state.selections);
@@ -36,62 +33,60 @@ export const ComponentSelect = React.memo((
     };
     return (
         <>
-            <div onClick={() => onPressed()}>
-                <ComponentInput
-                    type="text"
-                    label={title}
-                    name={name}
-                    value={value}
-                    error={error}
-                    helperText={helperText}
-                />
-            </div>
-            {/* <Button
-                variant="outlined"
-                color="primary"
-                onClick={onPressed}
-                style={{
-                    width: '100%',
-                    height: '50px',
-                    color: 'grey',
-                    textTransform: 'none',
-                    fontSize: '1.0rem',
-                    padding: '8px'
-                }}
-                sx={{
-                    padding: '8px'
-                }}
-                classes={{
-                    // focus: {
-                    //     borderColor: '#F26522',
-                    //     borderWidth: '2px',
-                    // },
-                    // label: {
-                    //     color: 'grey',
-                    // },
-                }}
-            >
-                {title}
-            </Button> */}
-            {
-                items.length > 0 ?
-                    <div style={{ display: 'flex', flexWrap: 'wrap', marginTop: '8px' }}>
-                        {[...items.filter((e: any) => selection.includes(e[select]))].map((data) => {
-                            return (
-                                <Chip
-                                    key={data.id}
-                                    color="primary"
-                                    label={generateLabel(data)}
-                                    style={{ margin: '1px' }}
-                                    onDelete={() => {
-                                        deselectOne(data[select])
-                                    }}
-                                />
-                            );
-                        })}
-                    </div>
-                    : <></>
-            }
+            <>
+                <div style={{ position: 'relative', paddingTop: '5px' }}>
+                    <span
+                        style={{
+                            position: 'absolute',
+                            top: -8,
+                            left: 2,
+                            backgroundColor: 'white',
+                            padding: '2px',
+                            fontSize: '0.8rem',
+                            zIndex: 1,
+                        }}
+                    >
+                        {label}
+                    </span>
+                    <Button
+                        variant="outlined"
+                        color={error ? 'error' : 'primary'}
+                        onClick={onPressed}
+                        style={{
+                            width: '100%',
+                            paddingTop: '12px',
+                            paddingBottom: '12px',
+                            color: 'black',
+                            textTransform: 'none',
+                            zIndex: 0,
+                        }}
+                    >
+                        {title}
+                    </Button>
+                </div>
+                {
+                    items.length > 0 ?
+                        <div style={{ display: 'flex', flexWrap: 'wrap', marginTop: '8px' }}>
+                            {[...items.filter((e: any) => selection.includes(e[select]))].map((data) => {
+                                return (
+                                    <Chip
+                                        key={data.id}
+                                        color="primary"
+                                        label={generateLabel(data)}
+                                        style={{ margin: '1px' }}
+                                        onDelete={() => {
+                                            deselectOne(data[select])
+                                        }}
+                                    />
+                                );
+                            })}
+                        </div>
+                        : <></>
+                }
+                {error && (
+                    <Typography style={{ color: 'red', fontSize: '0.8rem', padding: '2px' }} >{helperText}</Typography>
+                )}
+            </>
         </>
     )
 })

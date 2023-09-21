@@ -1,0 +1,7 @@
+.selected-day {
+    background-color: #88CBC2; /* Cambia el color de fondo del día seleccionado */
+    color: white; /* Cambia el color del texto del día seleccionado */
+    font-weight: bold; /* Cambia la fuente en negrita para el día seleccionado */
+    /* Agrega otros estilos personalizados según tus preferencias */
+  }
+  

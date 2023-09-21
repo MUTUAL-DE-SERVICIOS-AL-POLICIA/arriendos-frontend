@@ -1,4 +1,5 @@
 import { useSelectorStore, useTypeCustomerStore } from "@/hooks";
+import { TypeCustomerModel } from "@/models";
 import { DeleteOutline, EditOutlined } from "@mui/icons-material";
 import { Checkbox, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
@@ -20,9 +21,6 @@ export const TypeCustomerTable = (props: any) => {
     const [page, setPage] = useState(0);
     const [limit, setLimit] = useState(limitInit)
 
-    // useEffect(() => {
-    //     deselectAll(typesCustomers.map((e: any) => e.id));
-    // }, [])
 
     useEffect(() => {//escucha si "page", "limit" o "flag" se modifico
         getTypesCustomers({ page, limit }).then((total) => setTotal(total))
@@ -54,13 +52,13 @@ export const TypeCustomerTable = (props: any) => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {typesCustomers.map((item: any) => {
+                            {typesCustomers.map((typeCustomer: TypeCustomerModel) => {
                                 // console.log(selections)
-                                const isSelected = selections.includes(item.id);
+                                const isSelected = selections.includes(typeCustomer.id);
                                 return (
                                     <TableRow
                                         hover
-                                        key={item.id}
+                                        key={typeCustomer.id}
                                     >
                                         {
                                             stateSelect && <TableCell padding="checkbox">
@@ -69,16 +67,16 @@ export const TypeCustomerTable = (props: any) => {
                                                     onChange={(value) => {
                                                         if (value.target.checked) {
                                                             deselectAll(typesCustomers.map((e: any) => e.id));
-                                                            selectOne(item.id);
-                                                            itemSelect(item);
+                                                            selectOne(typeCustomer.id);
+                                                            itemSelect(typeCustomer);
                                                         } else {
-                                                            deselectOne(item.id);
+                                                            deselectOne(typeCustomer.id);
                                                         }
                                                     }}
                                                 />
                                             </TableCell>
                                         }
-                                        <TableCell>{item.name}</TableCell>
+                                        <TableCell>{typeCustomer.name}</TableCell>
                                         {
                                             !stateSelect && <TableCell align="right">
                                                 <Stack
@@ -87,12 +85,12 @@ export const TypeCustomerTable = (props: any) => {
                                                     spacing={2}
                                                 >
                                                     <IconButton
-                                                        onClick={() => handleEdit(item)}
+                                                        onClick={() => handleEdit(typeCustomer)}
                                                     >
                                                         <EditOutlined color="info" />
                                                     </IconButton>
                                                     <IconButton
-                                                        onClick={() => onDelete(item.id)}
+                                                        onClick={() => onDelete(typeCustomer.id)}
                                                     >
                                                         <DeleteOutline color="error" />
                                                     </IconButton>

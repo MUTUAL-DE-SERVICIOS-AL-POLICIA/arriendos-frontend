@@ -3,21 +3,21 @@ import { useCustomerStore, useForm } from "@/hooks";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid } from "@mui/material"
 import { useCallback, useEffect, useState } from "react";
 import { TypeCustomerTable } from "../typesCustomers";
+import { FormCustomerModel, FormCustomerValidations, TypeCustomerModel } from "@/models";
 
-const formFields = {
+const formFields: FormCustomerModel = {
     name: '',
     lastName: '',
     ci: '',
     phone: '',
-    typeCustomer: '',
-    typeCustomerId: '',
+    typeCustomer: null,
 }
-const formValidations = {
-    name: [(value: any) => value.length >= 1, 'Debe ingresar su nombre'],
+const formValidations: FormCustomerValidations = {
+    name: [(value: string) => value.length >= 1, 'Debe ingresar su nombre'],
     lastName: [(value: any) => value.length >= 1, 'Debe ingresar su apellido'],
     ci: [(value: any) => value.length >= 1, 'Debe ingresar su carnet'],
     phone: [(value: any) => value.length >= 1, 'Debe ingresar su teléfono'],
-    typeCustomer: [(value: any) => value.length >= 1, 'Debe seleccionar un tipo de cliente'],
+    typeCustomer: [(value: TypeCustomerModel) => value != null, 'Debe seleccionar un tipo de cliente'],
 }
 
 export const CreateCustomer = (props: any) => {
@@ -31,31 +31,31 @@ export const CreateCustomer = (props: any) => {
 
     const [formSubmitted, setFormSubmitted] = useState(false);
     const [modal, setModal] = useState(false);
-    const [form, setForm] = useState(formFields)
+    // const [form, setForm] = useState(formFields)
     useEffect(() => {
-        setForm(
-            item != null ?
-                {
-                    ...item,
-                    lastName: item.last_name,
-                    typeCustomer: item.customer_type.name,
-                    typeCustomerId: item.customer_type.id
-                } : formFields)
+        // setForm(
+        //     item != null ?
+        //         {
+        //             ...item,
+        //             lastName: item.last_name,
+        //             typeCustomer: item.customer_type.name,
+        //             typeCustomerId: item.customer_type.id
+        //         } : formFields)
     }, [item])
 
     const {
         name, lastName, ci, phone, typeCustomer,
         onInputChange, isFormValid, onResetForm,
-        nameValid, lastNameValid, ciValid, phoneValid, typeCustomerValid } = useForm(form, formValidations);
+        nameValid, lastNameValid, ciValid, phoneValid, typeCustomerValid } = useForm(formFields, formValidations);
 
     const sendSubmit = (event: any) => {
         event.preventDefault();
         setFormSubmitted(true);
         if (!isFormValid) return;
         if (item == null) {
-            postCreateCustomer({ name, last_name: lastName, ci, phone, customer_type: form.typeCustomerId });
+            postCreateCustomer({ name, last_name: lastName, ci, phone, customer_type: typeCustomer.id });
         } else {
-            patchEditCustomer(item.id, { name, last_name: lastName, ci, phone, customer_type: form.typeCustomerId });
+            patchEditCustomer(item.id, { name, last_name: lastName, ci, phone, customer_type: typeCustomer.id });
         }
         handleClose();
         onResetForm();
@@ -81,7 +81,7 @@ export const CreateCustomer = (props: any) => {
                             stateSelect={true}
                             limitInit={5}
                             itemSelect={(v: any) => {
-                                setForm({ name, lastName, ci, phone, typeCustomer: v.name, typeCustomerId: v.id });
+                                onInputChange({ target: { name: 'typeCustomer', value: v } });
                                 handleModal(false)
                             }}
                         />
@@ -139,10 +139,9 @@ export const CreateCustomer = (props: any) => {
                             </Grid>
                             <Grid item xs={12} sm={5} sx={{ padding: '5px' }}>
                                 <ComponentSelect
+                                    label={typeCustomer != null ? 'Tipo de Cliente' : ''}
                                     labelChip={['name']}
-                                    title='Tipo de cliente'
-                                    name="typeCustomer"
-                                    value={typeCustomer}
+                                    title={typeCustomer != null ? typeCustomer.name : 'Tipo de Cliente'}
                                     onPressed={() => handleModal(true)}
                                     error={!!typeCustomerValid && formSubmitted}
                                     helperText={formSubmitted ? typeCustomerValid : ''}

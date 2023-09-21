@@ -1,11 +1,12 @@
 import { ComponentInput } from "@/components"
 import { useForm, useTypeCustomerStore } from "@/hooks";
+import { FormTypeCustomerModel, FormTypeCustomerValidations } from "@/models";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material"
 import { useState } from "react";
 
-const formFields = { name: '' }
+const formFields: FormTypeCustomerModel = { name: '' }
 
-const formValidations = {
+const formValidations: FormTypeCustomerValidations = {
     name: [(value: any) => value.length >= 1, 'Debe ingresar el nombre'],
 }
 

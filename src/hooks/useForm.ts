@@ -41,6 +41,13 @@ export const useForm = (initialForm: any = {}, formValidations: any = {}) => {
         })
     }
 
+    const onFileChange = (name: string, file: File) => {
+        setFormState({
+            ...formState,
+            [name]: file
+        })
+    }
+
 
     const onResetForm = () => {
         setFormState(initialForm);
@@ -64,6 +71,7 @@ export const useForm = (initialForm: any = {}, formValidations: any = {}) => {
         ...formState,
         formState,
         onInputChange,
+        onFileChange,
         onResetForm,
 
         ...formValidation,

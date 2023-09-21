@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { authSlice, customerSlice, propertieSlice, rateSlice, roomSlice, selectionSlice, typeCustomerSlice, userSlice } from '.';
+import { authSlice, customerSlice, propertieSlice, rateSlice, requirementSlice, roomSlice, selectedProductSlice, selectionSlice, typeCustomerSlice, userSlice } from '.';
 
 export const store = configureStore({
     reducer: {
@@ -13,6 +13,9 @@ export const store = configureStore({
         properties: propertieSlice.reducer,
         rooms: roomSlice.reducer,
         rates: rateSlice.reducer,
+        requirements: requirementSlice.reducer,
+
+        selectedProducts: selectedProductSlice.reducer,
 
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
