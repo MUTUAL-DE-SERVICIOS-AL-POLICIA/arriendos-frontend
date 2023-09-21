@@ -1,8 +1,9 @@
-import { ComponentInput } from "@/components";
+import { ComponentInput, ComponentSelect, ModalSelectComponent } from "@/components";
 import { useForm } from "@/hooks";
 import { useRateStore } from "@/hooks/useRateStore";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
-import { useState } from "react";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid } from "@mui/material";
+import { useCallback, useState } from "react";
+import { TypeCustomerTable } from "../typesCustomers";
 
 
 const formFields = {
@@ -20,14 +21,17 @@ export const CreateRate = (props: any) => {
     } = props;
 
     const { postCreateRate, patchEditRate } = useRateStore();
-
     const [formSubmitted, setFormSubmitted] = useState(false);
+    const [modal, setModal] = useState(false);
 
     const {
-        name,
+        name, typeCustomer,
         onInputChange, isFormValid, onResetForm,
-        nameValid } = useForm(formFields, formValidations);
-
+        nameValid, typeCustomerValid } = useForm(formFields, formValidations);
+    // const {
+    //     name, lastName, ci, phone, typeCustomer,
+    //     onInputChange, isFormValid, onResetForm,
+    //     nameValid, lastNameValid, ciValid, phoneValid, typeCustomerValid } = useForm(formFields, formValidations);
     const sendSubmit = (event: any) => {
         event.preventDefault();
         setFormSubmitted(true);
@@ -40,22 +44,73 @@ export const CreateRate = (props: any) => {
         handleClose();
         onResetForm();
     }
-
+    const handleModal = useCallback((value: boolean) => {
+        setModal(value);
+    }, []);
     return (
         <>
+            {
+                modal ?
+                    <ModalSelectComponent
+                        stateSelect={true}
+                        stateMultiple={true}
+                        title='Tipos de clientes'
+                        opendrawer={modal}
+                        handleDrawer={handleModal}
+                    >
+                        <TypeCustomerTable
+                            stateSelect={true}
+                            limitInit={5}
+                            itemSelect={(v: any) => {
+                                // onInputChange({ target: { name: 'typeCustomer', value: v } });
+                                // handleModal(false)
+                            }}
+                        />
+                    </ModalSelectComponent> :
+                    <></>
+            }
             <Dialog open={open} onClose={handleClose} >
-                <DialogTitle>{item == null ? 'Nueva Tarifa' : `Tarifa: ${item.name}`}</DialogTitle>
+                <DialogTitle>{item == null ? 'Nueva Tarifa' : `${item.name}`}</DialogTitle>
                 <form onSubmit={sendSubmit}>
                     <DialogContent sx={{ display: 'flex' }}>
-                        <ComponentInput
-                            type="text"
-                            label="Nombre"
-                            name="name"
-                            value={name}
-                            onChange={onInputChange}
-                            error={!!nameValid && formSubmitted}
-                            helperText={formSubmitted ? nameValid : ''}
-                        />
+                        <Grid container>
+                            <Grid item xs={12} sm={12} sx={{ padding: '5px' }}>
+                                <ComponentInput
+                                    type="text"
+                                    label="Nombre"
+                                    name="name"
+                                    value={name}
+                                    onChange={onInputChange}
+                                    error={!!nameValid && formSubmitted}
+                                    helperText={formSubmitted ? nameValid : ''}
+                                />
+                            </Grid>
+                            {
+                                item &&
+                                <>
+                                    <Grid item xs={12} sm={12} sx={{ padding: '5px' }}>
+                                        <ComponentSelect
+                                            label={typeCustomer != null ? 'Tipos de clientes' : ''}
+                                            labelChip={['name']}
+                                            title={'Tipos de Clientes'}
+                                            onPressed={() => handleModal(true)}
+                                            error={!!typeCustomerValid && formSubmitted}
+                                            helperText={formSubmitted ? typeCustomerValid : ''}
+                                        />
+                                    </Grid>
+                                    {/* <Grid item xs={12} sm={12} sx={{ padding: '5px' }}>
+                                        <ComponentSelect
+                                            label={typeCustomer != null ? 'Tipos de clientes' : ''}
+                                            labelChip={['name']}
+                                            title={typeCustomer != null ? typeCustomer.name : 'Requisitos'}
+                                            onPressed={() => handleModal(true)}
+                                            error={!!typeCustomerValid && formSubmitted}
+                                            helperText={formSubmitted ? typeCustomerValid : ''}
+                                        />
+                                    </Grid> */}
+                                </>
+                            }
+                        </Grid>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleClose}>Cancelar</Button>

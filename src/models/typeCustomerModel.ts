@@ -2,11 +2,13 @@
 export interface TypeCustomerModel {
     id: number;
     name: string;
+    is_institution: boolean;
 }
 
 /* FORM TYPE CUSTOMER MODEL */
 export interface FormTypeCustomerModel {
     name: string;
+    is_institution: boolean;
 }
 
 /*FORM TYPE CUSTOMER MODEL VALIDATIONS */

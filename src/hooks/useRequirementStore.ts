@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { coffeApiKevin } from '@/services';
-import { setRequirements, refreshCustomer } from '@/store';
+import { setRequirements, refreshRequirement } from '@/store';
 import Swal from 'sweetalert2';
 
 export const useRequirementStore = () => {
@@ -21,8 +21,8 @@ export const useRequirementStore = () => {
             console.log(body)
             const { data } = await coffeApiKevin.post(`/plans/requirements/`, body);
             console.log(data)
-            dispatch(refreshCustomer());
-            Swal.fire('Cliente creado correctamente', '', 'success');
+            dispatch(refreshRequirement());
+            Swal.fire('Requisito creado correctamente', '', 'success');
         } catch (error: any) {
             Swal.fire('Oops ocurrio algo', error.response, 'error');
         }
@@ -33,8 +33,8 @@ export const useRequirementStore = () => {
             console.log('EDITANDO REQUISITO');
             const { data } = await coffeApiKevin.patch(`/customers/${id}`, body);
             console.log(data)
-            dispatch(refreshCustomer());
-            Swal.fire('Tipo de cliente editado correctamente', '', 'success');
+            dispatch(refreshRequirement());
+            Swal.fire('Requisito editado correctamente', '', 'success');
         } catch (error: any) {
             Swal.fire('Oops ocurrio algo', error.response, 'error');
         }

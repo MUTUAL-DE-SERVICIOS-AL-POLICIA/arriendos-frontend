@@ -4,7 +4,7 @@ export const roomSlice = createSlice({
     name: 'room',
     initialState: {
         rooms: [],
-        RoomSelection: {}
+        RoomSelection: <object>{}
     },
     reducers: {
         clearRooms: (state) => {

@@ -1,10 +1,10 @@
 import { ComponentInput } from "@/components"
 import { useForm, useTypeCustomerStore } from "@/hooks";
 import { FormTypeCustomerModel, FormTypeCustomerValidations } from "@/models";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material"
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Grid, Switch } from "@mui/material"
 import { useState } from "react";
 
-const formFields: FormTypeCustomerModel = { name: '' }
+const formFields: FormTypeCustomerModel = { name: '', is_institution: false }
 
 const formValidations: FormTypeCustomerValidations = {
     name: [(value: any) => value.length >= 1, 'Debe ingresar el nombre'],
@@ -19,21 +19,24 @@ export const CreateTypeCustomer = (props: any) => {
     const { postCreateTypeCustomer, patchEditTypeCustomer } = useTypeCustomerStore();
 
     const [formSubmitted, setFormSubmitted] = useState(false);
-    const { name, onInputChange, isFormValid, nameValid, onResetForm } = useForm(item ?? formFields, formValidations);
+    const { name, is_institution, onInputChange, onSwitchChange, isFormValid, nameValid, onResetForm } = useForm(item ?? formFields, formValidations);
 
     const sendSubmit = (event: any) => {
         event.preventDefault();
         setFormSubmitted(true);
         if (!isFormValid) return;
         if (item == null) {
-            postCreateTypeCustomer({ name: name.trim() });
+            postCreateTypeCustomer(
+                {
+                    name: name.trim(),
+                    is_institution
+                });
         } else {
-            patchEditTypeCustomer(item.id, { name });
+            patchEditTypeCustomer(item.id, { name, is_institution });
         }
         handleClose();
         onResetForm();
     }
-
 
     return (
         <>
@@ -41,15 +44,31 @@ export const CreateTypeCustomer = (props: any) => {
                 <DialogTitle>{item == null ? 'Nuevo Tipo de Cliente' : `Tipo de cliente: ${item.name}`}</DialogTitle>
                 <form onSubmit={sendSubmit}>
                     <DialogContent sx={{ display: 'flex' }}>
-                        <ComponentInput
-                            type="text"
-                            label="Nombre"
-                            name="name"
-                            value={name}
-                            onChange={onInputChange}
-                            error={!!nameValid && formSubmitted}
-                            helperText={formSubmitted ? nameValid : ''}
-                        />
+                        <Grid container>
+                            <Grid item xs={12} sm={6} sx={{ padding: '5px' }}>
+                                <ComponentInput
+                                    type="text"
+                                    label="Nombre"
+                                    name="name"
+                                    value={name}
+                                    onChange={onInputChange}
+                                    error={!!nameValid && formSubmitted}
+                                    helperText={formSubmitted ? nameValid : ''}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6} sx={{ padding: '5px' }}>
+                                {/* onChange={(event) => setStatePlan(event.target.checked)} */}
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={is_institution}
+                                            onChange={(event) => onSwitchChange("is_institution", event.target.checked)}
+                                            name="institución" />
+                                    }
+                                    label="¿Pedir ingresar el nombre de la institución?"
+                                />
+                            </Grid>
+                        </Grid>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={() => {
