@@ -1,10 +1,12 @@
 import { ComponentButton } from '@/components';
 import { Add } from '@mui/icons-material';
-import { Stack, SvgIcon, Typography } from '@mui/material';
+import { Stack, SvgIcon, Typography, Box } from '@mui/material';
 import { useCallback, useState } from 'react';
 import { CreatePropertie, PropertieTable } from '.';
 import { PropertieModel } from '@/models';
 
+
+const SIDE_NAV_WIDTH = 100;
 
 
 export const PropertiesView = () => {
@@ -24,18 +26,31 @@ export const PropertiesView = () => {
 
     return (
         <>
-            <Stack
-                direction="row"
-                justifyContent="space-between"
+            <Box
+                sx={{position: 'sticky',
+                left: {
+                    lg: `${SIDE_NAV_WIDTH}px`
+                },
+                top: {
+                    lg: `calc((100%/4 / 25) * 2)`
+                },
+                width: {
+                    lg: `calc(100% - ${SIDE_NAV_WIDTH}px)`
+                },
+                zIndex: (theme) => theme.zIndex.appBar
+                }}
             >
-                <Stack spacing={1}>
-                    <Typography variant="h6">Inmuebles</Typography>
+                <Stack
+                    direction="row"
+                    justifyContent="space-between"
+                >
+                    <Typography variant="h6" sx={{paddingLeft: 2}}>Inmuebles</Typography>
+                    <ComponentButton
+                        text="Nuevo Inmueble"
+                        onClick={() => handleDialog(true)}
+                        startIcon={<SvgIcon fontSize="small"><Add /></SvgIcon>} />
                 </Stack>
-                <ComponentButton
-                    text="Nuevo Inmueble"
-                    onClick={() => handleDialog(true)}
-                    startIcon={<SvgIcon fontSize="small"><Add /></SvgIcon>} />
-            </Stack>
+            </Box>
             <PropertieTable
                 onEdit={(propertie) => {
                     setItemEdit(propertie);

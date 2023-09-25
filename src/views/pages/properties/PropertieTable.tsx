@@ -1,10 +1,11 @@
 import { ItemPaper } from "@/components";
 import { usePropertieStore } from "@/hooks";
 import { PropertieModel, RoomModel } from "@/models";
-import { Delete, Edit, Settings } from "@mui/icons-material";
-import { Grid, IconButton, Typography } from "@mui/material";
-import { RoomTable } from ".";
-import { useEffect } from "react";
+import { AddCircle, Delete, Edit } from "@mui/icons-material";
+import { Grid, IconButton, Typography, Box } from "@mui/material";
+import { useCallback, useEffect, useState } from "react";
+import noimage from "@/assets/images/no-image.webp";
+import { RoomTable, CreateRoom } from "./rooms";
 
 
 interface propertieTableProps {
@@ -21,6 +22,16 @@ export const PropertieTable = (props: propertieTableProps) => {
     } = props;
 
     const { properties = [], getPropertiesRooms } = usePropertieStore();
+    const [ openDialog, setopenDialog ] = useState(false);
+    const [ itemEdit, setItemEdit ] = useState<any>(null);
+    const [ change, setChange ] = useState<boolean>(true);
+
+    const handleDialog = useCallback((value: boolean) => {
+        setopenDialog(value)
+        if(!value) return setItemEdit(null)
+        setChange(value)
+    }, []);
+
     useEffect(() => {
         getPropertiesRooms();
     }, []);
@@ -30,47 +41,67 @@ export const PropertieTable = (props: propertieTableProps) => {
                 return (
                     <ItemPaper key={propertie.id} elevation={2}>
                         <Grid container>
-                            <Grid item xs={12} sm={3} sx={{ padding: '5px' }}>
+                            <Grid item xs={12} sm={3} sx={{ padding: '5px', textAlign: 'center' }}>
                                 <Typography sx={{ fontWeight: 'bold' }}>{propertie.name}</Typography>
-                                <img src={propertie.photo} alt="Descripción de la imagen" style={{ height: '180px', width: '170px', objectFit: 'cover', }} />
-                            </Grid>
-                            <Grid item xs={12} sm={stateSelect ? 9 : 8} sx={{ padding: '5px' }}>
+                                <img
+                                    src={propertie.photo}
+                                    alt="Descripción de la imagen"
+                                    style={{ height: '180px', width: '170px', objectFit: 'cover' }}
+                                    onError={(e: any) => e.target.src = noimage}
+                                />
                                 {
-                                    propertie.rooms != null &&
-                                    <RoomTable
-                                        rooms={propertie.rooms}
-                                        stateSelect={stateSelect}
-                                        itemSelect={itemSelect}
-                                    />
-                                }
-                            </Grid>
-                            {
-                                !stateSelect &&
-                                <Grid item xs={12} sm={1} sx={{ padding: '5px', display: 'flex', flexDirection: { xs: 'row', sm: 'column' } }}>
-                                    <Grid item xs={12} sm={4}>
-                                        <IconButton color="info">
-                                            <Settings />
-                                        </IconButton>
-                                    </Grid>
-                                    <Grid item xs={12} sm={4} >
+                                    !stateSelect &&
+                                    <Box sx={{ textAlign: 'center' }}>
                                         <IconButton
                                             color="success"
                                             onClick={() => onEdit!(propertie)}
                                         >
                                             <Edit />
                                         </IconButton>
-                                    </Grid>
-                                    <Grid item xs={12} sm={4} >
                                         <IconButton color="error">
-                                            <Delete />
+                                            {/* <Delete /> */}
                                         </IconButton>
-                                    </Grid>
-                                </Grid>
-                            }
+                                        <IconButton
+                                            color="warning"
+                                            onClick={() => {
+                                                setItemEdit({property: propertie.id})
+                                                handleDialog(true)}
+                                            }
+                                        >
+                                            <AddCircle />
+                                        </IconButton>
+                                    </Box>
+                                }
+                            </Grid>
+                            <Grid item xs={12} sm={9} sx={{ padding: '5px' }}>
+                                {
+                                    propertie.rooms != null &&
+                                    <RoomTable
+                                        rooms={propertie.rooms}
+                                        stateSelect={stateSelect}
+                                        itemSelect={itemSelect}
+                                        editItem={(room) => {
+                                            console.log(propertie)
+                                            setItemEdit({...room, property: propertie.id});
+                                            handleDialog(true);
+                                            setChange(false)
+                                        }}
+                                    />
+                                }
+                            </Grid>
                         </Grid>
                     </ItemPaper>
                 );
             })}
+            {
+                openDialog &&
+                <CreateRoom
+                    open={openDialog}
+                    handleClose={() => handleDialog(false)}
+                    property={itemEdit}
+                    change={change}
+                ></CreateRoom>
+            }
         </>
     )
 }
