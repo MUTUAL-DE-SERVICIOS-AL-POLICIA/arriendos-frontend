@@ -1,6 +1,7 @@
 import { PhotoCamera } from '@mui/icons-material';
 import { Card, CardMedia, IconButton } from '@mui/material';
 import { useRef } from 'react';
+import noimage from "@/assets/images/no-image.webp";
 
 export const ComponentImage = (props: any) => {
     const {
@@ -42,9 +43,9 @@ export const ComponentImage = (props: any) => {
             <Card
                 style={cardStyle}
                 onClick={() => fileInputRef.current?.click()}
-                sx={{ display: 'flex', justifyContent: 'center' }}
+                sx={{ display: 'flex', justifyContent: 'center', marginLeft: 5 }}
             >
-                <CardMedia component="img" src={fileImage} alt="No Image" />
+                <CardMedia component="img" src={fileImage} alt="Sin imágen" onError={(e: any) => e.target.src = noimage } />
                 <IconButton style={iconStyle}>
                     <PhotoCamera fontSize="small" />
                 </IconButton>

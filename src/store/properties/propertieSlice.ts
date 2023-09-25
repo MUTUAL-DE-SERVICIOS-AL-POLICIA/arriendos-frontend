@@ -21,9 +21,35 @@ export const propertieSlice = createSlice({
                 return e
             })]
         },
+
+        addRoom: (state, action) => {
+            state.properties = [...state.properties.map((e: PropertieModel) => {
+                if (e.id === action.payload.room.property) {
+                    e.rooms = [...e.rooms, action.payload.room]
+                }
+                return e;
+            })];
+        },
+
+        updateRoom: (state, action) => {
+
+            const propertyIndex = state.properties.findIndex((e) => e.id === action.payload.room.property)
+
+            if(propertyIndex !== -1) {
+                const updatedProperty = {...state.properties[propertyIndex]}
+
+                updatedProperty.rooms = updatedProperty.rooms.map((room) => {
+                    if(room.id === action.payload.room.id) {
+                        return {...room, ...action.payload.room}
+                    }
+                    return room
+                })
+                state.properties[propertyIndex] = updatedProperty;
+            }
+        },
     }
 });
 
 
 // Action creators are generated for each case reducer function
-export const { setProperties, addPropertie, updatePropertie } = propertieSlice.actions;
+export const { setProperties, addPropertie, updatePropertie, addRoom, updateRoom} = propertieSlice.actions;
