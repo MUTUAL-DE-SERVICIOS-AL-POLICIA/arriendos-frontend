@@ -11,7 +11,8 @@ function sameDay(d1: any, d2: any) {
     d1.getMonth() === d2.getMonth() &&
     d1.getDate() === d2.getDate();
 }
-export const CalendarComponent = ({ select }: { select: boolean }) => {
+export const CalendarComponent = ({ select, onSelect }: { select: boolean, onSelect: any }) => {
+// export const CalendarComponent = ({ select }: { select: boolean }) => {
   const { selectedProducts, setSelectedProduct, unsetSElectedProduct } = useSelectedProductStore();
   const [lastView, setLastView] = useState('month');
   const [screenHeight, setScreenHeight] = useState(window.innerHeight);
@@ -47,11 +48,16 @@ export const CalendarComponent = ({ select }: { select: boolean }) => {
     if (selectedDate < currentDate) return;
     console.log(slotInfo)
     if (selectedProducts.map((e: any) => e.start.getTime()).includes(slotInfo.start.getTime())) {
+      // desmarcar
+      onSelect(false)
       unsetSElectedProduct(slotInfo);
     } else {
+      // marcar
+      onSelect(true)
       setSelectedProduct(slotInfo);
     }
   };
+
   return (
     <Calendar
       culture='es'
@@ -59,7 +65,7 @@ export const CalendarComponent = ({ select }: { select: boolean }) => {
       defaultView={lastView}
       startAccessor="start"
       endAccessor="end"
-      style={{ height: `${screenHeight - 200}px` }}
+      style={{ height: `${screenHeight - 150}px` }}
       messages={getMessagesES()}
       dayPropGetter={(date: any) => ({
         className: calendarStyle(date),
