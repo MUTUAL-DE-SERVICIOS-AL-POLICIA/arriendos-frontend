@@ -24,6 +24,7 @@ const SliderCalendar = styled('div')`
 `;
 
 const SliderContent = styled('div')`
+  transition: widtH 0.5s ease-in;
   width: 0%;
 `;
 
@@ -86,19 +87,20 @@ export const RentalView = () => {
       <Container>
         <SliderCalendar style={{ width: numberSelected != 0 ? '70%' : '100%'}}>
             <ComponentSelect
-              label={room != null ? 'Ambiente' : ''}
+              label={null}
               labelChip={['name']}
               title={room != null ? room : 'Ambiente'}
               onPressed={() => handleModal(true)}
               error={false}
               helperText={''}
+              color="#ebfef8"
             />
             <CalendarComponent
               select={Object.keys(RoomSelection).length != 0}
               onSelect={ ( isSelected : boolean ) => toggleExpanded(isSelected)}
             />
-        </SliderCalendar >
-        <SliderContent>
+        </SliderCalendar>
+        <SliderContent style={{width: numberSelected != 0 ? '30%' : ''}}>
             <CartSelectedProduct />
         </SliderContent>
       </Container>

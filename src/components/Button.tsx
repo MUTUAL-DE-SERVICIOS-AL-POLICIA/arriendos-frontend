@@ -1,7 +1,7 @@
 import { Button } from '@mui/material'
 import { memo } from 'react'
 
-export const ComponentButton = memo(({ type, text, onClick, width, startIcon }: { type?: any, text: string, onClick?: any, width?: any, startIcon?: any }) => {
+export const ComponentButton = memo(({ type, text, onClick, width, startIcon, margin, height }: { type?: any, text: string, onClick?: any, width?: any, startIcon?: any, margin?: any, height?: any }) => {
     return (
         <Button
             type={type}
@@ -11,7 +11,7 @@ export const ComponentButton = memo(({ type, text, onClick, width, startIcon }: 
             disableRipple
             startIcon={startIcon}
             onClick={onClick}
-            sx={{ fontWeight: 'bold', margin: '8px', width: { width } }}
+            sx={{ fontWeight: 'bold', margin: { margin }, width: { width }, height: { height } }}
         >
             {text}
         </Button>

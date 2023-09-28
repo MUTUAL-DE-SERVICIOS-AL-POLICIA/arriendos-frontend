@@ -7,11 +7,11 @@
 
 html,
 body {
-  /* background-color: #f2f2f2; */
-  /* color: white; */
+  background-color: #f7f4f4;
+  /* background-color: #f4f8f4; */
+  /* background-color: #e7f2ef; */
+  /* background-color: #ecf5f2; */
   font-family: 'poppins';
-  /* font-size: 1.3rem; */
-  /* padding: 70px; */
 }
 
 button {

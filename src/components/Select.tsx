@@ -1,6 +1,6 @@
 
 import { useSelectorStore } from '@/hooks';
-import { Button, Chip, Typography } from '@mui/material';
+import { Button, Chip, Color, Typography } from '@mui/material';
 import React from 'react';
 import { useSelector } from 'react-redux';
 
@@ -14,9 +14,12 @@ export const ComponentSelect = React.memo((
         select = 'id',
         error = false,
         helperText,
+        name,
+        value,
+        color
     }:
         {
-            label: string,
+            label: string | any,
             labelChip: any,
             title: string,
             onPressed: any,
@@ -24,6 +27,9 @@ export const ComponentSelect = React.memo((
             select?: string,
             error?: boolean,
             helperText?: string,
+            name?: string,
+            value?: any,
+            color?: any
         }) => {
     const { deselectOne } = useSelectorStore();
     const { selection = [] } = useSelector((state: any) => state.selections);
@@ -34,7 +40,7 @@ export const ComponentSelect = React.memo((
     return (
         <>
             <>
-                <div style={{ position: 'relative', paddingTop: '5px' }}>
+                <div style={{ position: 'relative', paddingTop: '5px', marginBottom: '10px' }}>
                     <span
                         style={{
                             position: 'absolute',
@@ -42,7 +48,6 @@ export const ComponentSelect = React.memo((
                             left: 2,
                             backgroundColor: 'white',
                             padding: '2px',
-                            fontSize: '0.8rem',
                             zIndex: 1,
                         }}
                     >
@@ -54,11 +59,12 @@ export const ComponentSelect = React.memo((
                         onClick={onPressed}
                         style={{
                             width: '100%',
-                            paddingTop: '12px',
-                            paddingBottom: '12px',
+                            paddingTop: '5px',
+                            paddingBottom: '5px',
                             color: 'black',
                             textTransform: 'none',
                             zIndex: 0,
+                            backgroundColor: color
                         }}
                     >
                         {title}

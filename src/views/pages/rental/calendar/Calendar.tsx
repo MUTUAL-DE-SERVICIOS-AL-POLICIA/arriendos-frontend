@@ -6,6 +6,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { useSelectedProductStore } from "@/hooks";
 
 import './styles.css';
+import { Paper } from "@mui/material";
 function sameDay(d1: any, d2: any) {
   return d1.getFullYear() === d2.getFullYear() &&
     d1.getMonth() === d2.getMonth() &&
@@ -59,23 +60,26 @@ export const CalendarComponent = ({ select, onSelect }: { select: boolean, onSel
   };
 
   return (
-    <Calendar
-      culture='es'
-      localizer={localizer}
-      defaultView={lastView}
-      startAccessor="start"
-      endAccessor="end"
-      style={{ height: `${screenHeight - 150}px` }}
-      messages={getMessagesES()}
-      dayPropGetter={(date: any) => ({
-        className: calendarStyle(date),
-      })}
-      components={{
-        event: CalendarEvent
-      }}
-      onView={setLastView}
-      onSelectSlot={onSelectSlot}
-      selectable={select}
-    />
+    <Paper sx={{ padding: '15px', borderRadius: '10px'}}>
+      <Calendar
+        culture='es'
+        localizer={localizer}
+        defaultView={lastView}
+        startAccessor="start"
+        endAccessor="end"
+        style={{ height: `${screenHeight - 150}px`, cursor: 'pointer' }}
+        messages={getMessagesES()}
+        dayPropGetter={(date: any) => ({
+          className: calendarStyle(date),
+        })}
+        components={{
+          event: CalendarEvent
+        }}
+        onView={setLastView}
+        onSelectSlot={onSelectSlot}
+        selectable={select}
+      />
+
+    </Paper>
   )
 }

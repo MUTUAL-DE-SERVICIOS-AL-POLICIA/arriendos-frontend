@@ -1,7 +1,11 @@
 .selected-day {
-    background-color: #88CBC2; /* Cambia el color de fondo del día seleccionado */
-    color: white; /* Cambia el color del texto del día seleccionado */
-    font-weight: bold; /* Cambia la fuente en negrita para el día seleccionado */
-    /* Agrega otros estilos personalizados según tus preferencias */
-  }
-  
+  background-color: #84afa9;
+  font-weight: bold;
+  transition: transform 50ms, box-shadow 50ms;
+  border-radius: 8px;
+}
+.selected-day:hover {
+  background-color: #88CBC2;
+  transition-duration: initial;
+  transform: scale(0.94);
+}
