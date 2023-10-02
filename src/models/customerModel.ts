@@ -1,30 +1,24 @@
-import { TypeCustomerModel } from ".";
+import { ContactModel, TypeCustomerModel } from ".";
 
 /* CUSTOMER MODEL */
 export interface CustomerModel {
     id: number;
-    ci: string;
-    name: string;
-    last_name: string;
-    email: string;
-    phone: number;
-    customer_type: TypeCustomerModel
+    customer_type: TypeCustomerModel;
+    contacts: ContactModel[];
+    institution_name: string | null;
+    nit: string | null;
 }
 
 /* FORM CUSTOMER MODEL */
 export interface FormCustomerModel {
-    name: string;
-    lastName: string;
-    ci: string;
-    phone: string;
     typeCustomer: TypeCustomerModel | null;
+    name_institution: string;
+    nit_institution: string;
 }
 
 /*FORM CUSTOMER MODEL VALIDATIONS */
 export interface FormCustomerValidations {
-    name: [(value: string) => boolean, string];
-    lastName: [(value: string) => boolean, string];
-    ci: [(value: string) => boolean, string];
-    phone: [(value: string) => boolean, string];
     typeCustomer: [(value: TypeCustomerModel) => boolean, string];
+    name_institution: [(value: string) => boolean, string];
+    nit_institution: [(value: string) => boolean, string];
 }

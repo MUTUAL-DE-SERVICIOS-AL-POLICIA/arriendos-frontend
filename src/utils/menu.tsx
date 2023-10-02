@@ -1,4 +1,4 @@
-import { Assessment, Bento, Group, Home, Receipt, Wifi } from "@mui/icons-material"
+import { Bento, Group, Home, Receipt } from "@mui/icons-material"
 
 export const menu = () => {
     return [
@@ -31,18 +31,18 @@ export const menu = () => {
                 }
             ]
         },
-        {
-            title: "Gestión de Planes",
-            permission: "show-rent",
-            group: [
-                {
-                    path: "/rent/hallsView",
-                    title: "Planes",
-                    icon: <Wifi />,
-                    permission: "show-halls"
-                }
-            ]
-        },
+        // {
+        //     title: "Gestión de Planes",
+        //     permission: "show-rent",
+        //     group: [
+        //         {
+        //             path: "/rent/hallsView",
+        //             title: "Planes",
+        //             icon: <Wifi />,
+        //             permission: "show-halls"
+        //         }
+        //     ]
+        // },
         {
             title: "Gestión de Clientes",
             permission: "show-rent",
@@ -55,17 +55,17 @@ export const menu = () => {
                 },
             ]
         },
-        {
-            title: "Reportes",
-            permission: "show-rent",
-            group: [
-                {
-                    path: "/rent/hallsView",
-                    title: "Reportes",
-                    icon: <Assessment />,
-                    permission: "show-halls"
-                }
-            ]
-        },
+        // {
+        //     title: "Reportes",
+        //     permission: "show-rent",
+        //     group: [
+        //         {
+        //             path: "/rent/hallsView",
+        //             title: "Reportes",
+        //             icon: <Assessment />,
+        //             permission: "show-halls"
+        //         }
+        //     ]
+        // },
     ]
 }
