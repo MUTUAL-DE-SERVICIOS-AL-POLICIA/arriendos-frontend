@@ -1,4 +1,4 @@
-import { coffeApiKevin, coffeApiLeandro } from "@/services";
+import { coffeApiLeandro } from "@/services";
 import { refreshRate, setRates } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
@@ -10,7 +10,7 @@ export const useRateStore = () => {
     const getRates = async ({ page, limit }: { page: number, limit: number }) => {
         try {
             console.log('OBTENIENDO TODAS LAS TARIFAS')
-            const { data } = await coffeApiKevin.get(`/requirements/allrates/?page=${page}&limit=${limit}`);
+            const { data } = await coffeApiLeandro.get(`/requirements/allrates/?page=${page}&limit=${limit}`);
             console.log(data)
             dispatch(setRates({ rates: data.rates }));
             return data.total;
@@ -23,7 +23,7 @@ export const useRateStore = () => {
         try {
             console.log('CREANDO UNA NUEVA TARIFA');
             console.log(body)
-            const { data } = await coffeApiKevin.post(`/product/rates/`, body);
+            const { data } = await coffeApiLeandro.post(`/product/rates/`, body);
             console.log(data)
             dispatch(refreshRate());
             Swal.fire('Tarifa creado correctamente', '', 'success');
@@ -32,11 +32,11 @@ export const useRateStore = () => {
         }
     }
 
-    const patchEditRate = async (id: number, body: object) => {
+    const patchUpdateRate = async (id: number, body: object) => {
         try {
-            console.log('EDITANDO UNA TARIFA');
+            console.log('EDITANDO UNA TARIFA CON SU ASIGNACIÓN');
             console.log(body)
-            const { data } = await coffeApiKevin.patch(`/product/rates/${id}`, body);
+            const { data } = await coffeApiLeandro.patch(`/requirements/rates/${id}`, body);
             console.log(data)
             dispatch(refreshRate());
             Swal.fire('Tarifa editado correctamente', '', 'success');
@@ -53,6 +53,6 @@ export const useRateStore = () => {
         //* Métodos
         getRates,
         postCreateRate,
-        patchEditRate
+        patchUpdateRate,
     }
 }
