@@ -6,37 +6,37 @@ import { UserTable, CreateUser } from ".";
 import { useSelectorStore } from "@/hooks";
 
 export const UsersView = () => {
-    const [openDialog, setopenDialog] = useState(false);
+  const [openDialog, setopenDialog] = useState(false);
 
-    const { clearSelect } = useSelectorStore();
+  const { clearSelect } = useSelectorStore();
 
 
-    /*CONTROLADOR DEL DIALOG PARA CREAR O EDITAR */
-    const handleDialog = useCallback((value: any) => {
-        if (value) clearSelect();
-        setopenDialog(value);
-    }, []);
+  /*CONTROLADOR DEL DIALOG PARA CREAR O EDITAR */
+  const handleDialog = useCallback((value: boolean) => {
+    if (value) clearSelect();
+    setopenDialog(value);
+  }, []);
 
-    return (
-        <>
-            <Stack
-                direction="row"
-                justifyContent="space-between"
-            >
-                <Typography variant="h6">Usuarios</Typography>
-                <ComponentButton
-                    text="Nuevo usuario"
-                    onClick={() => handleDialog(true)}
-                    startIcon={<SvgIcon fontSize="small"><Add /></SvgIcon>} />
-            </Stack>
-            <UserTable />
-            {
-                openDialog &&
-                <CreateUser
-                    open={openDialog}
-                    handleClose={() => handleDialog(false)}
-                />
-            }
-        </>
-    )
+  return (
+    <>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+      >
+        <Typography variant="h6">Usuarios</Typography>
+        <ComponentButton
+          text="Nuevo usuario"
+          onClick={() => handleDialog(true)}
+          startIcon={<SvgIcon fontSize="small"><Add /></SvgIcon>} />
+      </Stack>
+      <UserTable />
+      {
+        openDialog &&
+        <CreateUser
+          open={openDialog}
+          handleClose={() => handleDialog(false)}
+        />
+      }
+    </>
+  )
 }
