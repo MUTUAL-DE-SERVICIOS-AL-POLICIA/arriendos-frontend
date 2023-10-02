@@ -1,3 +1,5 @@
+import { UserLdapModel } from "./userLdapModel";
+
 /* USER MODEL */
 export interface UserModel {
     id: number;
@@ -5,14 +7,15 @@ export interface UserModel {
     first_name: string;
     last_name: string;
     email: string;
+    is_active: boolean;
 }
 
 /* FORM USER MODEL */
 export interface FormUserModel {
-    username: string;
+    user: UserLdapModel | null;
 }
 
 /*FORM USER MODEL VALIDATIONS */
 export interface FormUserValidations {
-    username: [(value: string) => boolean, string];
+    user: [(value: UserLdapModel) => boolean, string];
 }

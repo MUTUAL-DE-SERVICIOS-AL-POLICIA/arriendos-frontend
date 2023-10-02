@@ -1,7 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { coffeApiKevin } from '@/services';
+import { coffeApiKevin, coffeApiLeandro } from '@/services';
 import { setUsers, refreshUsers, setUsersLdap } from '@/store';
 import Swal from 'sweetalert2';
+import { UserModel } from '@/models';
 
 export const useUserStore = () => {
     const { usersLDAP, users, flag } = useSelector((state: any) => state.users);
@@ -10,7 +11,7 @@ export const useUserStore = () => {
     const getUsers = async ({ page, limit }: { page: number, limit: number }) => {
         try {
             console.log('OBTENIENDO TODOS LOS USUARIOS')
-            const { data } = await coffeApiKevin.get(`/users/?page=${page}&limit=${limit}`)
+            const { data } = await coffeApiLeandro.get(`/users/?page=${page}&limit=${limit}`)
             console.log(data)
             dispatch(setUsers({ users: data.users }));
             return data.total
@@ -22,7 +23,7 @@ export const useUserStore = () => {
     const getUsersLdap = async () => {
         try {
             console.log('OBTENIENDO TODOS LOS USUARIOS EN LDAP');
-            const { data } = await coffeApiKevin.get('/login/users_ldap/');
+            const { data } = await coffeApiLeandro.get('/login/users_ldap/');
             console.log(data)
             dispatch(setUsersLdap({ usersLDAP: data.users }));
             return data;
@@ -34,7 +35,7 @@ export const useUserStore = () => {
     const postCreateUser = async (body: object) => {
         try {
             console.log('CREANDO UN NUEVO USUARIO');
-            const { data } = await coffeApiKevin.post(`/users/`, body);
+            const { data } = await coffeApiLeandro.post(`/users/`, body);
             console.log(data)
             dispatch(refreshUsers());
             Swal.fire('Usuario creado correctamente', '', 'success');
@@ -43,16 +44,35 @@ export const useUserStore = () => {
         }
     }
 
-    const editUser = async (id: number, body: object) => {
-        try {
-            console.log('EDITANDO UN USUARIO');
-            const { data } = await coffeApiKevin.patch(`/users/${id}`, body);
-            console.log(data)
-            dispatch(refreshUsers());
-            Swal.fire('Usuario editado correctamente', '', 'success');
-        } catch (error: any) {
-            Swal.fire('Oops ocurrio algo', error.response.data.detail, 'error');
-        }
+    const toggleActivation = async (user: UserModel) => {
+
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: `Estas ${user.is_active ? 'desactivando' : 'activando'} a ${user.username}`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '¡Sí, estoy seguro!',
+            cancelButtonText: 'Cancelar'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    console.log('ALTERNANDO ACTIVACIÓN DE UN USUARIO')
+                    const { data } = await coffeApiLeandro.delete(`/users/state/${user.id}`)
+                    console.log(data)
+                    dispatch(refreshUsers());
+                    Swal.fire(
+                        `${user.is_active ? '¡Desactivado!' : '¡Activado!'}`,
+                        `${user.username} fue ${user.is_active ? 'desactivado' : 'activado'}`,
+                        'success'
+                    )
+                } catch (error: any) {
+                    throw Swal.fire('Oops ocurrio algo', error.response.data.detail, 'error');
+                }
+            }
+        })
+
     }
 
     return {
@@ -64,7 +84,7 @@ export const useUserStore = () => {
         getUsers,
         getUsersLdap,
         postCreateUser,
-        editUser
+        toggleActivation,
     }
 
 }
