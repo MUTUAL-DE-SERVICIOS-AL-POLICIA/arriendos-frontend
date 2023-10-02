@@ -51,7 +51,10 @@ export const ComponentInput = memo((
                 padding: '2px',
                 margin: '4px',
                 '& label.Mui-focused': {
-                    color: 'indigo',
+                    color: 'black',
+                },
+                '& label:not(.Mui-focused)': {
+                    color: 'black', // Cambia el color del texto del Label a negro cuando no está enfocado
                 },
                 '& .MuiOutlinedInput-root': {
                     borderRadius: '10px',

@@ -6,3 +6,6 @@ export * from './roomModel';
 export * from './rateModel';
 export * from './requirementModel';
 export * from './rentalModel';
+export * from './productModel';
+export * from './hourRangeModel';
+export * from './contactModel';
