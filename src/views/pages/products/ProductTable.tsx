@@ -1,149 +1,85 @@
-import { IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
-import products from "./products.json";
+import { IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 import { DeleteOutline, EditOutlined } from "@mui/icons-material";
-import { ComponentInput } from "@/components";
-import { useCustomerStore, useSelectorStore } from "@/hooks";
-export const ProductTable = (props: any) => {
-    const {
-        stateSelect = false,
-        stateMultiple = false,
-        handleEdit,
-        onDelete,
-        itemSelect,
-        limitInit = 10
-    } = props;
-    /*BUSCADOR */
-    const [query, setQuery] = useState<string>('');
-    const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
+import { ComponentSearch, ComponentTablePagination } from "@/components";
+import { useProductStore } from "@/hooks";
+import { ProductModel } from "@/models";
 
-    const handleInputChange = (event: any) => {
-        const inputQuery = event.target.value;
-        setQuery(inputQuery);
+interface tableProps {
+  handleEdit: (product: ProductModel) => void;
+  limitInit?: number;
+}
 
-        // Limpiamos el timeout anterior si existe
-        if (typingTimeout) clearTimeout(typingTimeout);
+export const ProductTable = (props: tableProps) => {
+  const {
+    handleEdit,
+    limitInit = 10
+  } = props;
 
-        // Configuramos un nuevo timeout para realizar la búsqueda después de 2 segundos
-        const newTypingTimeout = setTimeout(() => {
-            // Aquí podrías llamar a tu función de búsqueda con el valor actual de 'query'
-            console.log('Realizar búsqueda con:', inputQuery);
-        }, 1500);
+  /*DATA */
+  const { products, flag, getProducts } = useProductStore();
 
-        setTypingTimeout(newTypingTimeout);
-    };
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(0);
+  const [limit, setLimit] = useState(limitInit)
 
-    /*DATA */
-    const { selections = [], selectOne, deselectOne } = useSelectorStore();
-    const { customers, flag, getCustomers } = useCustomerStore();
+  useEffect(() => {//escucha si "page", "limit" o "flag" se modifico
+    getProducts({ page, limit }).then((total) => setTotal(total))
+  }, [page, limit, flag]);
 
-
-    const [total, setTotal] = useState(0);
-    const [page, setPage] = useState(0);
-    const [limit, setLimit] = useState(limitInit)
-
-    useEffect(() => {//escucha si "page", "limit" o "flag" se modifico
-        // getCustomers({ page, limit }).then((total) => setTotal(total))
-    }, [page, limit, flag]);
-
-    /* CONTROLADORES DE LA PAGINACIÓN */
-    const handlePageChange = useCallback((_: any, value: number) => {//cuando se cambia la pagina < o >
-        setPage(value)
-    }, []);
-
-    const handleRowsPerPageChange = useCallback((event: any) => {//cuando se cambia el limite 
-        setLimit(event.target.value)
-    }, []);
-
-
-    return (
-        <Stack sx={{ paddingRight: '10px' }}>
-            <ComponentInput
-                type="text"
-                label="Buscar Producto"
-                name="search"
-                value={query}
-                onChange={handleInputChange}
-            />
-            <TableContainer>
-                <Table sx={{ minWidth: 350 }} size="small">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Inmueble</TableCell>
-                            <TableCell>Ambiente</TableCell>
-                            <TableCell>Tarifa</TableCell>
-                            <TableCell>Rango Hrs</TableCell>
-                            <TableCell>Precio</TableCell>
-                            <TableCell>Acciones</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {products.products.map((product: any) => {
-                            const isSelected = selections.includes(product.id);
-                            return (
-                                <TableRow
-                                    hover
-                                    key={product.id}
-                                >
-                                    {/* {
-                                        stateSelect && <TableCell padding="checkbox">
-                                            <Checkbox
-                                                checked={isSelected}
-                                                onChange={(value) => {
-                                                    if (stateMultiple) {
-                                                        if (value.target.checked) {
-                                                            console.log(product)
-                                                            selectOne(product.id);
-                                                        } else {
-                                                            deselectOne(product.id);
-                                                        }
-                                                    } else {
-                                                        itemSelect(product)
-                                                    }
-                                                }}
-                                            />
-                                        </TableCell>
-                                    } */}
-                                    <TableCell>{product.room.propertie.name}</TableCell>
-                                    <TableCell>{product.room.name}</TableCell>
-                                    <TableCell>{product.rate.name}</TableCell>
-                                    <TableCell>{product.range.range}</TableCell>
-                                    <TableCell>{product.price}</TableCell>
-                                    <TableCell>
-                                        <Stack
-                                            alignItems="center"
-                                            direction="row"
-                                            spacing={2}
-                                        >
-                                            <IconButton
-                                                onClick={() => handleEdit(product)}
-                                            >
-                                                <EditOutlined color="info" />
-                                            </IconButton>
-                                            <IconButton
-                                                onClick={() => onDelete(product.id)}
-                                            >
-                                                <DeleteOutline color="error" />
-                                            </IconButton>
-                                        </Stack>
-                                    </TableCell>
-                                </TableRow>
-                            );
-                        })}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <TablePagination
-                component="div"
-                count={total}
-                onPageChange={handlePageChange}
-                onRowsPerPageChange={handleRowsPerPageChange}
-                page={page}
-                rowsPerPage={limit}
-                rowsPerPageOptions={[5, 10, 25]}
-                labelRowsPerPage='Filas por página:'
-                labelDisplayedRows={({ from, to, count }: { from: any, to: any, count: any }) => `${from}-${to} de ${count}`}
-            />
-        </Stack>
-    );
+  return (
+    <Stack>
+      <ComponentSearch
+        title="Buscar Producto"
+      />
+      <TableContainer>
+        <Table sx={{ minWidth: 350 }} size="small">
+          <TableHead >
+            <TableRow sx={{ backgroundColor: '#E2F6F0' }}>
+              <TableCell sx={{ fontWeight: 'bold' }}>Inmueble</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Ambiente</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Tarifa</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Rango Hrs</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Días</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Precio</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Acciones</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {products.map((product: ProductModel) => (
+              <TableRow key={product.id}>
+                <TableCell>{product.room.property.name}</TableCell>
+                <TableCell>{product.room.name}</TableCell>
+                <TableCell>{product.rate.name}</TableCell>
+                <TableCell>{product.hour_range.name}</TableCell>
+                <TableCell>{product.day.map((day, index) => (<Typography key={index}>- {day}</Typography>))}</TableCell>
+                <TableCell>{product.active_price.mount}</TableCell>
+                <TableCell>
+                  <Stack
+                    alignItems="center"
+                    direction="row"
+                    spacing={2}
+                  >
+                    <IconButton onClick={() => handleEdit(product)}>
+                      <EditOutlined color="info" />
+                    </IconButton>
+                    <IconButton onClick={() => { }}>
+                      <DeleteOutline color="error" />
+                    </IconButton>
+                  </Stack>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <ComponentTablePagination
+        total={total}
+        onPageChange={(value) => setPage(value)}
+        onRowsPerPageChange={(value) => setLimit(value)}
+        page={page}
+        limit={limit}
+      />
+    </Stack>
+  );
 }
