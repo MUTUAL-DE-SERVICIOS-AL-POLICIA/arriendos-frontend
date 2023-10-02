@@ -1,133 +1,112 @@
-import { SeverityPill } from "@/components";
+import { ComponentSearch, ComponentTablePagination, SeverityPill } from "@/components";
 import { useSelectorStore, useTypeCustomerStore } from "@/hooks";
 import { TypeCustomerModel } from "@/models";
 import { DeleteOutline, EditOutlined } from "@mui/icons-material";
-import { Checkbox, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { Checkbox, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { useEffect, useState } from "react";
 
-export const TypeCustomerTable = (props: any) => {
-    const {
-        stateSelect = false,
-        stateMultiple,
-        handleEdit,
-        onDelete,
-        itemSelect,
-        limitInit = 10
-    } = props;
+interface tableProps {
+  handleEdit?: (typeCustomer: TypeCustomerModel) => void;
+  limitInit?: number;
+  stateSelect?: boolean;
+  itemSelect?: (typeCustomer: TypeCustomerModel) => void;
+  stateMultiple?: boolean
+}
 
-    const { selections = [], selectOne, deselectOne, deselectAll } = useSelectorStore();
-    const { typesCustomers, flag, getTypesCustomers } = useTypeCustomerStore();
+export const TypeCustomerTable = (props: tableProps) => {
+  const {
+    stateSelect = false,
+    stateMultiple,
+    handleEdit,
+    itemSelect,
+    limitInit = 10
+  } = props;
 
-
-    const [total, setTotal] = useState(0);
-    const [page, setPage] = useState(0);
-    const [limit, setLimit] = useState(limitInit)
-
-
-    useEffect(() => {//escucha si "page", "limit" o "flag" se modifico
-        getTypesCustomers({ page, limit }).then((total) => setTotal(total))
-    }, [page, limit, flag]);
-
-    /* CONTROLADORES DE LA PAGINACIÓN */
-    const handlePageChange = useCallback((_: any, value: number) => {//cuando se cambia la pagina < o >
-        setPage(value)
-    }, []);
-
-    const handleRowsPerPageChange = useCallback((event: any) => {//cuando se cambia el limite 
-        setLimit(event.target.value)
-    }, []);
+  const { selections = [], selectOne, deselectOne, deselectAll } = useSelectorStore();
+  const { typesCustomers, flag, getTypesCustomers } = useTypeCustomerStore();
 
 
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(0);
+  const [limit, setLimit] = useState(limitInit)
 
-    return (
 
-        total != undefined ?
-            <Stack sx={{ paddingRight: '10px' }}>
-                <TableContainer>
-                    <Table sx={{ minWidth: 350 }} size="small">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Nombre</TableCell>
-                                <TableCell>Institución</TableCell>
-                                {
-                                    !stateSelect && <TableCell>Acciones</TableCell>
-                                }
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {typesCustomers.map((typeCustomer: TypeCustomerModel) => {
-                                // console.log(selections)
-                                const isSelected = selections.includes(typeCustomer.id);
-                                const isInstitution = typeCustomer.is_institution;
-                                return (
-                                    <TableRow
-                                        hover
-                                        key={typeCustomer.id}
-                                    >
-                                        {
-                                            stateSelect && <TableCell padding="checkbox">
-                                                <Checkbox
-                                                    checked={isSelected}
-                                                    onChange={(value) => {
-                                                        if (value.target.checked) {
-                                                            deselectAll(typesCustomers.map((e: any) => e.id));
-                                                            selectOne(typeCustomer.id);
-                                                            itemSelect(typeCustomer);
-                                                        } else {
-                                                            deselectOne(typeCustomer.id);
-                                                        }
-                                                    }}
-                                                />
-                                            </TableCell>
-                                        }
-                                        <TableCell>{typeCustomer.name}</TableCell>
-                                        <TableCell>
-                                            <SeverityPill color={isInstitution ? 'success' : 'error'}>
-                                                {isInstitution ? 'SI' : 'No'}
-                                            </SeverityPill>
-                                        </TableCell>
-                                        {
-                                            !stateSelect && <TableCell align="right">
-                                                <Stack
-                                                    alignItems="center"
-                                                    direction="row"
-                                                    spacing={2}
-                                                >
-                                                    <IconButton
-                                                        onClick={() => handleEdit(typeCustomer)}
-                                                    >
-                                                        <EditOutlined color="info" />
-                                                    </IconButton>
-                                                    <IconButton
-                                                        onClick={() => onDelete(typeCustomer.id)}
-                                                    >
-                                                        <DeleteOutline color="error" />
-                                                    </IconButton>
-                                                </Stack>
-                                            </TableCell>
-                                        }
+  useEffect(() => {//escucha si "page", "limit" o "flag" se modifico
+    getTypesCustomers({ page, limit }).then((total) => setTotal(total))
+  }, [page, limit, flag]);
 
-                                    </TableRow>
-                                );
-                            })}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <TablePagination
-                    component="div"
-                    count={total}
-                    onPageChange={handlePageChange}
-                    onRowsPerPageChange={handleRowsPerPageChange}
-                    page={page}
-                    rowsPerPage={limit}
-                    rowsPerPageOptions={[5, 10, 25]}
-                    labelRowsPerPage='Filas por página:'
-                    labelDisplayedRows={({ from, to, count }: { from: any, to: any, count: any }) => `${from}-${to} de ${count}`}
-                    SelectProps={{
-                        native: true,
-                    }}
-                />
-            </Stack> :
-            <></>
-    );
+
+  return (
+    <Stack sx={{ paddingRight: '10px' }}>
+      <ComponentSearch
+        title="Buscar Tipo de cliente"
+      />
+      <TableContainer>
+        <Table sx={{ minWidth: 350 }} size="small">
+          <TableHead>
+            <TableRow sx={{ backgroundColor: '#E2F6F0' }}>
+              <TableCell sx={{ fontWeight: 'bold' }}>Nombre</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Institución</TableCell>
+              {!stateSelect && <TableCell sx={{ fontWeight: 'bold' }}>Acciones</TableCell>}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {typesCustomers.map((typeCustomer: TypeCustomerModel) => {
+              const isSelected = selections.includes(`${typeCustomer.id}typeCustomer`);
+              const isInstitution = typeCustomer.is_institution;
+              return (
+                <TableRow key={typeCustomer.id} >
+                  {
+                    stateSelect && <TableCell padding="checkbox">
+                      <Checkbox
+                        checked={isSelected}
+                        onChange={(value) => {
+                          if (value.target.checked) {
+                            if (!stateMultiple) deselectAll(typesCustomers.map((e: TypeCustomerModel) => `${e.id}typeCustomer`));
+                            selectOne(`${typeCustomer.id}typeCustomer`);
+                            itemSelect!(typeCustomer);
+                          } else {
+                            deselectOne(`${typeCustomer.id}typeCustomer`);
+                          }
+                        }}
+                      />
+                    </TableCell>
+                  }
+                  <TableCell>{typeCustomer.name}</TableCell>
+                  <TableCell>
+                    <SeverityPill color={isInstitution ? 'info' : 'warning'}>
+                      {isInstitution ? 'SI es institución' : 'No es institución'}
+                    </SeverityPill>
+                  </TableCell>
+                  {
+                    !stateSelect && <TableCell align="right">
+                      <Stack
+                        alignItems="center"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <IconButton onClick={() => handleEdit!(typeCustomer)} >
+                          <EditOutlined color="info" />
+                        </IconButton>
+                        <IconButton onClick={() => { }} >
+                          <DeleteOutline color="error" />
+                        </IconButton>
+                      </Stack>
+                    </TableCell>
+                  }
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <ComponentTablePagination
+        total={total}
+        onPageChange={(value) => setPage(value)}
+        onRowsPerPageChange={(value) => setLimit(value)}
+        page={page}
+        limit={limit}
+      />
+    </Stack>
+  );
 }
