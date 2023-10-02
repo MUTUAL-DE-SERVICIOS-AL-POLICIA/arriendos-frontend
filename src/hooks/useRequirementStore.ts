@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { coffeApiKevin } from '@/services';
+import { coffeApiLeandro } from '@/services';
 import { setRequirements, refreshRequirement } from '@/store';
 import Swal from 'sweetalert2';
 
@@ -9,7 +9,7 @@ export const useRequirementStore = () => {
 
     const getRequirements = async ({ page, limit }: { page: number, limit: number }) => {
         console.log('OBTENIENDO TODOS LOS REQUISITOS')
-        const { data } = await coffeApiKevin.get(`/plans/requirements/?page=${page}&limit=${limit}`);
+        const { data } = await coffeApiLeandro.get(`/plans/requirements/?page=${page}&limit=${limit}`);
         console.log(data)
         dispatch(setRequirements({ requirements: data.requirements }));
         return data.total
@@ -19,7 +19,7 @@ export const useRequirementStore = () => {
         try {
             console.log('CREANDO UN NUEVO REQUISITO');
             console.log(body)
-            const { data } = await coffeApiKevin.post(`/plans/requirements/`, body);
+            const { data } = await coffeApiLeandro.post(`/plans/requirements/`, body);
             console.log(data)
             dispatch(refreshRequirement());
             Swal.fire('Requisito creado correctamente', '', 'success');
@@ -31,7 +31,7 @@ export const useRequirementStore = () => {
     const patchEditRequirement = async (id: number, body: object) => {
         try {
             console.log('EDITANDO REQUISITO');
-            const { data } = await coffeApiKevin.patch(`/customers/${id}`, body);
+            const { data } = await coffeApiLeandro.patch(`/plans/requirements/${id}`, body);
             console.log(data)
             dispatch(refreshRequirement());
             Swal.fire('Requisito editado correctamente', '', 'success');

@@ -87,8 +87,8 @@ export const RentalView = () => {
       <Container>
         <SliderCalendar style={{ width: numberSelected != 0 ? '70%' : '100%'}}>
             <ComponentSelect
-              label={null}
-              labelChip={['name']}
+              // label={null}
+              // labelChip={['name']}
               title={room != null ? room : 'Ambiente'}
               onPressed={() => handleModal(true)}
               error={false}

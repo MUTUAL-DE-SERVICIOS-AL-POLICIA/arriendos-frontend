@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 export const useForm = (initialForm: any = {}, formValidations: any = {}) => {
 
-    const [formState, setFormState] = useState(initialForm);
+    const [formState, setFormState] = useState({ ...initialForm });
     const [formValidation, setFormValidation] = useState<string | any>({});
 
     useEffect(() => {
@@ -10,7 +10,7 @@ export const useForm = (initialForm: any = {}, formValidations: any = {}) => {
     }, [formState])
 
     useEffect(() => {
-        setFormState(initialForm);
+        setFormState({ ...initialForm });
     }, [initialForm])
 
 
@@ -41,6 +41,12 @@ export const useForm = (initialForm: any = {}, formValidations: any = {}) => {
         })
     }
 
+    const isSelectChange = (name: string, text: string) => {
+        setFormState({
+            ...formState,
+            [name]: text
+        })
+    }
     const onFileChange = (name: string, file: File) => {
         setFormState({
             ...formState,
@@ -54,6 +60,21 @@ export const useForm = (initialForm: any = {}, formValidations: any = {}) => {
             [name]: state
         })
     }
+
+    const onArrayChange = (name: string, state: Array<any>) => {
+        setFormState({
+            ...formState,
+            [name]: state
+        })
+    }
+
+    const onValueChange = (name: string, state: any) => {
+        setFormState({
+            ...formState,
+            [name]: state
+        })
+    }
+
 
 
     const onResetForm = () => {
@@ -78,8 +99,11 @@ export const useForm = (initialForm: any = {}, formValidations: any = {}) => {
         ...formState,
         formState,
         onInputChange,
+        isSelectChange,
         onFileChange,
         onSwitchChange,
+        onArrayChange,
+        onValueChange,
         onResetForm,
 
         ...formValidation,

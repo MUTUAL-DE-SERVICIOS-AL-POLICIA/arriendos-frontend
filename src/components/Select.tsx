@@ -2,12 +2,10 @@
 import { useSelectorStore } from '@/hooks';
 import { Button, Chip, Color, Typography } from '@mui/material';
 import React from 'react';
-import { useSelector } from 'react-redux';
 
 export const ComponentSelect = React.memo((
     {
-        label,
-        labelChip,
+        label = '',
         title,
         onPressed,
         items = [],
@@ -19,8 +17,7 @@ export const ComponentSelect = React.memo((
         color
     }:
         {
-            label: string | any,
-            labelChip: any,
+            label?: string,
             title: string,
             onPressed: any,
             items?: any,
@@ -31,12 +28,8 @@ export const ComponentSelect = React.memo((
             value?: any,
             color?: any
         }) => {
-    const { deselectOne } = useSelectorStore();
-    const { selection = [] } = useSelector((state: any) => state.selections);
+    const { selections = [], deselectOne } = useSelectorStore();
 
-    const generateLabel = (data: Array<number>) => {
-        return labelChip.map((key: number) => data[key]).join('-');
-    };
     return (
         <>
             <>
@@ -55,13 +48,13 @@ export const ComponentSelect = React.memo((
                     </span>
                     <Button
                         variant="outlined"
-                        color={error ? 'error' : 'primary'}
                         onClick={onPressed}
                         style={{
                             width: '100%',
                             paddingTop: '5px',
                             paddingBottom: '5px',
                             color: 'black',
+                            borderColor: error ? 'red' : 'black',
                             textTransform: 'none',
                             zIndex: 0,
                             backgroundColor: color
@@ -73,15 +66,15 @@ export const ComponentSelect = React.memo((
                 {
                     items.length > 0 ?
                         <div style={{ display: 'flex', flexWrap: 'wrap', marginTop: '8px' }}>
-                            {[...items.filter((e: any) => selection.includes(e[select]))].map((data) => {
+                            {[...items].map((data) => {
                                 return (
                                     <Chip
                                         key={data.id}
                                         color="primary"
-                                        label={generateLabel(data)}
+                                        label={data.name}
                                         style={{ margin: '1px' }}
                                         onDelete={() => {
-                                            deselectOne(data[select])
+                                            deselectOne(data.id)
                                         }}
                                     />
                                 );

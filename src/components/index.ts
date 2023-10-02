@@ -5,5 +5,8 @@ export * from './SeverityPill';
 export * from './Select';
 export * from './ModalSelect';
 export * from './Date';
+export * from './Search';
+export * from './TablePagination';
+export * from './AutoComplete';
 
 export * from './Paper';

@@ -8,6 +8,8 @@ export * from './properties/propertieSlice';
 export * from './rooms/roomSlice';
 export * from './rates/rateSlice';
 export * from './requirements/requirementSlice';
+export * from './products/productSlice';
+export * from './hourRanges/hourRangeSlice';
 
 export * from './selectedProducts/productSelectedSlice';
 

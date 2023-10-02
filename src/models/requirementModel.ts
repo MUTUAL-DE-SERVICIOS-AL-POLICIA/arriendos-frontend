@@ -6,10 +6,10 @@ export interface RequirementModel {
 
 /* FORM REQUIREMENT MODEL */
 export interface FormRequirementModel {
-    name: string;
+    requirement_name: string;
 }
 
 /*FORM REQUIREMENT MODEL VALIDATIONS */
 export interface FormRequirementValidations {
-    name: [(value: string) => boolean, string];
+    requirement_name: [(value: string) => boolean, string];
 }

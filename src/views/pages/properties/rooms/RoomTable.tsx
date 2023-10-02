@@ -1,17 +1,17 @@
 import { SeverityPill } from "@/components"
 import { useRoomStore } from "@/hooks";
 import { RoomModel } from "@/models"
-import { Delete, Edit } from "@mui/icons-material";
+import { Edit } from "@mui/icons-material";
 import { Checkbox, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
 
-interface roomTableProps {
+interface tableProps {
     rooms: Array<RoomModel>;
     stateSelect?: boolean;
     itemSelect?: (room: RoomModel) => void
     editItem?: (room: RoomModel) => void
 }
 
-export const RoomTable = (props: roomTableProps) => {
+export const RoomTable = (props: tableProps) => {
     const {
         rooms,
         stateSelect = false,
@@ -25,17 +25,17 @@ export const RoomTable = (props: roomTableProps) => {
     return (
         <>
             <Typography sx={{ fontWeight: 'bold' }}>Ambientes:</Typography>
-            <div style={{ overflowY: 'auto'}}>
+            <div style={{ overflowY: 'auto' }}>
                 <TableContainer style={{ maxHeight: '180px' }} component={Paper} >
-                    <Table size="small" stickyHeader >
+                    <Table size="small" stickyHeader  >
                         <TableHead>
-                            <TableRow>
-                                {stateSelect && <TableCell></TableCell>}
+                            <TableRow >
+                                {stateSelect && <TableCell />}
                                 <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#E2F6F0' }}>Nombre</TableCell>
                                 <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#E2F6F0' }}>Capacidad</TableCell>
                                 <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#E2F6F0' }}>Garantía</TableCell>
                                 <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#E2F6F0' }}>Estado</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#E2F6F0' }}>Acción</TableCell>
+                                {!stateSelect && <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#E2F6F0' }}>Acciones</TableCell>}
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -62,19 +62,16 @@ export const RoomTable = (props: roomTableProps) => {
                                                 {room.is_active ? 'Disponible' : 'Inactivo'}
                                             </SeverityPill>
                                         </TableCell>
-                                        <TableCell>
-                                            <IconButton
-                                                color="success"
-                                                onClick={() => editItem!(room)}
-                                            >
-                                                <Edit />
-                                            </IconButton>
-                                            {/* <IconButton
-                                                color="error"
-                                            >
-                                                <Delete />
-                                            </IconButton> */}
-                                        </TableCell>
+                                        {
+                                            !stateSelect && <TableCell>
+                                                <IconButton
+                                                    color="success"
+                                                    onClick={() => editItem!(room)}
+                                                >
+                                                    <Edit />
+                                                </IconButton>
+                                            </TableCell>
+                                        }
                                     </TableRow>
                                 )
                             })}
