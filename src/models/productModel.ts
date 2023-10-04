@@ -25,10 +25,7 @@ export interface ProductModel {
         id: number;
         name: string;
     };
-    active_price: {
-        id: number;
-        mount: string;
-    }
+    mount: number;
 }
 
 /* FORM CUSTOMER MODEL */
@@ -37,7 +34,6 @@ export interface FormProductModel {
     hour_range: HourRangeModel | null,
     room: RoomModel | null,
     rate: RateModel | null,
-    price_time: number,
     mount: number,
 }
 
@@ -47,6 +43,5 @@ export interface FormProductValidations {
     hour_range: [(value: HourRangeModel) => boolean, string];
     room: [(value: RoomModel) => boolean, string];
     rate: [(value: RateModel) => boolean, string];
-    price_time: [(values: number) => boolean, string];
     mount: [(values: number) => boolean, string];
 }

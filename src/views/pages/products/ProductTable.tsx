@@ -17,7 +17,7 @@ export const ProductTable = (props: tableProps) => {
   } = props;
 
   /*DATA */
-  const { products, flag, getProducts } = useProductStore();
+  const { products, flag, getProducts, deleteRemoveProduct } = useProductStore();
 
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);
@@ -51,9 +51,9 @@ export const ProductTable = (props: tableProps) => {
                 <TableCell>{product.room.property.name}</TableCell>
                 <TableCell>{product.room.name}</TableCell>
                 <TableCell>{product.rate.name}</TableCell>
-                <TableCell>{product.hour_range.name}</TableCell>
+                <TableCell>{`${product.hour_range.name} horas`}</TableCell>
                 <TableCell>{product.day.map((day, index) => (<Typography key={index}>- {day}</Typography>))}</TableCell>
-                <TableCell>{product.active_price.mount}</TableCell>
+                <TableCell>{product.mount}</TableCell>
                 <TableCell>
                   <Stack
                     alignItems="center"
@@ -63,7 +63,7 @@ export const ProductTable = (props: tableProps) => {
                     <IconButton onClick={() => handleEdit(product)}>
                       <EditOutlined color="info" />
                     </IconButton>
-                    <IconButton onClick={() => { }}>
+                    <IconButton onClick={() => deleteRemoveProduct(product)}>
                       <DeleteOutline color="error" />
                     </IconButton>
                   </Stack>

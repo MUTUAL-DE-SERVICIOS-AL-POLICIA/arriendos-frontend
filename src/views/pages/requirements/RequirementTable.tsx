@@ -24,7 +24,7 @@ export const RequirementTable = (props: tableProps) => {
   } = props;
 
   /*DATA */
-  const { requirements, flag, getRequirements } = useRequirementStore();
+  const { requirements, flag, getRequirements, deleteRemoveRequirement } = useRequirementStore();
 
 
   const [total, setTotal] = useState(0);
@@ -71,14 +71,10 @@ export const RequirementTable = (props: tableProps) => {
                       direction="row"
                       spacing={2}
                     >
-                      <IconButton
-                        onClick={() => handleEdit!(requirement)}
-                      >
+                      <IconButton onClick={() => handleEdit!(requirement)} >
                         <EditOutlined color="info" />
                       </IconButton>
-                      <IconButton
-                        onClick={() => { }}
-                      >
+                      <IconButton onClick={() => deleteRemoveRequirement(requirement)} >
                         <DeleteOutline color="error" />
                       </IconButton>
                     </Stack>
