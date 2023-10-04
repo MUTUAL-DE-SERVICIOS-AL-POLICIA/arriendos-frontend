@@ -35,9 +35,10 @@ export const CustomersView = () => {
           startIcon={<SvgIcon fontSize="small"><Add /></SvgIcon>} />
       </Stack>
       <CustomerTable
-        itemSelect={(v) => {
-          // setItemEdit(v)
-          // handleDialog(true)
+        itemSelect={(v) => { }}
+        itemEdit={(v) => {
+          setItemEdit(v)
+          handleDialog(true)
         }}
       />
       {
@@ -45,6 +46,7 @@ export const CustomersView = () => {
         <CreateCustomer
           open={openDialog}
           handleClose={() => handleDialog(false)}
+          item={itemEdit}
         />
       }
     </>

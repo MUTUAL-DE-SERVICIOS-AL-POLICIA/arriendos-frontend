@@ -6,17 +6,19 @@ import { useEffect, useState } from "react";
 import { RowCustomer } from ".";
 
 interface tableProps {
-  itemSelect?: (customer: CustomerModel) => void;
   limitInit?: number;
   stateSelect?: boolean;
   stateMultiple?: boolean
+  itemSelect?: (customer: CustomerModel) => void;
+  itemEdit: (customer: CustomerModel) => void;
 }
 
 export const CustomerTable = (props: tableProps) => {
   const {
     stateSelect = false,
-    itemSelect,
     limitInit = 10,
+    itemSelect,
+    itemEdit,
   } = props;
 
   /*DATA */
@@ -56,6 +58,7 @@ export const CustomerTable = (props: tableProps) => {
                 customer={customer}
                 stateSelect={stateSelect}
                 itemSelect={itemSelect}
+                itemEdit={itemEdit}
               />
             ))}
           </TableBody>
