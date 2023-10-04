@@ -2,16 +2,32 @@ import { ComponentButton } from "@/components"
 import { ContactModel } from "@/models";
 import { Add, DeleteOutline, EditOutlined } from "@mui/icons-material"
 import { IconButton, Stack, SvgIcon, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material"
+import { useCallback, useState } from "react";
+import { CreateContact } from ".";
+import { useCustomerStore } from "@/hooks";
 
 interface tableProps {
     contacts: ContactModel[];
+    customerId: number;
 }
 
 
 export const ContactTable = (props: tableProps) => {
     const {
         contacts,
+        customerId,
     } = props;
+
+    const [openDialog, setopenDialog] = useState(false);
+    const [itemEdit, setItemEdit] = useState<ContactModel | null>(null);
+    const { deleteRemoveContact } = useCustomerStore();
+    const handleDialog = useCallback((value: boolean) => {
+        if (!value) setItemEdit(null)
+        // if (value) clearSelect();
+        setopenDialog(value);
+    }, []);
+
+
     return (
         <>
             <Stack
@@ -21,10 +37,10 @@ export const ContactTable = (props: tableProps) => {
                 <Typography variant="h6">Contactos</Typography>
                 <ComponentButton
                     text="Nuevo Contacto"
-                    onClick={() => { }}
+                    onClick={() => handleDialog(true)}
+                    disable={contacts.length >= 5}
                     startIcon={<SvgIcon fontSize="small"><Add /></SvgIcon>} />
             </Stack>
-
             <Table size="small">
                 <TableHead>
                     <TableRow sx={{ backgroundColor: '#E2F6F0' }}>
@@ -46,10 +62,13 @@ export const ContactTable = (props: tableProps) => {
                                     direction="row"
                                     spacing={2}
                                 >
-                                    <IconButton onClick={() => { }} >
+                                    <IconButton onClick={() => {
+                                        setItemEdit(contact)
+                                        handleDialog(true)
+                                    }} >
                                         <EditOutlined color="info" />
                                     </IconButton>
-                                    <IconButton onClick={() => { }} >
+                                    <IconButton onClick={() => deleteRemoveContact(contact)} >
                                         <DeleteOutline color="error" />
                                     </IconButton>
                                 </Stack>
@@ -58,6 +77,15 @@ export const ContactTable = (props: tableProps) => {
                     ))}
                 </TableBody>
             </Table>
+            {
+                openDialog &&
+                <CreateContact
+                    open={openDialog}
+                    handleClose={() => handleDialog(false)}
+                    item={itemEdit}
+                    customerId={customerId}
+                />
+            }
         </>
     )
 }
