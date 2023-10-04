@@ -14,11 +14,13 @@ interface createProps {
 }
 const formFields: FormRateModel = {
   name: '',
-  requirement: [],
   customer_type: [],
+  requirement: [],
 }
 const formValidations: FormRateValidations = {
   name: [(value: string) => value.length >= 1, 'Debe ingresar la tarifa'],
+  customer_type: [(value: TypeCustomerModel[]) => value.length >= 1, 'Debe selecccionar almenos un tipo de cliente'],
+  requirement: [(value: RequirementModel[]) => value.length >= 1, 'Debe seleccionar almenos un requisito'],
 }
 
 export const CreateRate = (props: createProps) => {
@@ -32,7 +34,7 @@ export const CreateRate = (props: createProps) => {
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   const {
-    name, requirement, customer_type,
+    name, customer_type, requirement,
     onInputChange, onValueChange, isFormValid, onResetForm,
     nameValid, requirementValid, customer_typeValid } = useForm(item ?? formFields, formValidations);
 
@@ -41,7 +43,12 @@ export const CreateRate = (props: createProps) => {
     setFormSubmitted(true);
     if (!isFormValid) return;
     if (item == null) {
-      postCreateRate({ name });
+      postCreateRate(
+        {
+          name,
+          requirement: requirement.map((e: RequirementModel) => e.id),
+          customer_type: customer_type.map((e: TypeCustomerModel) => e.id),
+        });
     } else {
       patchUpdateRate(item.id,
         {
@@ -78,9 +85,13 @@ export const CreateRate = (props: createProps) => {
             stateSelect={true}
             limitInit={5}
             itemSelect={(v) => {
-              onValueChange('customer_type', [...customer_type, v])
-              //handleModalCustomerType(false)
+              if (customer_type.map((e: TypeCustomerModel) => e.id).includes(v.id)) {
+                onValueChange('customer_type', [...customer_type.filter((e: TypeCustomerModel) => e.id != v.id)])
+              } else {
+                onValueChange('customer_type', [...customer_type, v])
+              }
             }}
+            items={customer_type.map((e: TypeCustomerModel) => (e.id))}
           />
         </ModalSelectComponent>
       }
@@ -97,9 +108,13 @@ export const CreateRate = (props: createProps) => {
               stateSelect={true}
               limitInit={5}
               itemSelect={(v) => {
-                onValueChange('requirement', [...requirement, v])
-                //handleModalRequirement(false)
+                if (requirement.map((e: RequirementModel) => e.id).includes(v.id)) {
+                  onValueChange('requirement', [...requirement.filter((e: RequirementModel) => e.id != v.id)])
+                } else {
+                  onValueChange('requirement', [...requirement, v])
+                }
               }}
+              items={requirement.map((e: RequirementModel) => (e.id))}
             />
           </ModalSelectComponent> :
           <></>
@@ -120,29 +135,26 @@ export const CreateRate = (props: createProps) => {
                   helperText={formSubmitted ? nameValid : ''}
                 />
               </Grid>
-              {
-                item &&
-                <>
-                  <Grid item xs={12} sm={12} sx={{ padding: '5px' }}>
-                    <ComponentSelect
-                      items={customer_type.map((e: TypeCustomerModel) => ({ id: `${e.id}typeCustomer`, name: e.name }))}
-                      title={'Tipos de clientes'}
-                      onPressed={() => handleModalCustomerType(true)}
-                      error={!!customer_typeValid && formSubmitted}
-                      helperText={formSubmitted ? customer_typeValid : ''}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={12} sx={{ padding: '5px' }}>
-                    <ComponentSelect
-                      items={requirement.map((e: RequirementModel) => ({ id: `${e.id}requirement`, name: e.requirement_name }))}
-                      title={'Requerimientos'}
-                      onPressed={() => handleModalRequirement(true)}
-                      error={!!requirementValid && formSubmitted}
-                      helperText={formSubmitted ? requirementValid : ''}
-                    />
-                  </Grid>
-                </>
-              }
+              <Grid item xs={12} sm={12} sx={{ padding: '5px' }}>
+                <ComponentSelect
+                  title={'Tipos de clientes'}
+                  onPressed={() => handleModalCustomerType(true)}
+                  items={customer_type.map((e: TypeCustomerModel) => ({ id: e.id, name: e.name }))}
+                  onRemove={(v) => onValueChange('customer_type', [...customer_type.filter((e: TypeCustomerModel) => e.id != v)])}
+                  error={!!customer_typeValid && formSubmitted}
+                  helperText={formSubmitted ? customer_typeValid : ''}
+                />
+              </Grid>
+              <Grid item xs={12} sm={12} sx={{ padding: '5px' }}>
+                <ComponentSelect
+                  title={'Requisitos'}
+                  onPressed={() => handleModalRequirement(true)}
+                  items={requirement.map((e: RequirementModel) => ({ id: e.id, name: e.requirement_name }))}
+                  onRemove={(v) => onValueChange('requirement', [...requirement.filter((e: RequirementModel) => e.id != v)])}
+                  error={!!requirementValid && formSubmitted}
+                  helperText={formSubmitted ? requirementValid : ''}
+                />
+              </Grid>
             </Grid>
           </DialogContent>
           <DialogActions>

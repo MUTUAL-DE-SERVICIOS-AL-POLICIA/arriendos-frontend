@@ -1,5 +1,5 @@
 import { ComponentSearch, ComponentTablePagination, SeverityPill } from "@/components";
-import { useSelectorStore, useTypeCustomerStore } from "@/hooks";
+import { useTypeCustomerStore } from "@/hooks";
 import { TypeCustomerModel } from "@/models";
 import { DeleteOutline, EditOutlined } from "@mui/icons-material";
 import { Checkbox, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
@@ -10,19 +10,18 @@ interface tableProps {
   limitInit?: number;
   stateSelect?: boolean;
   itemSelect?: (typeCustomer: TypeCustomerModel) => void;
-  stateMultiple?: boolean
+  items?: any[];
 }
 
 export const TypeCustomerTable = (props: tableProps) => {
   const {
     stateSelect = false,
-    stateMultiple,
     handleEdit,
     itemSelect,
-    limitInit = 10
+    limitInit = 10,
+    items = [],
   } = props;
 
-  const { selections = [], selectOne, deselectOne, deselectAll } = useSelectorStore();
   const { typesCustomers, flag, getTypesCustomers } = useTypeCustomerStore();
 
 
@@ -52,7 +51,7 @@ export const TypeCustomerTable = (props: tableProps) => {
           </TableHead>
           <TableBody>
             {typesCustomers.map((typeCustomer: TypeCustomerModel) => {
-              const isSelected = selections.includes(`${typeCustomer.id}typeCustomer`);
+              const isSelected = items.includes(typeCustomer.id);
               const isInstitution = typeCustomer.is_institution;
               return (
                 <TableRow key={typeCustomer.id} >
@@ -60,15 +59,7 @@ export const TypeCustomerTable = (props: tableProps) => {
                     stateSelect && <TableCell padding="checkbox">
                       <Checkbox
                         checked={isSelected}
-                        onChange={(value) => {
-                          if (value.target.checked) {
-                            if (!stateMultiple) deselectAll(typesCustomers.map((e: TypeCustomerModel) => `${e.id}typeCustomer`));
-                            selectOne(`${typeCustomer.id}typeCustomer`);
-                            itemSelect!(typeCustomer);
-                          } else {
-                            deselectOne(`${typeCustomer.id}typeCustomer`);
-                          }
-                        }}
+                        onChange={() => itemSelect!(typeCustomer)}
                       />
                     </TableCell>
                   }
