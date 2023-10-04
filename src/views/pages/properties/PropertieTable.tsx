@@ -12,6 +12,7 @@ interface tableProps {
   onEdit?: (propertie: PropertieModel) => void;
   stateSelect?: boolean;
   itemSelect?: (room: RoomModel) => void;
+  items?: any[];
 }
 
 export const PropertieTable = (props: tableProps) => {
@@ -19,6 +20,7 @@ export const PropertieTable = (props: tableProps) => {
     onEdit,
     stateSelect = false,
     itemSelect,
+    items,
   } = props;
 
   const { properties = [], getPropertiesRooms } = usePropertieStore();
@@ -81,6 +83,7 @@ export const PropertieTable = (props: tableProps) => {
                     rooms={propertie.rooms}
                     stateSelect={stateSelect}
                     itemSelect={itemSelect}
+                    items={items}
                     editItem={(room) => {
                       setItemEdit({ ...room, property: propertie.id });
                       handleDialog(true);

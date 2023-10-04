@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { coffeApiLeandro } from '@/services';
 import { setRequirements, refreshRequirement } from '@/store';
 import Swal from 'sweetalert2';
+import { RequirementModel } from '@/models';
 
 export const useRequirementStore = () => {
     const { requirements, flag } = useSelector((state: any) => state.requirements);
@@ -40,6 +41,36 @@ export const useRequirementStore = () => {
         }
     }
 
+    const deleteRemoveRequirement = async (requirement: RequirementModel) => {
+
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: `Estas eliminando el requisito: ${requirement.requirement_name}`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '¡Sí, estoy seguro!',
+            cancelButtonText: 'Cancelar'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    console.log('ELIMINANDO UN REQUISITO')
+                    const { data } = await coffeApiLeandro.delete(`/plans/requirements/${requirement.id}`)
+                    console.log(data)
+                    dispatch(refreshRequirement());
+                    Swal.fire(
+                        `¡Listo!`,
+                        `${requirement.requirement_name} fue eliminado`,
+                        'success'
+                    )
+                } catch (error: any) {
+                    throw Swal.fire('Oops ocurrio algo', error.response.data.detail, 'error');
+                }
+            }
+        })
+    }
+
     return {
         //* Propiedades
         requirements,
@@ -47,6 +78,7 @@ export const useRequirementStore = () => {
         //* Métodos
         getRequirements,
         postCreateRequirement,
-        patchEditRequirement
+        patchEditRequirement,
+        deleteRemoveRequirement,
     }
 }

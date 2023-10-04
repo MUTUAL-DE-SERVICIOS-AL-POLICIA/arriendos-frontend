@@ -9,15 +9,15 @@ export interface ContactModel {
 
 /* FORM CUSTOMER MODEL */
 export interface FormContactModel {
-    degree: string | null;
+    degree: string;
     name: string;
-    ci: string;
+    ci_nit: string;
     phone: string;
 }
 
 /*FORM CUSTOMER MODEL VALIDATIONS */
 export interface FormContactValidations {
     name: [(value: string) => boolean, string];
-    ci: [(value: string) => boolean, string];
+    ci_nit: [(value: string) => boolean, string];
     phone: [(value: string) => boolean, string];
 }

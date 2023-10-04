@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { coffeApiKevin } from '@/services';
 import { refreshTypesCustomers, setTypesCustomers } from '@/store';
 import Swal from 'sweetalert2';
+import { TypeCustomerModel } from '@/models';
 
 export const useTypeCustomerStore = () => {
     const { typesCustomers, flag } = useSelector((state: any) => state.typesCustomers);
@@ -42,6 +43,36 @@ export const useTypeCustomerStore = () => {
         }
     }
 
+    const deleteRemoveTypeCustomer = async (typeCustomer: TypeCustomerModel) => {
+
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: `Estas eliminando el tipo de cliente: ${typeCustomer.name}`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '¡Sí, estoy seguro!',
+            cancelButtonText: 'Cancelar'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    console.log('ELIMINANDO UN TIPO DE CLIENTE')
+                    const { data } = await coffeApiKevin.delete(`/customers/type/${typeCustomer.id}`)
+                    console.log(data)
+                    dispatch(refreshTypesCustomers());
+                    Swal.fire(
+                        `¡Listo!`,
+                        `${typeCustomer.name} fue eliminado`,
+                        'success'
+                    )
+                } catch (error: any) {
+                    throw Swal.fire('Oops ocurrio algo', error.response.data.detail, 'error');
+                }
+            }
+        })
+    }
+
     return {
         //* Propiedades
         typesCustomers,
@@ -50,5 +81,6 @@ export const useTypeCustomerStore = () => {
         getTypesCustomers,
         postCreateTypeCustomer,
         patchEditTypeCustomer,
+        deleteRemoveTypeCustomer,
     }
 }

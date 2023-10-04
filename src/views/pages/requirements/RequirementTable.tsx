@@ -1,5 +1,5 @@
 import { ComponentSearch, ComponentTablePagination } from '@/components';
-import { useRequirementStore, useSelectorStore } from '@/hooks';
+import { useRequirementStore } from '@/hooks';
 import { RequirementModel } from '@/models';
 import { DeleteOutline, EditOutlined } from '@mui/icons-material';
 import { Checkbox, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
@@ -11,7 +11,7 @@ interface tableProps {
   limitInit?: number;
   stateSelect?: boolean;
   itemSelect?: (requirement: RequirementModel) => void;
-  stateMultiple?: boolean
+  items?: any[];
 }
 
 export const RequirementTable = (props: tableProps) => {
@@ -20,12 +20,11 @@ export const RequirementTable = (props: tableProps) => {
     limitInit = 10,
     stateSelect = false,
     itemSelect,
-    stateMultiple = false,
+    items = [],
   } = props;
 
   /*DATA */
-  const { selections = [], selectOne, deselectOne, deselectAll } = useSelectorStore();
-  const { requirements, flag, getRequirements } = useRequirementStore();
+  const { requirements, flag, getRequirements, deleteRemoveRequirement } = useRequirementStore();
 
 
   const [total, setTotal] = useState(0);
@@ -51,7 +50,7 @@ export const RequirementTable = (props: tableProps) => {
           </TableHead>
           <TableBody>
             {requirements.map((requirement: RequirementModel) => {
-              const isSelected = selections.includes(`${requirement.id}requirement`);
+              const isSelected = items.includes(requirement.id);
               return (
                 <TableRow
                   hover
@@ -61,15 +60,7 @@ export const RequirementTable = (props: tableProps) => {
                     stateSelect && <TableCell padding="checkbox">
                       <Checkbox
                         checked={isSelected}
-                        onChange={(value) => {
-                          if (value.target.checked) {
-                            if (!stateMultiple) deselectAll(requirements.map((e: RequirementModel) => `${e.id}requirement`));
-                            selectOne(`${requirement.id}requirement`);
-                            itemSelect!(requirement)
-                          } else {
-                            deselectOne(`${requirement.id}requirement`);
-                          }
-                        }}
+                        onChange={() => itemSelect!(requirement)}
                       />
                     </TableCell>
                   }
@@ -80,14 +71,10 @@ export const RequirementTable = (props: tableProps) => {
                       direction="row"
                       spacing={2}
                     >
-                      <IconButton
-                        onClick={() => handleEdit!(requirement)}
-                      >
+                      <IconButton onClick={() => handleEdit!(requirement)} >
                         <EditOutlined color="info" />
                       </IconButton>
-                      <IconButton
-                        onClick={() => { }}
-                      >
+                      <IconButton onClick={() => deleteRemoveRequirement(requirement)} >
                         <DeleteOutline color="error" />
                       </IconButton>
                     </Stack>

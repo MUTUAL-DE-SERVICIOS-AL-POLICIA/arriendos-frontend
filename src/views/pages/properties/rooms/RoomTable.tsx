@@ -1,5 +1,4 @@
 import { SeverityPill } from "@/components"
-import { useRoomStore } from "@/hooks";
 import { RoomModel } from "@/models"
 import { Edit } from "@mui/icons-material";
 import { Checkbox, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
@@ -7,8 +6,9 @@ import { Checkbox, IconButton, Paper, Table, TableBody, TableCell, TableContaine
 interface tableProps {
     rooms: Array<RoomModel>;
     stateSelect?: boolean;
-    itemSelect?: (room: RoomModel) => void
-    editItem?: (room: RoomModel) => void
+    itemSelect?: (room: RoomModel) => void;
+    editItem?: (room: RoomModel) => void;
+    items?: any[];
 }
 
 export const RoomTable = (props: tableProps) => {
@@ -16,11 +16,10 @@ export const RoomTable = (props: tableProps) => {
         rooms,
         stateSelect = false,
         itemSelect,
-        editItem
+        editItem,
+        items = [],
     } = props;
 
-
-    const { RoomSelection } = useRoomStore();
 
     return (
         <>
@@ -40,7 +39,8 @@ export const RoomTable = (props: tableProps) => {
                         </TableHead>
                         <TableBody>
                             {rooms.map((room: RoomModel) => {
-                                const isSelected = RoomSelection.id == room.id;
+                                // const isSelected = RoomSelection.id == room.id;
+                                const isSelected = items.includes(room.id);
                                 return (
                                     <TableRow
                                         key={room.id}

@@ -1,3 +1,4 @@
+import { RateModel } from "@/models";
 import { coffeApiLeandro } from "@/services";
 import { refreshRate, setRates } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
@@ -45,6 +46,35 @@ export const useRateStore = () => {
         }
     }
 
+    const deleteRemoveRate = async (rate: RateModel) => {
+
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: `Estas eliminando a ${rate.name}`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '¡Sí, estoy seguro!',
+            cancelButtonText: 'Cancelar'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    console.log('ELIMINANDO UNA TARIFA')
+                    const { data } = await coffeApiLeandro.delete(`/requirements/rates${rate.id}`)
+                    console.log(data)
+                    dispatch(refreshRate());
+                    Swal.fire(
+                        `¡Listo!`,
+                        `${rate.name}fue eliminado`,
+                        'success'
+                    )
+                } catch (error: any) {
+                    throw Swal.fire('Oops ocurrio algo', error.response.data.detail, 'error');
+                }
+            }
+        })
+    }
 
     return {
         //* Propiedades
@@ -54,5 +84,6 @@ export const useRateStore = () => {
         getRates,
         postCreateRate,
         patchUpdateRate,
+        deleteRemoveRate,
     }
 }

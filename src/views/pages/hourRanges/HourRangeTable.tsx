@@ -1,5 +1,5 @@
 
-import { useSelectorStore } from "@/hooks";
+
 import { useHourRangeStore } from "@/hooks/useHourRangeStore";
 import { HourRangeModel } from "@/models";
 import { DeleteOutline, EditOutlined } from "@mui/icons-material";
@@ -11,6 +11,7 @@ interface tableProps {
   handleEdit?: (hourRange: HourRangeModel) => void;
   stateSelect?: boolean;
   itemSelect?: (hourRange: HourRangeModel) => void;
+  items?: any[];
 }
 
 export const HourRangeTable = (props: tableProps) => {
@@ -18,11 +19,11 @@ export const HourRangeTable = (props: tableProps) => {
     handleEdit,
     stateSelect = false,
     itemSelect,
+    items = [],
   } = props;
 
   /*DATA */
-  const { hourRanges, getHourRanges } = useHourRangeStore();
-  const { selections = [], selectOne, deselectOne, deselectAll } = useSelectorStore();
+  const { hourRanges, getHourRanges, deleteRemoveHourRange } = useHourRangeStore();
   useEffect(() => {
     getHourRanges()
   }, []);
@@ -45,7 +46,7 @@ export const HourRangeTable = (props: tableProps) => {
           </TableHead>
           <TableBody>
             {hourRanges.map((hourRange: HourRangeModel) => {
-              const isSelected = selections.includes(`${hourRange.id}hourRange`);
+              const isSelected = items.includes(hourRange.id);
               return (
                 <TableRow
                   key={hourRange.id}
@@ -54,19 +55,11 @@ export const HourRangeTable = (props: tableProps) => {
                     stateSelect && <TableCell padding="checkbox">
                       <Checkbox
                         checked={isSelected}
-                        onChange={(value) => {
-                          if (value.target.checked) {
-                            deselectAll(hourRanges.map((e: HourRangeModel) => `${e.id}hourRange`));
-                            selectOne(`${hourRange.id}hourRange`);
-                            itemSelect!(hourRange);
-                          } else {
-                            deselectOne(`${hourRange.id}hourRange`);
-                          }
-                        }}
+                        onChange={() => itemSelect!(hourRange)}
                       />
                     </TableCell>
                   }
-                  <TableCell>{hourRange.name}</TableCell>
+                  <TableCell>{`${hourRange.name} HORAS`}</TableCell>
                   {
                     !stateSelect && <TableCell>
                       <Stack
@@ -80,7 +73,7 @@ export const HourRangeTable = (props: tableProps) => {
                           <EditOutlined color="info" />
                         </IconButton>
                         <IconButton
-                          onClick={() => { }}
+                          onClick={() => deleteRemoveHourRange(hourRange)}
                         >
                           <DeleteOutline color="error" />
                         </IconButton>

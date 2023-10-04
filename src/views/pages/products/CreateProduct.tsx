@@ -20,7 +20,6 @@ const formFields: FormProductModel = {
   hour_range: null,
   room: null,
   rate: null,
-  price_time: 0,
   mount: 0,
 }
 const formValidations: FormProductValidations = {
@@ -28,7 +27,6 @@ const formValidations: FormProductValidations = {
   hour_range: [(value: HourRangeModel) => value != null, 'Debe seleccionar un rango de horas'],
   room: [(value: RoomModel) => value != null, 'Debe seleccionar un ambiente'],
   rate: [(value: RateModel) => value != null, 'Debe seleccionar una tarifa'],
-  price_time: [(values: number) => values != 0, 'Debe agregar un precio extra por hora'],
   mount: [(values: number) => values != 0, 'Debe agregar un precio'],
 }
 
@@ -43,9 +41,9 @@ export const CreateProduct = (props: createProps) => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const { postCreateProduct, patchUpdateProduct } = useProductStore();
   const {
-    day, hour_range, room, rate, price_time, mount,
+    day, hour_range, room, rate, mount,
     onInputChange, onArrayChange, onValueChange, isFormValid, onResetForm,
-    dayValid, hour_rangeValid, roomValid, rateValid, price_timeValid, mountValid } = useForm(formFields, formValidations);
+    dayValid, hour_rangeValid, roomValid, rateValid, mountValid } = useForm(item ?? formFields, formValidations);
 
   const sendSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -57,7 +55,6 @@ export const CreateProduct = (props: createProps) => {
         rate: rate.id,
         room: room.id,
         hour_range: hour_range.id,
-        price_time,
         mount,
       });
     } else {
@@ -66,7 +63,6 @@ export const CreateProduct = (props: createProps) => {
         rate: rate.id,
         room: room.id,
         hour_range: hour_range.id,
-        price_time,
         mount,
       });
     }
@@ -105,9 +101,12 @@ export const CreateProduct = (props: createProps) => {
           <HourRangeTable
             stateSelect={true}
             itemSelect={(v) => {
-              onValueChange('hour_range', v);
-              handleModalHourRange(false)
+              if (hour_range == null || hour_range.id != v.id) {
+                onValueChange('hour_range', v);
+                handleModalHourRange(false)
+              }
             }}
+            items={hour_range == null ? [] : [hour_range.id]}
           />
         </ModalSelectComponent>
       }
@@ -120,15 +119,16 @@ export const CreateProduct = (props: createProps) => {
           title='Ambiente'
           opendrawer={modalRoom}
           handleDrawer={handleModalRoom}
-
         >
           <PropertieTable
             stateSelect={true}
             itemSelect={(v) => {
-              console.log(v)
-              onValueChange('room', v);
-              handleModalRoom(false)
+              if (room == null || room.id != v.id) {
+                onValueChange('room', v)
+                handleModalRoom(false)
+              }
             }}
+            items={room == null ? [] : [room.id]}
           />
         </ModalSelectComponent>
       }
@@ -141,15 +141,16 @@ export const CreateProduct = (props: createProps) => {
           title='Tarifas'
           opendrawer={modalRate}
           handleDrawer={handleModalRate}
-
         >
           <RateTable
             stateSelect={true}
             itemSelect={(v) => {
-              console.log(v)
-              onValueChange('rate', v);
-              handleModalRate(false)
+              if (rate == null || rate.id != v.id) {
+                onValueChange('rate', v)
+                handleModalRate(false)
+              }
             }}
+            items={rate == null ? [] : [rate.id]}
           />
         </ModalSelectComponent>
       }
@@ -193,17 +194,6 @@ export const CreateProduct = (props: createProps) => {
                   onPressed={() => handleModalRate(true)}
                   error={!!rateValid && formSubmitted}
                   helperText={formSubmitted ? rateValid : ''}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6} sx={{ padding: '5px' }}>
-                <ComponentInput
-                  type="text"
-                  label="Precio extra por hora"
-                  name="price_time"
-                  value={price_time}
-                  onChange={onInputChange}
-                  error={!!price_timeValid && formSubmitted}
-                  helperText={formSubmitted ? price_timeValid : ''}
                 />
               </Grid>
               <Grid item xs={12} sm={6} sx={{ padding: '5px' }}>
