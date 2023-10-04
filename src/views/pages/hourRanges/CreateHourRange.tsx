@@ -54,10 +54,10 @@ export const CreateHourRange = (props: createProps) => {
           <DialogContent sx={{ display: 'flex' }}>
             <ComponentInput
               type="text"
-              label="rango"
+              label="Rango de hora"
               name="name"
               value={name}
-              onChange={onInputChange}
+              onChange={(V: any) => onInputChange(V, false, true)}
               error={!!nameValid && formSubmitted}
               helperText={formSubmitted ? nameValid : ''}
             />

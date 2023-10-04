@@ -1,5 +1,4 @@
 import { ComponentSearch, ComponentTablePagination } from "@/components";
-import { useSelectorStore } from "@/hooks";
 import { useRateStore } from "@/hooks/useRateStore";
 import { RateModel } from "@/models";
 import { DeleteOutline, Edit } from "@mui/icons-material";
@@ -11,6 +10,7 @@ interface tableProps {
   limitInit?: number;
   stateSelect?: boolean;
   itemSelect?: (rate: RateModel) => void;
+  items?: any[];
 }
 
 export const RateTable = (props: tableProps) => {
@@ -19,10 +19,10 @@ export const RateTable = (props: tableProps) => {
     limitInit = 10,
     stateSelect = false,
     itemSelect,
+    items = [],
   } = props;
 
   /*DATA */
-  const { selections = [], selectOne, deselectOne, deselectAll } = useSelectorStore();
   const { rates = [], flag, getRates, deleteRemoveRate } = useRateStore();
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);
@@ -50,22 +50,14 @@ export const RateTable = (props: tableProps) => {
           </TableHead>
           <TableBody>
             {rates.map((rate: RateModel) => {
-              const isSelected = selections.includes(`${rate.id}rate`);
+              const isSelected = items.includes(rate.id);
               return (
                 <TableRow key={rate.id}>
                   {
                     stateSelect && <TableCell padding="checkbox">
                       <Checkbox
                         checked={isSelected}
-                        onChange={(value) => {
-                          if (value.target.checked) {
-                            deselectAll(rates.map((e: RateModel) => `${e.id}rate`));
-                            selectOne(`${rate.id}rate`);
-                            itemSelect!(rate);
-                          } else {
-                            deselectOne(`${rate.id}rate`);
-                          }
-                        }}
+                        onChange={() => itemSelect!(rate)}
                       />
                     </TableCell>
                   }

@@ -21,9 +21,13 @@ export const hourRangeSlice = createSlice({
                 return hourRange;
             }))];
         },
+
+        removeHourRange: (state, action) => {
+            state.hourRanges = [...state.hourRanges.filter(((hourRange: HourRangeModel) => hourRange.id != action.payload.hourRange.id))];
+        },
     }
 });
 
 
 // Action creators are generated for each case reducer function
-export const { setHourRanges, addHourRanges, updateHourRanges } = hourRangeSlice.actions;
+export const { setHourRanges, addHourRanges, updateHourRanges, removeHourRange, } = hourRangeSlice.actions;

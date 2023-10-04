@@ -22,7 +22,7 @@ export const TypeCustomerTable = (props: tableProps) => {
     items = [],
   } = props;
 
-  const { typesCustomers, flag, getTypesCustomers } = useTypeCustomerStore();
+  const { typesCustomers, flag, getTypesCustomers, deleteRemoveTypeCustomer } = useTypeCustomerStore();
 
 
   const [total, setTotal] = useState(0);
@@ -79,7 +79,7 @@ export const TypeCustomerTable = (props: tableProps) => {
                         <IconButton onClick={() => handleEdit!(typeCustomer)} >
                           <EditOutlined color="info" />
                         </IconButton>
-                        <IconButton onClick={() => { }} >
+                        <IconButton onClick={() => deleteRemoveTypeCustomer(typeCustomer)} >
                           <DeleteOutline color="error" />
                         </IconButton>
                       </Stack>
