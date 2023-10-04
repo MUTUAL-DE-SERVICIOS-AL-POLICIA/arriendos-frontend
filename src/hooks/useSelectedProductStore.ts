@@ -1,12 +1,12 @@
-import { productsSelectedAdd, productsSelectedRemove } from "@/store";
+import { productDeselected, productSelected, productsSelectedAdd, productsSelectedRemove, removeSelectedProducts } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
 
 export const useSelectedProductStore = () => {
-    const { selectedProducts } = useSelector((state: any) => state.selectedProducts);
+    const { selectedProducts, selectedProduct } = useSelector((state: any) => state.selectedProducts);
     const dispatch = useDispatch();
 
     const setSelectedProduct = (body: object) => {
-        console.log('SELECCIONANDO UN PRODUCTO');
+        // console.log('SELECCIONANDO UN PRODUCTO');
         dispatch(productsSelectedAdd({ selectedProduct: body }));
     }
 
@@ -15,11 +15,26 @@ export const useSelectedProductStore = () => {
         dispatch(productsSelectedRemove({ selectedProduct: body }));
     }
 
+    const addSelected = (body: object) => {
+			dispatch(productSelected({ selected: body }))
+    }
+
+    const removeSelected = ( ) => {
+        dispatch(productDeselected())
+    }
+    const removeProducts = () => {
+        dispatch(removeSelectedProducts())
+    }
+
     return {
         //* Propiedades
         selectedProducts,
         //* Métodos
         setSelectedProduct,
         unsetSElectedProduct,
+        addSelected,
+        removeSelected,
+        selectedProduct,
+        removeProducts
     }
 }

@@ -1,7 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { coffeApiKevin } from '@/services';
+import { coffeApiKevin, coffeApiLeandro } from '@/services';
 import { setRoomSelect, setClearSelect, updateRoom, addRoom } from '@/store';
 import Swal from 'sweetalert2';
+
+const api = coffeApiLeandro;
 
 export const useRoomStore = () => {
     const { rooms, RoomSelection } = useSelector((state: any) => state.rooms);
@@ -10,7 +12,7 @@ export const useRoomStore = () => {
     const postRoom = async (body: object) => {
         try {
             console.log('CREANDO UN NUEVO AMBIENTE');
-            const { data } = await coffeApiKevin.post(`/rooms/`, body);
+            const { data } = await api.post(`/rooms/`, body);
             console.log(data)
             dispatch(addRoom({ room: data }));
             Swal.fire('Ambiente creado correctamente', '', 'success');
@@ -22,7 +24,7 @@ export const useRoomStore = () => {
     const patchEditRoom = async (id: number, body: object) => {
         try {
             console.log('EDITANDO AMBIENTE');
-            const { data } = await coffeApiKevin.patch(`/rooms/${id}/`, body);
+            const { data } = await api.patch(`/rooms/${id}/`, body);
             console.log(data)
             dispatch(updateRoom({ room: data }));
             Swal.fire('Requisito editado correctamente', '', 'success');

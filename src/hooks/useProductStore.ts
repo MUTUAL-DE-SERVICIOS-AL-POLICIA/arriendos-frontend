@@ -1,19 +1,27 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { coffeApiLeandro } from '@/services';
-import { refreshProduct, setProducts } from '@/store';
+import { coffeApiKevin, coffeApiLeandro } from '@/services';
+import { refreshProduct, setProducts, setLeakedProducts } from '@/store';
 import Swal from 'sweetalert2';
 import { ProductModel } from '@/models';
 
 export const useProductStore = () => {
-    const { products, flag } = useSelector((state: any) => state.products);
+    const { products, flag, leakedProducts } = useSelector((state: any) => state.products);
     const dispatch = useDispatch();
 
-    const getProducts = async ({ page, limit }: { page: number, limit: number }) => {
-        console.log('OBTENIENDO TODOS LOS PRODUCTOS')
-        const { data } = await coffeApiLeandro.get(`/product/?page=${page}&limit=${limit}`);
-        console.log(data)
-        dispatch(setProducts({ products: data.products }));
-        return data.total
+    const getProducts = async ({ page, limit, isFilter }: { page: number, limit: number, isFilter: boolean }) => {
+        if(!isFilter) {
+            console.log('OBTENIENDO TODOS LOS PRODUCTOS')
+            const { data } = await coffeApiKevin.get(`/product/?page=${page}&limit=${limit}`);
+            console.log(data)
+            dispatch(setProducts({ products: data.products }));
+            return data.total
+        } else {
+            console.log('OBTENIENDO PRODUCTOS FILTRADOS')
+            const { data } = await coffeApiKevin.get(`/product/?page=${page}&limit=${limit}`);
+            console.log(data)
+            dispatch(setProducts({ products: data.products }));
+            return data.total
+        }
     }
 
     const postCreateProduct = async (body: object) => {
@@ -71,15 +79,36 @@ export const useProductStore = () => {
         })
     }
 
+    const postLeakedProduct = async (body: object) => {
+        try {
+            // console.log('OBTENIENDO PRODUCTOS FILTRADOS')
+            // console.log(body)
+            const { data } = await coffeApiLeandro.post('/product/Posible_product/', body)
+            // console.log(data)
+            // dispatch(setLeakedProducts({products:data.products}))
+            return data.products;
+        } catch(error: any) {
+            Swal.fire('Oops ocurrio algo', error.response, 'error')
+        }
+    }
+
+    const setLeakedProductReload = async (array:any)=>{
+        console.log(`array ${array}`)
+        dispatch(setLeakedProducts({products: array}))
+    }
+
 
     return {
         //* Propiedades
         products,
         flag,
+        leakedProducts,
         //* Métodos
         getProducts,
         postCreateProduct,
         patchUpdateProduct,
         deleteRemoveProduct,
+        postLeakedProduct,
+        setLeakedProductReload
     }
 }

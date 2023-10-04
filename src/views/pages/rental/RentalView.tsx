@@ -1,17 +1,22 @@
-import { useForm, useRoomStore } from "@/hooks";
-import { useCallback, useState } from "react";
+import { useCustomerStore, useForm, useRoomStore, useProductStore } from "@/hooks";
+import { useCallback, useEffect, useState } from "react";
 import { CartSelectedProduct } from ".";
 import { ComponentSelect, ModalSelectComponent } from "@/components";
 import { FormRentalModel } from "@/models";
 import { PropertieTable } from "../properties";
 import { CalendarComponent } from "./calendar";
 import { styled } from '@mui/system';
+import { Grid } from "@mui/material";
+import { CustomerTable } from "../customers";
+import days from '@/models/days.json';
+import { useSelector } from "react-redux";
 
 const formFields: FormRentalModel = {
-  room: null
+  room: null,
+  customer: null,
 }
 
-  // Estilos ==============================>
+// Estilos ==============================>
 const Container = styled('div')`
   display: flex;
   overflow-x: hidden;
@@ -28,80 +33,146 @@ const SliderContent = styled('div')`
   width: 0%;
 `;
 
+const dateSelected = (date: Date) => {
+  return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
+}
+
+const convertDate = (date: string) => {
+  const partDate = date.split("/")
+  const day = parseInt(partDate[0], 10)
+  const month = parseInt(partDate[1], 10) - 1
+  const year = parseInt(partDate[2], 10)
+
+  const dateNew: Date = new Date(day, month, year)
+
+  return dateNew
+}
 
 export const RentalView = () => {
 
-  const { room, onInputChange, onResetForm } = useForm(formFields);
-  const { RoomSelection = {}, selectRoom, deselectRoom } = useRoomStore();
+  const { room, customer, onInputChange, onResetForm, onValueChange } = useForm(formFields);
+  const { RoomSelection, selectRoom, deselectRoom } = useRoomStore();
+  const { CustomerSelection, selectCustomer } = useCustomerStore();
+  const { leakedProducts, postLeakedProduct, setLeakedProductReload } = useProductStore()
 
   // Modal =================================================
-  const [modal, setModal] = useState(false);
-  const handleModal = useCallback((value: boolean) => {
-    setModal(value);
-  }, []);
-  // =======================================================
-
-  // Expansión =============================================
-  const [ selected, setSelected ] = useState(Array<boolean>);
-  const [ numberSelected, setNumberSelected ] = useState(0);
-  const toggleExpanded = ( isSelected: boolean ) => {
-    let newExpanded: Array<boolean> = [];
-    if(isSelected) {
-      newExpanded = [...selected, isSelected];
-    } else {
-      selected.pop();
-      newExpanded = selected;
-    }
-    setSelected(newExpanded);
-    if(newExpanded.length == 0) setNumberSelected(0);
-    else setNumberSelected(newExpanded.length)
+  const [modalRoom, setModalRoom] = useState(false);
+  const handleModalRoom = (value: boolean) => {
+    setModalRoom(value);
   };
-  //  ======================================================
 
+  const [modalClient, setModalClient] = useState(false);
+  const handleModalClient = (value: boolean) => {
+    setModalClient(value);
+  };
+
+  const [selected, setSelected] = useState(false)
+  const [day, setDay] = useState<Date | null>(null)
+
+  const toggleExpanded = (isSelected: boolean, daySelected: Date) => {
+    setDay(daySelected)
+    if (isSelected) {
+      setSelected(isSelected)
+    } else {
+      setSelected(isSelected)
+    }
+  }
+  useEffect(() => {
+    if (day != null) {
+      postLeakedProduct({
+        customer_type: 2,
+        room_id: 1
+      }).then((data)=>{
+        setLeakedProductReload([...data.filter((e:any) =>e.day.includes(days.days[day.getDay()]))]);
+      })
+    } else console.log("false")
+  }, [day])
 
   return (
     <>
-      { modal ? <ModalSelectComponent
-                   stateSelect={true}
-                   stateMultiple={false}
-                   title='Ambientes'
-                   opendrawer={modal}
-                   handleDrawer={() => handleModal(false)}
-                 >
-                   <PropertieTable
-                     stateSelect={true}
-                     itemSelect={(v) => {
-                       if (RoomSelection.id == v.id) {
-                         deselectRoom();
-                         onResetForm();
-                       } else {
-                         selectRoom(v);
-                         onInputChange({ target: { name: 'room', value: v.name } });
-                       }
-                       handleModal(false)
-                     }}
-                   />
-                 </ModalSelectComponent>
+      {modalRoom ? <ModalSelectComponent
+        stateSelect={true}
+        stateMultiple={false}
+        title='Ambientes'
+        opendrawer={modalRoom}
+        handleDrawer={() => handleModalRoom(false)}
+      >
+        <PropertieTable
+          stateSelect={true}
+          itemSelect={(v) => {
+            if (RoomSelection.id == v.id) {
+              deselectRoom();
+              onResetForm();
+            } else {
+              selectRoom(v);
+              onValueChange('room', v)
+              //  onInputChange({ target: { name: 'room', value: v.name } });
+            }
+            handleModalRoom(false)
+          }}
+        />
+      </ModalSelectComponent>
         : <></>
       }
+      {
+        modalClient ? <ModalSelectComponent
+          stateSelect={true}
+          stateMultiple={false}
+          title='Clientes'
+          opendrawer={modalClient}
+          handleDrawer={() => handleModalClient(false)}
+        >
+          <CustomerTable
+            stateSelect={true}
+            itemSelect={(v) => {
+              if (CustomerSelection.id == v.id) {
+                onResetForm()
+              } else {
+                selectCustomer(v)
+                onValueChange('customer', v)
+                // onInputChange({ target: { name: 'customer', value: v.institution_name}})
+              }
+              handleModalClient(false)
+            }}
+          />
+        </ModalSelectComponent> : <></>
+      }
+
       <Container>
-        <SliderCalendar style={{ width: numberSelected != 0 ? '70%' : '100%'}}>
-            <ComponentSelect
-              // label={null}
-              // labelChip={['name']}
-              title={room != null ? room : 'Ambiente'}
-              onPressed={() => handleModal(true)}
-              error={false}
-              helperText={''}
-              color="#ebfef8"
-            />
-            <CalendarComponent
-              select={Object.keys(RoomSelection).length != 0}
-              onSelect={ ( isSelected : boolean ) => toggleExpanded(isSelected)}
-            />
+        <SliderCalendar style={{ width: selected ? '70%' : '100%' }}>
+          <Grid container>
+            <Grid item xs={12} sm={6} sx={{ margin: '0px 0px' }}>
+              <ComponentSelect
+                title={customer != null ? customer.institution_name : 'Cliente'}
+                onPressed={() => handleModalClient(true)}
+                error={false}
+                helperText={''}
+                color="#ebfef8"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <ComponentSelect
+                title={room != null ? room.name : 'Ambiente'}
+                onPressed={() => handleModalRoom(true)}
+                error={false}
+                helperText={''}
+                color="#ebfef8"
+              />
+            </Grid>
+          </Grid>
+          <CalendarComponent
+            select={Object.keys(RoomSelection).length != 0}
+            onSelect={(isSelected: boolean, daySelected: Date) => toggleExpanded(isSelected, daySelected)}
+          />
         </SliderCalendar>
-        <SliderContent style={{width: numberSelected != 0 ? '30%' : ''}}>
-            <CartSelectedProduct />
+        <SliderContent style={{ width: selected ? '30%' : '' }}>
+          <CartSelectedProduct
+            selected={selected}
+            day={day}
+            customer={customer}
+            room={room}
+          // leakedProducts={leakedProducts}
+          />
         </SliderContent>
       </Container>
     </>

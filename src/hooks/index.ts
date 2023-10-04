@@ -32,3 +32,6 @@ export * from './useProductStore';
 
 /* HOUR RANGES STORE */
 export * from './useHourRangeStore';
+
+/* EVENTS STORE */
+export * from './useEventStore';

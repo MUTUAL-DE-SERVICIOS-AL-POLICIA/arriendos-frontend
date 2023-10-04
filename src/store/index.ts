@@ -10,6 +10,7 @@ export * from './rates/rateSlice';
 export * from './requirements/requirementSlice';
 export * from './products/productSlice';
 export * from './hourRanges/hourRangeSlice';
+export * from './events/eventSlice';
 
 export * from './selectedProducts/productSelectedSlice';
 

@@ -1,11 +1,11 @@
 {
     "days": [
+        "DOMINGO",
         "LUNES",
         "MARTES",
         "MIÉRCOLES",
         "JUEVES",
         "VIERNES",
-        "SÁBADO",
-        "DOMINGO"
+        "SÁBADO"
     ]
 }

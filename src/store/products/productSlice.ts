@@ -4,6 +4,7 @@ export const productSlice = createSlice({
     name: 'product',
     initialState: {
         products: [],
+        leakedProducts: [],
         flag: false
     },
     reducers: {
@@ -13,9 +14,16 @@ export const productSlice = createSlice({
         refreshProduct: (state, /* action */) => {
             state.flag = !state.flag
         },
+        setLeakedProducts: (state, action) => {
+            state.leakedProducts = action.payload.products;
+        }
     }
 });
 
 
 // Action creators are generated for each case reducer function
-export const { setProducts, refreshProduct } = productSlice.actions;
+export const {
+    setProducts,
+    refreshProduct,
+    setLeakedProducts
+} = productSlice.actions;

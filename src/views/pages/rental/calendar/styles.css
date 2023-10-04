@@ -9,3 +9,6 @@
   transition-duration: initial;
   transform: scale(0.94);
 }
+.clickable {
+  cursor:pointer;
+}
