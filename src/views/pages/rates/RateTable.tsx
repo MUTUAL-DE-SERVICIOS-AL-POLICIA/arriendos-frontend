@@ -2,7 +2,7 @@ import { ComponentSearch, ComponentTablePagination } from "@/components";
 import { useSelectorStore } from "@/hooks";
 import { useRateStore } from "@/hooks/useRateStore";
 import { RateModel } from "@/models";
-import { DeleteOutline, SettingsOutlined } from "@mui/icons-material";
+import { DeleteOutline, Edit } from "@mui/icons-material";
 import { Checkbox, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
@@ -23,7 +23,7 @@ export const RateTable = (props: tableProps) => {
 
   /*DATA */
   const { selections = [], selectOne, deselectOne, deselectAll } = useSelectorStore();
-  const { rates = [], flag, getRates } = useRateStore();
+  const { rates = [], flag, getRates, deleteRemoveRate } = useRateStore();
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(limitInit)
@@ -80,9 +80,9 @@ export const RateTable = (props: tableProps) => {
                         spacing={2}
                       >
                         <IconButton onClick={() => handleEdit!(rate)}>
-                          <SettingsOutlined color="info" />
+                          <Edit color="info" />
                         </IconButton>
-                        <IconButton onClick={() => { }}>
+                        <IconButton onClick={() => deleteRemoveRate(rate)}>
                           <DeleteOutline color="error" />
                         </IconButton>
                       </Stack>

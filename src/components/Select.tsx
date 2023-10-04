@@ -1,28 +1,27 @@
-
-import { useSelectorStore } from '@/hooks';
 import { Button, Chip, Typography } from '@mui/material';
 import React from 'react';
 
-export const ComponentSelect = React.memo((
-    {
+interface elementsProps {
+    label?: string;
+    title: string;
+    onPressed: any;
+    items?: any;
+    onRemove?: (value: number) => void;
+    error?: boolean;
+    helperText?: string;
+}
+
+export const ComponentSelect = React.memo((props: elementsProps) => {
+    const {
         label = '',
         title,
         onPressed,
         items = [],
-        select = 'id',
+        onRemove,
         error = false,
         helperText,
-    }:
-        {
-            label?: string,
-            title: string,
-            onPressed: any,
-            items?: any,
-            select?: string,
-            error?: boolean,
-            helperText?: string,
-        }) => {
-    const { selections = [], deselectOne } = useSelectorStore();
+    } = props;
+
 
     return (
         <>
@@ -67,9 +66,7 @@ export const ComponentSelect = React.memo((
                                         color="primary"
                                         label={data.name}
                                         style={{ margin: '1px' }}
-                                        onDelete={() => {
-                                            deselectOne(data.id)
-                                        }}
+                                        onDelete={() => onRemove!(data.id)}
                                     />
                                 );
                             })}
