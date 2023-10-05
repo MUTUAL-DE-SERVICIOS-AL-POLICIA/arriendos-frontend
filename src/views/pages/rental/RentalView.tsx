@@ -33,20 +33,6 @@ const SliderContent = styled('div')`
   width: 0%;
 `;
 
-const dateSelected = (date: Date) => {
-  return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
-}
-
-const convertDate = (date: string) => {
-  const partDate = date.split("/")
-  const day = parseInt(partDate[0], 10)
-  const month = parseInt(partDate[1], 10) - 1
-  const year = parseInt(partDate[2], 10)
-
-  const dateNew: Date = new Date(day, month, year)
-
-  return dateNew
-}
 
 export const RentalView = () => {
 
@@ -79,9 +65,13 @@ export const RentalView = () => {
   }
   useEffect(() => {
     if (day != null) {
+      console.log(CustomerSelection)
+      console.log(RoomSelection)
       postLeakedProduct({
-        customer_type: 2,
-        room_id: 1
+        customer_type: CustomerSelection.customer_type.id,
+        // customer_type: 2,
+        room_id: RoomSelection.id
+        // room_id: 1
       }).then((data)=>{
         setLeakedProductReload([...data.filter((e:any) =>e.day.includes(days.days[day.getDay()]))]);
       })
@@ -143,7 +133,7 @@ export const RentalView = () => {
           <Grid container>
             <Grid item xs={12} sm={6} sx={{ margin: '0px 0px' }}>
               <ComponentSelect
-                title={customer != null ? customer.institution_name : 'Cliente'}
+                title={customer != null ? (customer.institution_name ?? customer.contacts[0].name) : 'Cliente'}
                 onPressed={() => handleModalClient(true)}
                 error={false}
                 helperText={''}

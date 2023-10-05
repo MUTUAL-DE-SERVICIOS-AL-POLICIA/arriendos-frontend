@@ -5,7 +5,8 @@ export const productSlice = createSlice({
     initialState: {
         products: [],
         leakedProducts: [],
-        flag: false
+        flag: false,
+        leases: []
     },
     reducers: {
         setProducts: (state, action) => {
@@ -16,6 +17,9 @@ export const productSlice = createSlice({
         },
         setLeakedProducts: (state, action) => {
             state.leakedProducts = action.payload.products;
+        },
+        setLeases: (state, action) => {
+            state.leases = action.payload.leases;
         }
     }
 });
@@ -25,5 +29,6 @@ export const productSlice = createSlice({
 export const {
     setProducts,
     refreshProduct,
-    setLeakedProducts
+    setLeakedProducts,
+    setLeases
 } = productSlice.actions;

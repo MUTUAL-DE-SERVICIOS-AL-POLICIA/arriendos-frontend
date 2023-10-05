@@ -3,7 +3,8 @@ import { getMessagesES, localizer } from "@/helpers";
 import { CalendarEvent } from ".";
 import { Calendar } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { useSelectedProductStore } from "@/hooks";
+import { useProductStore, useSelectedProductStore } from "@/hooks";
+
 
 import './styles.css';
 import { Paper } from "@mui/material";
@@ -19,14 +20,35 @@ function sameDay(d1: any, d2: any) {
 //   selectedDate.setHours(0, 0, 0, 0);
 //   return selectedDate < currentDate ?? false
 // }
+const events = [
+  {
+    id: 0,
+    title: 'All Day Event very long title',
+    allDay: true,
+    start: new Date(2023, 9, 4),
+    end: new Date(2023, 9, 4),
+  },
+  {
+    id: 1,
+    title: 'Mi cumpleaños',
+    allDay: true,
+    start: new Date(2023, 1, 22),
+    end: new Date(2023, 1, 22)
+  }
+]
 
 export const CalendarComponent = ({ select, onSelect }: { select: boolean, onSelect: any }) => {
 
   const { selectedProducts, setSelectedProduct, unsetSElectedProduct, removeProducts } = useSelectedProductStore();
   const [lastView, setLastView] = useState('month');
   const [screenHeight, setScreenHeight] = useState(window.innerHeight);
+  const { leases, getLeases } = useProductStore()
 
   useEffect(() => {
+    getLeases().then((data) => {
+      console.log("ejecutandose leases")
+      console.log(data)
+    })
     const handleResize = () => {
       setScreenHeight(window.innerHeight);
     };
@@ -46,18 +68,6 @@ export const CalendarComponent = ({ select, onSelect }: { select: boolean, onSel
   };
 
   const onSelectSlot = async (slotInfo: any) => {
-
-    // const currentDate = new Date();
-    // const selectedDate = slotInfo.start;
-    // if (noClickable(selectedDate, currentDate)) return;
-
-    // if (selectedProducts.map((e: any) => e.start.getTime()).includes(slotInfo.start.getTime())) {
-    //   onSelect(false) // desmarcar
-    //   unsetSElectedProduct(slotInfo);
-    // } else {
-    //   onSelect(true) // marcar
-    //   setSelectedProduct(slotInfo);
-    // }
 
     if (selectedProducts.map((e: any) => e.start.getTime()).includes(slotInfo.start.getTime())) {
       removeProducts()
@@ -89,6 +99,7 @@ export const CalendarComponent = ({ select, onSelect }: { select: boolean, onSel
         onView={setLastView}
         onSelectSlot={onSelectSlot}
         selectable={select}
+        events={events}
       />
     </Paper>
   )

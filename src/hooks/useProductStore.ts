@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { coffeApiKevin, coffeApiLeandro } from '@/services';
-import { refreshProduct, setProducts, setLeakedProducts } from '@/store';
+import { refreshProduct, setProducts, setLeakedProducts, setLeases } from '@/store';
 import Swal from 'sweetalert2';
 import { ProductModel } from '@/models';
 
@@ -97,6 +97,27 @@ export const useProductStore = () => {
         dispatch(setLeakedProducts({products: array}))
     }
 
+    const postCreateLeases = async (body: object) => {
+        try {
+            const { data } = await coffeApiKevin.post('/leases/', body)
+
+            Swal.fire('Producto creado correctamente', '', 'success');
+        } catch(error: any) {
+            Swal.fire('Oops ocurrio algo', error.response, 'error')
+        }
+    }
+
+    const getLeases = async () => {
+        try {
+            console.log("OBTENIENDO ARRIENDOS")
+            const { data } = await coffeApiKevin.get('/leases/')
+            dispatch(setLeases({ leases: data }))
+            console.log(data)
+        } catch(error:any) {
+            Swal.fire('Oops ocurrio algo', error.response, 'error')
+        }
+    }
+
 
     return {
         //* Propiedades
@@ -109,6 +130,8 @@ export const useProductStore = () => {
         patchUpdateProduct,
         deleteRemoveProduct,
         postLeakedProduct,
-        setLeakedProductReload
+        setLeakedProductReload,
+        postCreateLeases,
+        getLeases
     }
 }

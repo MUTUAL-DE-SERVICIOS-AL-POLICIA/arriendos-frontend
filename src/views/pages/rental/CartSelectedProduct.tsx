@@ -44,7 +44,7 @@ export const CartSelectedProduct = ( selected: any ) => {
 
   const { selectedProducts } = useSelectedProductStore();
   const { events, getEvents } = useEventStore()
-  const { leakedProducts =[]} = useProductStore()
+  const { leakedProducts =[], postCreateLeases} = useProductStore()
 
 
   const date = new Date(Date.parse(selected.day))
@@ -102,9 +102,15 @@ export const CartSelectedProduct = ( selected: any ) => {
   }
 
   const handleCreation = () => {
-    console.log(selected.customer)
+
     console.log(products)
-    // console.log(shoppingCart)
+    const request:any = new Object()
+    request.customer = selected.customer.customer_type.id
+    products.forEach((e:any) => {
+      e.start_time = "15:00:00"
+      e.end_time = "19:00:00"
+    })
+    request.selected_products = products
   }
 
   function renderItem({ item, handleRemoveProduct } : RenderItemOptions) {
@@ -144,7 +150,7 @@ export const CartSelectedProduct = ( selected: any ) => {
                 id="event"
                 options={events}
                 getOptionLabel={(option:any) => option.name}
-                renderInput={(params) => <TextField {...params} label="controllable" />}
+                renderInput={(params) => <TextField {...params} label="Eventos" />}
               />
             </FormControl>
           </Grid>
