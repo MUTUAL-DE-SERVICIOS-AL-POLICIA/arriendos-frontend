@@ -18,12 +18,14 @@ function sameDay(d1: any, d2: any) {
 interface calendarProps {
   select: boolean;
   onSelect: (isSelected: boolean, daySelected: Date) => void;
+  onEvents: (listSelected: []) => void;
 }
 
 export const CalendarComponent = (props: calendarProps) => {
   const {
     select,
     onSelect,
+    onEvents,
   } = props
   const { selectedProducts, setSelectedProduct, removeProducts } = useSelectedProductStore();
   const [lastView, setLastView] = useState('month');
@@ -54,6 +56,21 @@ export const CalendarComponent = (props: calendarProps) => {
   };
 
   const onSelectSlot = async (slotInfo: any) => {
+
+    const dateEntry = new Date(slotInfo.start).toISOString().split('T')[0]
+    const grouped = leases.reduce((accumulator:any, currentValue:any) => {
+      const index = new Date(currentValue.start)
+      const date = index.toISOString().split('T')[0]
+      if(!accumulator[date]) {
+        accumulator[date] = []
+      }
+      accumulator[date].push(currentValue)
+      return accumulator
+    }, {})
+
+    // console.log(dateEntry)
+    // console.log(grouped[dateEntry])
+    grouped[dateEntry] ? onEvents(grouped[dateEntry]) : onEvents([])
 
     if (selectedProducts.map((e: any) => e.start.getTime()).includes(slotInfo.start.getTime())) {
       removeProducts()

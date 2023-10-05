@@ -114,7 +114,6 @@ export const useProductStore = () => {
                 const event: any = {}
                 event.id = i
                 event.title = element.event_type_name
-                event.allDay = true
                 event.start = new Date(element.start_time)
                 event.end = new Date(element.end_time)
                 events.push(event)

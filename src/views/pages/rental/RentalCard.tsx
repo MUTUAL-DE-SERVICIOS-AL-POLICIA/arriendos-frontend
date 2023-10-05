@@ -15,12 +15,23 @@ const dividerStyle = {
 interface cardProps {
     showGrow: boolean;
     date: Date;
+    events: []
+}
+
+const getHours = (date:Date) => {
+    const dateObject = new Date(date)
+    const hours = dateObject.getHours()
+    const minutes = dateObject.getMinutes()
+    const hourMinutes = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    console.log(hourMinutes)
+    return hourMinutes
 }
 
 export const RentalCard = (props: cardProps) => {
     const {
         showGrow,
         date,
+        events,
     } = props;
     return (
         <>
@@ -36,13 +47,14 @@ export const RentalCard = (props: cardProps) => {
                         />}
                     </div>
                     <List sx={{ width: '100%', maxWidth: 300, bgcolor: 'background.paper', margin: '5px auto', padding: '0px 5px', borderRadius: '10px' }}>
-                        <ListItem sx={{ padding: '0px 10px' }}>
-                            <ListItemText primary="Cumpleaños " secondary="09:00 - 17:00"></ListItemText>
-                        </ListItem>
-                        <Divider style={dividerStyle} />
-                        <ListItem sx={{ padding: '0px 10px' }}>
-                            <ListItemText primary="Boda coronel" secondary="08:00 - 16:00"></ListItemText>
-                        </ListItem>
+                        {events.map((e:any, index: number) => (
+                            <>
+                                <ListItem sx={{ padding: '0px 10px' }}>
+                                    <ListItemText key={e.id} primary={e.title} secondary={getHours(e.start)+ " - "+getHours(e.end) }></ListItemText>
+                                </ListItem>
+                                { index !== events.length - 1 && <Divider style={dividerStyle} /> }
+                            </>
+                        ))}
                     </List>
                 </Paper>
             </Grow>
