@@ -30,7 +30,7 @@ export const store = configureStore({
         requirements: requirementSlice.reducer,
         products: productSlice.reducer,
         hourRanges: hourRangeSlice.reducer,
-        events:eventSlice.reducer,
+        events: eventSlice.reducer,
 
         selectedProducts: selectedProductSlice.reducer,
 

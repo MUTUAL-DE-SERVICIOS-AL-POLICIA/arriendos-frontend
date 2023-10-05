@@ -1,6 +1,5 @@
-import { useCustomerStore, useForm, useRoomStore, useProductStore } from "@/hooks";
-import { useCallback, useEffect, useState } from "react";
-import { CartSelectedProduct } from ".";
+import { useForm, useProductStore } from "@/hooks";
+import { useEffect, useState } from "react";
 import { ComponentSelect, ModalSelectComponent } from "@/components";
 import { FormRentalModel } from "@/models";
 import { PropertieTable } from "../properties";
@@ -8,8 +7,7 @@ import { CalendarComponent } from "./calendar";
 import { styled } from '@mui/system';
 import { Grid } from "@mui/material";
 import { CustomerTable } from "../customers";
-import days from '@/models/days.json';
-import { useSelector } from "react-redux";
+import { CartSelectedProduct } from ".";
 
 const formFields: FormRentalModel = {
   room: null,
@@ -36,10 +34,8 @@ const SliderContent = styled('div')`
 
 export const RentalView = () => {
 
-  const { room, customer, onInputChange, onResetForm, onValueChange } = useForm(formFields);
-  const { RoomSelection, selectRoom, deselectRoom } = useRoomStore();
-  const { CustomerSelection, selectCustomer } = useCustomerStore();
-  const { leakedProducts, postLeakedProduct, setLeakedProductReload } = useProductStore()
+  const { room, customer, onValueChange } = useForm(formFields);
+  const { postLeakedProduct } = useProductStore()
 
   // Modal =================================================
   const [modalRoom, setModalRoom] = useState(false);
@@ -65,18 +61,16 @@ export const RentalView = () => {
   }
   useEffect(() => {
     if (day != null) {
-      postLeakedProduct({
-        customer_type: CustomerSelection.customer_type.id,
-        room_id: RoomSelection.id
-      }).then((data)=>{
-        setLeakedProductReload([...data.filter((e:any) =>e.day.includes(days.days[day.getDay()]))]);
+      postLeakedProduct(day, {
+        customer_type: customer.customer_type.id,
+        room_id: room.id
       })
     }
   }, [day])
 
   return (
     <>
-      {modalRoom ? <ModalSelectComponent
+      {modalRoom && <ModalSelectComponent
         stateSelect={true}
         stateMultiple={false}
         title='Ambientes'
@@ -86,22 +80,19 @@ export const RentalView = () => {
         <PropertieTable
           stateSelect={true}
           itemSelect={(v) => {
-            if (RoomSelection.id == v.id) {
-              deselectRoom();
-              onResetForm();
+            if (room == null || room.id != v.id) {
+              onValueChange('room', v);
             } else {
-              selectRoom(v);
-              onValueChange('room', v)
-              //  onInputChange({ target: { name: 'room', value: v.name } });
+              onValueChange('room', null);
             }
             handleModalRoom(false)
           }}
+          items={room == null ? [] : [room.id]}
         />
       </ModalSelectComponent>
-        : <></>
       }
       {
-        modalClient ? <ModalSelectComponent
+        modalClient && <ModalSelectComponent
           stateSelect={true}
           stateMultiple={false}
           title='Clientes'
@@ -111,17 +102,16 @@ export const RentalView = () => {
           <CustomerTable
             stateSelect={true}
             itemSelect={(v) => {
-              if (CustomerSelection.id == v.id) {
-                onResetForm()
+              if (customer == null || customer.id != v.id) {
+                onValueChange('customer', v);
               } else {
-                selectCustomer(v)
-                onValueChange('customer', v)
-                // onInputChange({ target: { name: 'customer', value: v.institution_name}})
+                onValueChange('customer', null);
               }
               handleModalClient(false)
             }}
+            items={customer == null ? [] : [customer.id]}
           />
-        </ModalSelectComponent> : <></>
+        </ModalSelectComponent>
       }
 
       <Container>
@@ -130,25 +120,23 @@ export const RentalView = () => {
             <Grid item xs={12} sm={6} sx={{ margin: '0px 0px' }}>
               <ComponentSelect
                 title={customer != null ? (customer.institution_name ?? customer.contacts[0].name) : 'Cliente'}
+                label={customer == null ? '' : 'Cliente'}
                 onPressed={() => handleModalClient(true)}
-                error={false}
-                helperText={''}
                 color="#ebfef8"
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <ComponentSelect
                 title={room != null ? room.name : 'Ambiente'}
+                label={room == null ? '' : 'Ambiente'}
                 onPressed={() => handleModalRoom(true)}
-                error={false}
-                helperText={''}
                 color="#ebfef8"
               />
             </Grid>
           </Grid>
           <CalendarComponent
-            select={Object.keys(RoomSelection).length != 0}
-            onSelect={(isSelected: boolean, daySelected: Date) => toggleExpanded(isSelected, daySelected)}
+            select={room != null && customer != null}
+            onSelect={(isSelected, daySelected) => toggleExpanded(isSelected, daySelected)}
           />
         </SliderCalendar>
         <SliderContent style={{ width: selected ? '30%' : '' }}>
@@ -157,7 +145,6 @@ export const RentalView = () => {
             day={day}
             customer={customer}
             room={room}
-          // leakedProducts={leakedProducts}
           />
         </SliderContent>
       </Container>

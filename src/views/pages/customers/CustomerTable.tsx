@@ -10,7 +10,8 @@ interface tableProps {
   stateSelect?: boolean;
   stateMultiple?: boolean
   itemSelect?: (customer: CustomerModel) => void;
-  itemEdit: (customer: CustomerModel) => void;
+  items?: any[];
+  itemEdit?: (customer: CustomerModel) => void;
 }
 
 export const CustomerTable = (props: tableProps) => {
@@ -18,6 +19,7 @@ export const CustomerTable = (props: tableProps) => {
     stateSelect = false,
     limitInit = 10,
     itemSelect,
+    items,
     itemEdit,
   } = props;
 
@@ -56,6 +58,7 @@ export const CustomerTable = (props: tableProps) => {
                 customer={customer}
                 stateSelect={stateSelect}
                 itemSelect={itemSelect}
+                items={items}
                 itemEdit={itemEdit}
               />
             ))}

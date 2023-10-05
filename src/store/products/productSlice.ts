@@ -13,7 +13,7 @@ export const productSlice = createSlice({
             state.products = action.payload.products;
         },
         refreshProduct: (state, /* action */) => {
-            state.flag = !state.flag
+            state.flag = !state.flag;
         },
         setLeakedProducts: (state, action) => {
             state.leakedProducts = action.payload.products;
@@ -30,5 +30,5 @@ export const {
     setProducts,
     refreshProduct,
     setLeakedProducts,
-    setLeases
+    setLeases,
 } = productSlice.actions;
