@@ -6,6 +6,7 @@ interface elementsProps {
     title: string;
     onPressed: any;
     items?: any;
+    color?: any;
     onRemove?: (value: number) => void;
     error?: boolean;
     helperText?: string;
@@ -17,6 +18,7 @@ export const ComponentSelect = React.memo((props: elementsProps) => {
         title,
         onPressed,
         items = [],
+        color,
         onRemove,
         error = false,
         helperText,
@@ -26,7 +28,7 @@ export const ComponentSelect = React.memo((props: elementsProps) => {
     return (
         <>
             <>
-                <div style={{ position: 'relative', paddingTop: '5px' }}>
+                <div style={{ position: 'relative', paddingTop: '5px', marginBottom: '10px' }}>
                     <span
                         style={{
                             position: 'absolute',
@@ -34,7 +36,6 @@ export const ComponentSelect = React.memo((props: elementsProps) => {
                             left: 2,
                             backgroundColor: 'white',
                             padding: '2px',
-                            fontSize: '0.8rem',
                             zIndex: 1,
                         }}
                     >
@@ -45,12 +46,13 @@ export const ComponentSelect = React.memo((props: elementsProps) => {
                         onClick={onPressed}
                         style={{
                             width: '100%',
-                            paddingTop: '12px',
-                            paddingBottom: '12px',
+                            paddingTop: '5px',
+                            paddingBottom: '5px',
                             color: 'black',
                             borderColor: error ? 'red' : 'black',
                             textTransform: 'none',
                             zIndex: 0,
+                            backgroundColor: color
                         }}
                     >
                         {title}

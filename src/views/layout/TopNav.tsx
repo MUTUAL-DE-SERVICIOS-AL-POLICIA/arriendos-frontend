@@ -14,7 +14,7 @@ import { AccountPopover } from '.';
 import noimage from '@/assets/images/profile.png';
 
 const SIDE_NAV_WIDTH = 200;
-const TOP_NAV_HEIGHT = 64;
+const TOP_NAV_HEIGHT = 50;
 
 export const TopNav = (({ onNavOpen,onTapSettings }: { onNavOpen: any,onTapSettings:any }) => {
 
@@ -30,7 +30,7 @@ export const TopNav = (({ onNavOpen,onTapSettings }: { onNavOpen: any,onTapSetti
                 component="header"
                 sx={{
                     backdropFilter: 'blur(6px)',
-                    backgroundColor: (theme) => alpha(theme.palette.background.default, 0.8),
+                    backgroundColor: (theme) => 'transparent',
                     position: 'sticky',
                     left: {
                         lg: `${SIDE_NAV_WIDTH}px`

@@ -3,7 +3,8 @@ import { createSlice } from '@reduxjs/toolkit';
 export const selectedProductSlice = createSlice({
     name: 'selectedProduct',
     initialState: {
-        selectedProducts: <Array<any>>[]
+        selectedProducts: <Array<any>>[],
+        selectedProduct: {}
     },
     reducers: {
         productsSelectedAdd: (state,action) => {
@@ -12,9 +13,23 @@ export const selectedProductSlice = createSlice({
         productsSelectedRemove: (state,action) => {
             state.selectedProducts = [...state.selectedProducts.filter((e:any)=>e.start.getTime() != action.payload.selectedProduct.start.getTime())];
         },
+        removeSelectedProducts: ( state ) => {
+            state.selectedProducts = []
+        },
+        productSelected: ( state, action ) => {
+            state.selectedProduct = action.payload.selected;
+        },
+        productDeselected: ( state ) => {
+            state.selectedProduct = {};
+        }
     }
 });
 
-
-// Action creators are generated for each case reducer function
-export const { productsSelectedAdd,productsSelectedRemove } = selectedProductSlice.actions;
+export
+    const {
+        productsSelectedAdd,
+        productsSelectedRemove,
+        productSelected,
+        productDeselected,
+        removeSelectedProducts,
+    } = selectedProductSlice.actions;

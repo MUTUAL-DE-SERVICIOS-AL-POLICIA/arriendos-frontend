@@ -1,4 +1,4 @@
-import { useCustomerStore, useSelectorStore } from "@/hooks";
+import { useCustomerStore } from "@/hooks";
 import { CustomerModel } from "@/models";
 import { DeleteOutline, EditOutlined, KeyboardArrowDownOutlined, KeyboardArrowUpOutlined } from "@mui/icons-material";
 import { Stack, TableCell, TableRow, IconButton, Checkbox, Collapse } from '@mui/material';
@@ -21,29 +21,22 @@ export const RowCustomer = (props: tableProps) => {
         itemEdit,
     } = props;
     const [open, setOpen] = useState(false);
-    const { selections = [], selectOne, deselectOne, deselectAll } = useSelectorStore();
-    const { deleteRemoveCustomer } = useCustomerStore();
-    const isSelected = selections.includes(`${customer.id}customer`);
+    const { CustomerSelection, deleteRemoveCustomer} = useCustomerStore();
+
     return (
         <>
             <TableRow>
                 {
                     stateSelect && <TableCell padding="checkbox">
                         <Checkbox
-                            checked={isSelected}
-                            onChange={(value) => {
-                                // if (value.target.checked) {
-                                //   deselectAll(hourRanges.map((e: HourRangeModel) => `${e.id}hourRange`));
-                                //   selectOne(`${hourRange.id}hourRange`);
-                                //   itemSelect!(hourRange);
-                                // } else {
-                                //   deselectOne(`${hourRange.id}hourRange`);
-                                // }
+                            checked={CustomerSelection.id == customer.id}
+                            onChange={() => {
+                              itemSelect!(customer)
                             }}
                         />
                     </TableCell>
                 }
-                <TableCell> {customer.nit ?? customer.contacts[0].ci_nit} </TableCell>
+                <TableCell>{customer.nit ?? customer.contacts[0].ci_nit} </TableCell>
                 <TableCell>{customer.institution_name ?? customer.contacts[0].name}</TableCell>
                 <TableCell>{customer.customer_type.name}</TableCell>
                 {

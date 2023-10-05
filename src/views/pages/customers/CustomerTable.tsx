@@ -21,10 +21,7 @@ export const CustomerTable = (props: tableProps) => {
     itemEdit,
   } = props;
 
-  /*DATA */
-  //const { selections = [], selectOne, deselectOne } = useSelectorStore();
   const { customers, flag, getCustomers } = useCustomerStore();
-
 
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);
@@ -33,6 +30,7 @@ export const CustomerTable = (props: tableProps) => {
   useEffect(() => {//escucha si "page", "limit" o "flag" se modifico
     getCustomers({ page, limit }).then((total) => setTotal(total))
   }, [page, limit, flag]);
+
 
   return (
     <Stack sx={{ paddingRight: '10px' }}>
@@ -48,7 +46,7 @@ export const CustomerTable = (props: tableProps) => {
               <TableCell sx={{ fontWeight: 'bold' }} >Nombre</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }} >Tipo de Cliente</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }} >Contactos</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }} >Acciones</TableCell>
+              {stateSelect && <TableCell sx={{ fontWeight: 'bold' }} >Acciones</TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>

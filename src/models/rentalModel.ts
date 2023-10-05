@@ -1,4 +1,4 @@
-import { RoomModel } from ".";
+import { CustomerModel, RoomModel } from ".";
 
 /* RENTAL MODEL */
 export interface RentalModel {
@@ -12,6 +12,7 @@ export interface RentalModel {
 /* FORM RENTAL MODEL */
 export interface FormRentalModel {
     room: RoomModel | null;
+    customer: CustomerModel | null;
 }
 
 /*FORM RENTAL MODEL VALIDATIONS */

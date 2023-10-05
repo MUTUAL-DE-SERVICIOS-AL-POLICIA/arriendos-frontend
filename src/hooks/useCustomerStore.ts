@@ -1,16 +1,19 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { coffeApiKevin } from '@/services';
-import { setCustomers, refreshCustomer } from '@/store';
+import { coffeApiKevin, coffeApiLeandro } from '@/services';
+import { setCustomers, refreshCustomer, setCustomerSelect, setClearSelectCustomer  } from '@/store';
 import Swal from 'sweetalert2';
 import { ContactModel, CustomerModel } from '@/models';
 
+// const api = coffeApiKevin;
+const api = coffeApiLeandro;
+
 export const useCustomerStore = () => {
-    const { customers, flag } = useSelector((state: any) => state.customers);
+    const { customers, flag, CustomerSelection } = useSelector((state: any) => state.customers);
     const dispatch = useDispatch();
 
     const getCustomers = async ({ page, limit }: { page: number, limit: number }) => {
         console.log('OBTENIENDO TODOS LOS CLIENTES')
-        const { data } = await coffeApiKevin.get(`/customers/?page=${page}&limit=${limit}`);
+        const { data } = await api.get(`/customers/?page=${page}&limit=${limit}`);
         console.log(data)
         dispatch(setCustomers({ customers: data.customers }));
         return data.total
@@ -20,7 +23,7 @@ export const useCustomerStore = () => {
         try {
             console.log('CREANDO UN NUEVO CLIENTE');
             console.log(body)
-            const { data } = await coffeApiKevin.post(`/customers/`, body);
+            const { data } = await api.post(`/customers/`, body);
             console.log(data)
             dispatch(refreshCustomer());
             Swal.fire('Cliente creado correctamente', '', 'success');
@@ -32,7 +35,7 @@ export const useCustomerStore = () => {
     const patchUpdateCustomer = async (id: number, body: object) => {
         try {
             console.log('EDITANDO UN CLIENTE');
-            const { data } = await coffeApiKevin.patch(`/customers/${id}`, body);
+            const { data } = await api.patch(`/customers/${id}`, body);
             console.log(data)
             dispatch(refreshCustomer());
             Swal.fire('Cliente editado correctamente', '', 'success');
@@ -56,7 +59,7 @@ export const useCustomerStore = () => {
             if (result.isConfirmed) {
                 try {
                     console.log('ELIMINANDO A UN CLIENTE')
-                    const { data } = await coffeApiKevin.delete(`/customers/${customer.id}`)
+                    const { data } = await api.delete(`/customers/${customer.id}`)
                     console.log(data)
                     dispatch(refreshCustomer());
                     Swal.fire(
@@ -76,7 +79,7 @@ export const useCustomerStore = () => {
         try {
             console.log('AGREGANDO UN NUEVO CONTACTO');
             console.log(body)
-            const { data } = await coffeApiKevin.post(`/customers/contact/`, body);
+            const { data } = await api.post(`/customers/contact/`, body);
             console.log(data)
             dispatch(refreshCustomer());
             Swal.fire('Contacto creado correctamente', '', 'success');
@@ -88,7 +91,7 @@ export const useCustomerStore = () => {
     const patchUpdateContact = async (id: number, body: object) => {
         try {
             console.log('EDITANDO CONTACTO');
-            const { data } = await coffeApiKevin.patch(`/customers/contact/${id}`, body);
+            const { data } = await api.patch(`/customers/contact/${id}`, body);
             console.log(data)
             dispatch(refreshCustomer());
             Swal.fire('Contacto editado correctamente', '', 'success');
@@ -112,7 +115,7 @@ export const useCustomerStore = () => {
             if (result.isConfirmed) {
                 try {
                     console.log('ELIMINANDO A UN CONTACTO')
-                    const { data } = await coffeApiKevin.delete(`/customers/contact${contact.id}`)
+                    const { data } = await api.delete(`/customers/contact${contact.id}`)
                     console.log(data)
                     dispatch(refreshCustomer());
                     Swal.fire(
@@ -128,6 +131,13 @@ export const useCustomerStore = () => {
     }
 
 
+    const selectCustomer = async(data:any) => {
+        dispatch(setCustomerSelect({ customer: data }))
+    }
+    const deselectCustomer = async () => {
+        dispatch(setClearSelectCustomer())
+    }
+
     return {
         //* Propiedades
         customers,
@@ -142,5 +152,9 @@ export const useCustomerStore = () => {
         postAddContact,
         patchUpdateContact,
         deleteRemoveContact,
+        // Métodos de selector de empleado
+        CustomerSelection,
+        selectCustomer,
+        deselectCustomer
     }
 }

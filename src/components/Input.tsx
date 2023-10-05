@@ -44,12 +44,12 @@ export const ComponentInput = memo((
                 style: {
                     color: 'black',
                     height: '50px',
-                    borderColor: 'black'
+                    borderColor: '#0B815A'
                 },
             }}
             sx={{
                 padding: '2px',
-                margin: '4px',
+                margin: '0px',
                 '& label.Mui-focused': {
                     color: 'black',
                 },

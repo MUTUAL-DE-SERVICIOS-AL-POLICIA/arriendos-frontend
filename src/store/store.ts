@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import {
     authSlice,
     customerSlice,
+    eventSlice,
     hourRangeSlice,
     productSlice,
     propertieSlice,
@@ -29,6 +30,7 @@ export const store = configureStore({
         requirements: requirementSlice.reducer,
         products: productSlice.reducer,
         hourRanges: hourRangeSlice.reducer,
+        events:eventSlice.reducer,
 
         selectedProducts: selectedProductSlice.reducer,
 

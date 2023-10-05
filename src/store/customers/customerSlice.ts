@@ -4,7 +4,8 @@ export const customerSlice = createSlice({
     name: 'customer',
     initialState: {
         customers: [],
-        flag: false
+        flag: false,
+        CustomerSelection: <object>{}
     },
     reducers: {
         setCustomers: (state, action) => {
@@ -13,9 +14,21 @@ export const customerSlice = createSlice({
         refreshCustomer: (state, /* action */) => {
             state.flag = !state.flag
         },
+        setCustomerSelect: (state, action) => {
+            state.CustomerSelection = action.payload.customer;
+            console.log(state.CustomerSelection)
+        },
+        setClearSelectCustomer: (state) => {
+            state.CustomerSelection = {};
+        }
     }
 });
 
 
 // Action creators are generated for each case reducer function
-export const { setCustomers, refreshCustomer } = customerSlice.actions;
+export const {
+    setCustomers,
+    refreshCustomer,
+    setCustomerSelect,
+    setClearSelectCustomer
+} = customerSlice.actions;
