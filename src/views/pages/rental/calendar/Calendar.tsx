@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
 import { getMessagesES, localizer } from "@/helpers";
 import { CalendarEvent } from ".";
+import { useProductStore, useSelectedProductStore } from "@/hooks";
 import { Calendar } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { useProductStore, useSelectedProductStore } from "@/hooks";
 
 
 import './styles.css';
 import { Paper } from "@mui/material";
-import { setLeases } from "@/store";
-import { el } from "date-fns/locale";
 
 function sameDay(d1: any, d2: any) {
   return d1.getFullYear() === d2.getFullYear() &&
@@ -17,12 +15,20 @@ function sameDay(d1: any, d2: any) {
     d1.getDate() === d2.getDate();
 }
 
-export const CalendarComponent = ({ select, onSelect }: { select: boolean, onSelect: any }) => {
+interface calendarProps {
+  select: boolean;
+  onSelect: (isSelected: boolean, daySelected: Date) => void;
+}
 
+export const CalendarComponent = (props: calendarProps) => {
+  const {
+    select,
+    onSelect,
+  } = props
   const { selectedProducts, setSelectedProduct, removeProducts } = useSelectedProductStore();
   const [lastView, setLastView] = useState('month');
   const [screenHeight, setScreenHeight] = useState(window.innerHeight);
-  const { leases = [], getLeases, setLeasesReload } = useProductStore()
+  const { leases = [], getLeases } = useProductStore()
 
   useEffect(() => {
     const handleResize = () => {
@@ -33,21 +39,7 @@ export const CalendarComponent = ({ select, onSelect }: { select: boolean, onSel
   }, [window.innerHeight]);
 
   useEffect(() => {
-    getLeases().then((data) => {
-      let i = 0;
-      const events:any = []
-      data.forEach((element:any) => {
-        const event:any = {}
-        event.id = i
-        event.title = element.event_type_name
-        event.allDay = true
-        event.start = new Date(element.start_time)
-        event.end = new Date(element.end_time)
-        events.push(event)
-        i++
-      });
-      setLeasesReload(events)
-    })
+    getLeases();
   }, [])
 
   const calendarStyle = (date: any) => {
@@ -75,14 +67,14 @@ export const CalendarComponent = ({ select, onSelect }: { select: boolean, onSel
   };
 
   return (
-    <Paper sx={{ padding: '15px', borderRadius: '10px'}}>
+    <Paper sx={{ padding: '15px', borderRadius: '10px' }}>
       <Calendar
         culture='es'
         localizer={localizer}
         defaultView={lastView}
         startAccessor="start"
         endAccessor="end"
-        style={{ height: `${screenHeight - 150}px`, cursor: 'pointer'}}
+        style={{ height: `${screenHeight - 150}px`, cursor: 'pointer' }}
         messages={getMessagesES()}
         dayPropGetter={(date: any) => ({
           className: calendarStyle(date),

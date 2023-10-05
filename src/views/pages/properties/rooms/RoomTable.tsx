@@ -39,7 +39,6 @@ export const RoomTable = (props: tableProps) => {
                         </TableHead>
                         <TableBody>
                             {rooms.map((room: RoomModel) => {
-                                // const isSelected = RoomSelection.id == room.id;
                                 const isSelected = items.includes(room.id);
                                 return (
                                     <TableRow

@@ -9,7 +9,8 @@ interface tableProps {
     customer: CustomerModel;
     stateSelect: boolean;
     itemSelect?: (customer: CustomerModel) => void;
-    itemEdit: (customer: CustomerModel) => void;
+    items?: any[];
+    itemEdit?: (customer: CustomerModel) => void;
 }
 
 
@@ -18,21 +19,20 @@ export const RowCustomer = (props: tableProps) => {
         customer,
         stateSelect,
         itemSelect,
+        items,
         itemEdit,
     } = props;
     const [open, setOpen] = useState(false);
-    const { CustomerSelection, deleteRemoveCustomer} = useCustomerStore();
-
+    const { deleteRemoveCustomer } = useCustomerStore();
+    const isSelected = items?.includes(customer.id);
     return (
         <>
             <TableRow>
                 {
                     stateSelect && <TableCell padding="checkbox">
                         <Checkbox
-                            checked={CustomerSelection.id == customer.id}
-                            onChange={() => {
-                              itemSelect!(customer)
-                            }}
+                            checked={isSelected}
+                            onChange={() => itemSelect!(customer)}
                         />
                     </TableCell>
                 }
