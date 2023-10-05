@@ -72,6 +72,7 @@ export const CartSelectedProduct = (selected: any) => {
         <RentalCard
           showGrow={showGrow}
           date={date}
+          events={selected.events}
         />
         <Grow in={selected.selected} style={{ transformOrigin: '0 0 0' }} {...(selected.selected ? { timeout: 2300 } : {})}>
           <Paper sx={{ margin: '15px 0px', padding: '7px 7px 2px 7px', borderRadius: '10px' }}>
