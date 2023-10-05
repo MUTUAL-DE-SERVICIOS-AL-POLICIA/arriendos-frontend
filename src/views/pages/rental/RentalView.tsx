@@ -65,17 +65,13 @@ export const RentalView = () => {
   }
   useEffect(() => {
     if (day != null) {
-      console.log(CustomerSelection)
-      console.log(RoomSelection)
       postLeakedProduct({
         customer_type: CustomerSelection.customer_type.id,
-        // customer_type: 2,
         room_id: RoomSelection.id
-        // room_id: 1
       }).then((data)=>{
         setLeakedProductReload([...data.filter((e:any) =>e.day.includes(days.days[day.getDay()]))]);
       })
-    } else console.log("false")
+    }
   }, [day])
 
   return (

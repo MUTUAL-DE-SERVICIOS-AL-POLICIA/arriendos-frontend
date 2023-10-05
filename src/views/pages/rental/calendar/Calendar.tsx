@@ -8,6 +8,8 @@ import { useProductStore, useSelectedProductStore } from "@/hooks";
 
 import './styles.css';
 import { Paper } from "@mui/material";
+import { setLeases } from "@/store";
+import { el } from "date-fns/locale";
 
 function sameDay(d1: any, d2: any) {
   return d1.getFullYear() === d2.getFullYear() &&
@@ -15,46 +17,38 @@ function sameDay(d1: any, d2: any) {
     d1.getDate() === d2.getDate();
 }
 
-// function noClickable(selectedDate: Date, currentDate: Date) {
-//   currentDate.setHours(0, 0, 0, 0);
-//   selectedDate.setHours(0, 0, 0, 0);
-//   return selectedDate < currentDate ?? false
-// }
-const events = [
-  {
-    id: 0,
-    title: 'All Day Event very long title',
-    allDay: true,
-    start: new Date(2023, 9, 4),
-    end: new Date(2023, 9, 4),
-  },
-  {
-    id: 1,
-    title: 'Mi cumpleaños',
-    allDay: true,
-    start: new Date(2023, 1, 22),
-    end: new Date(2023, 1, 22)
-  }
-]
-
 export const CalendarComponent = ({ select, onSelect }: { select: boolean, onSelect: any }) => {
 
-  const { selectedProducts, setSelectedProduct, unsetSElectedProduct, removeProducts } = useSelectedProductStore();
+  const { selectedProducts, setSelectedProduct, removeProducts } = useSelectedProductStore();
   const [lastView, setLastView] = useState('month');
   const [screenHeight, setScreenHeight] = useState(window.innerHeight);
-  const { leases, getLeases } = useProductStore()
+  const { leases = [], getLeases, setLeasesReload } = useProductStore()
 
   useEffect(() => {
-    getLeases().then((data) => {
-      console.log("ejecutandose leases")
-      console.log(data)
-    })
     const handleResize = () => {
       setScreenHeight(window.innerHeight);
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [window.innerHeight]);
+
+  useEffect(() => {
+    getLeases().then((data) => {
+      let i = 0;
+      const events:any = []
+      data.forEach((element:any) => {
+        const event:any = {}
+        event.id = i
+        event.title = element.event_type_name
+        event.allDay = true
+        event.start = new Date(element.start_time)
+        event.end = new Date(element.end_time)
+        events.push(event)
+        i++
+      });
+      setLeasesReload(events)
+    })
+  }, [])
 
   const calendarStyle = (date: any) => {
 
@@ -99,7 +93,7 @@ export const CalendarComponent = ({ select, onSelect }: { select: boolean, onSel
         onView={setLastView}
         onSelectSlot={onSelectSlot}
         selectable={select}
-        events={events}
+        events={leases}
       />
     </Paper>
   )

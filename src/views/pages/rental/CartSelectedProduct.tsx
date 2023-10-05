@@ -139,7 +139,7 @@ export const CartSelectedProduct = ( selected: any ) => {
           </div>
         </ListItem>
           <Grid item xs={12} sm={12} sx={{padding: '2px 5px'}}>
-            <FormControl sx={{ mr: 5, mb:.5, width: '100%'}} size="small">
+            <div>{`inputValue : ${inputValue} `}</div>
               <Autocomplete
                 value={value}
                 onChange={(event:any, newValue: string | null) => handleEvents(item.id, newValue)}
@@ -152,7 +152,6 @@ export const CartSelectedProduct = ( selected: any ) => {
                 getOptionLabel={(option:any) => option.name}
                 renderInput={(params) => <TextField {...params} label="Eventos" />}
               />
-            </FormControl>
           </Grid>
           <Grid item xs={12} sm={12} sx={{padding: '1px 5px'}}>
             <ComponentInput
