@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import { ProductModel } from '@/models';
 
 export const useProductStore = () => {
-    const { products, flag, leakedProducts } = useSelector((state: any) => state.products);
+    const { products, flag, leakedProducts, leases = [] } = useSelector((state: any) => state.products);
     const dispatch = useDispatch();
 
     const getProducts = async ({ page, limit, isFilter }: { page: number, limit: number, isFilter: boolean }) => {
@@ -81,11 +81,7 @@ export const useProductStore = () => {
 
     const postLeakedProduct = async (body: object) => {
         try {
-            // console.log('OBTENIENDO PRODUCTOS FILTRADOS')
-            // console.log(body)
             const { data } = await coffeApiLeandro.post('/product/Posible_product/', body)
-            // console.log(data)
-            // dispatch(setLeakedProducts({products:data.products}))
             return data.products;
         } catch(error: any) {
             Swal.fire('Oops ocurrio algo', error.response, 'error')
@@ -100,7 +96,6 @@ export const useProductStore = () => {
     const postCreateLeases = async (body: object) => {
         try {
             const { data } = await coffeApiKevin.post('/leases/', body)
-
             Swal.fire('Producto creado correctamente', '', 'success');
         } catch(error: any) {
             Swal.fire('Oops ocurrio algo', error.response, 'error')
@@ -109,13 +104,15 @@ export const useProductStore = () => {
 
     const getLeases = async () => {
         try {
-            console.log("OBTENIENDO ARRIENDOS")
             const { data } = await coffeApiKevin.get('/leases/')
-            dispatch(setLeases({ leases: data }))
-            console.log(data)
+            return data
         } catch(error:any) {
             Swal.fire('Oops ocurrio algo', error.response, 'error')
         }
+    }
+
+    const setLeasesReload = async (array: any) => {
+        dispatch(setLeases({leases: array}))
     }
 
 
@@ -124,6 +121,7 @@ export const useProductStore = () => {
         products,
         flag,
         leakedProducts,
+        leases,
         //* Métodos
         getProducts,
         postCreateProduct,
@@ -132,6 +130,7 @@ export const useProductStore = () => {
         postLeakedProduct,
         setLeakedProductReload,
         postCreateLeases,
-        getLeases
+        getLeases,
+        setLeasesReload
     }
 }
