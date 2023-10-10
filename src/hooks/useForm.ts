@@ -73,6 +73,18 @@ export const useForm = (initialForm: any = {}, formValidations: any = {}) => {
             [name]: state
         })
     }
+    const onListValuesChange = (names: string[], states: any[],) => {
+        // Copia el estado actual en un nuevo objeto
+        const updatedFormState = { ...formState };
+
+        // Itera sobre los nombres y estados y actualiza el objeto
+        names.forEach((name, index) => {
+            updatedFormState[name] = states[index];
+        });
+
+        // Establece el nuevo objeto actualizado como el estado
+        setFormState(updatedFormState);
+    }
 
 
 
@@ -101,6 +113,7 @@ export const useForm = (initialForm: any = {}, formValidations: any = {}) => {
         onSwitchChange,
         onArrayChange,
         onValueChange,
+        onListValuesChange,
         onResetForm,
 
         ...formValidation,

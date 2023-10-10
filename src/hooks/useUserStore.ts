@@ -1,8 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { coffeApiKevin, coffeApiLeandro } from '@/services';
+import { coffeApiKevin } from '@/services';
 import { setUsers, refreshUsers, setUsersLdap } from '@/store';
 import Swal from 'sweetalert2';
 import { UserModel } from '@/models';
+
+const api = coffeApiKevin;
 
 export const useUserStore = () => {
     const { usersLDAP, users, flag } = useSelector((state: any) => state.users);
@@ -11,7 +13,7 @@ export const useUserStore = () => {
     const getUsers = async ({ page, limit }: { page: number, limit: number }) => {
         try {
             console.log('OBTENIENDO TODOS LOS USUARIOS')
-            const { data } = await coffeApiLeandro.get(`/users/?page=${page}&limit=${limit}`)
+            const { data } = await api.get(`/users/?page=${page}&limit=${limit}`)
             console.log(data)
             dispatch(setUsers({ users: data.users }));
             return data.total
@@ -23,7 +25,7 @@ export const useUserStore = () => {
     const getUsersLdap = async () => {
         try {
             console.log('OBTENIENDO TODOS LOS USUARIOS EN LDAP');
-            const { data } = await coffeApiLeandro.get('/login/users_ldap/');
+            const { data } = await api.get('/login/users_ldap/');
             console.log(data)
             dispatch(setUsersLdap({ usersLDAP: data.users }));
             return data;
@@ -35,7 +37,7 @@ export const useUserStore = () => {
     const postCreateUser = async (body: object) => {
         try {
             console.log('CREANDO UN NUEVO USUARIO');
-            const { data } = await coffeApiLeandro.post(`/users/`, body);
+            const { data } = await api.post(`/users/`, body);
             console.log(data)
             dispatch(refreshUsers());
             Swal.fire('Usuario creado correctamente', '', 'success');
@@ -59,7 +61,7 @@ export const useUserStore = () => {
             if (result.isConfirmed) {
                 try {
                     console.log('ALTERNANDO ACTIVACIÓN DE UN USUARIO')
-                    const { data } = await coffeApiLeandro.delete(`/users/state/${user.id}`)
+                    const { data } = await api.delete(`/users/state/${user.id}`)
                     console.log(data)
                     dispatch(refreshUsers());
                     Swal.fire(

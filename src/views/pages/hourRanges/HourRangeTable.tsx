@@ -59,7 +59,7 @@ export const HourRangeTable = (props: tableProps) => {
                       />
                     </TableCell>
                   }
-                  <TableCell>{`${hourRange.name} HORAS`}</TableCell>
+                  <TableCell>{`${hourRange.time} HORAS`}</TableCell>
                   {
                     !stateSelect && <TableCell>
                       <Stack

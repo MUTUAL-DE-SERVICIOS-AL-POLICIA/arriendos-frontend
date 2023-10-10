@@ -63,7 +63,7 @@ export const RateTable = (props: tableProps) => {
                   }
                   <TableCell>{rate.name}</TableCell>
                   <TableCell>{rate.customer_type.map((e) => (<Typography key={e.id}>-{e.name}</Typography>))}</TableCell>
-                  <TableCell>{rate.requirement.map((e) => (<Typography key={e.id}>-{e.requirement_name}</Typography>))}</TableCell>
+                  <TableCell>{rate.requirements.map((e) => (<Typography key={e.id}>-{e.requirement_name}</Typography>))}</TableCell>
                   {
                     !stateSelect && <TableCell>
                       <Stack

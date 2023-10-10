@@ -36,7 +36,7 @@ export const RentalView = () => {
 
   const { room, customer, onValueChange } = useForm(formFields);
   const { postLeakedProduct } = useProductStore()
-  const [ events, setEvents ] = useState([])
+  const [events, setEvents] = useState([])
 
   // Modal =================================================
   const [modalRoom, setModalRoom] = useState(false);
@@ -105,6 +105,7 @@ export const RentalView = () => {
           handleDrawer={() => handleModalClient(false)}
         >
           <CustomerTable
+            limitInit={5}
             stateSelect={true}
             itemSelect={(v) => {
               if (customer == null || customer.id != v.id) {
@@ -118,7 +119,6 @@ export const RentalView = () => {
           />
         </ModalSelectComponent>
       }
-
       <Container>
         <SliderCalendar style={{ width: selected ? '70%' : '100%' }}>
           <Grid container>
@@ -142,7 +142,7 @@ export const RentalView = () => {
           <CalendarComponent
             select={room != null && customer != null}
             onSelect={(isSelected, daySelected) => toggleExpanded(isSelected, daySelected)}
-            onEvents={(listEvents:[]) => handleEvents(listEvents)}
+            onEvents={(listEvents: []) => handleEvents(listEvents)}
           />
         </SliderCalendar>
         <SliderContent style={{ width: selected ? '30%' : '' }}>

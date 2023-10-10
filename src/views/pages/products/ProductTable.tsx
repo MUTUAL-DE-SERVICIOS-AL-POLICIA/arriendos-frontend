@@ -53,7 +53,7 @@ export const ProductTable = (props: tableProps) => {
                 <TableCell>{product.room.property.name}</TableCell>
                 <TableCell>{product.room.name}</TableCell>
                 <TableCell>{product.rate.name}</TableCell>
-                <TableCell>{`${product.hour_range.name} horas`}</TableCell>
+                <TableCell>{`${product.hour_range.time} Hrs`}</TableCell>
                 <TableCell>{product.day.map((day, index) => (<Typography key={index}>- {day}</Typography>))}</TableCell>
                 <TableCell>{product.mount}</TableCell>
                 <TableCell>

@@ -13,12 +13,12 @@ interface createProps {
   item: RateModel | null;
 }
 const formFields: FormRateModel = {
-  name: '',
+  rate: '',
   customer_type: [],
   requirement: [],
 }
 const formValidations: FormRateValidations = {
-  name: [(value: string) => value.length >= 1, 'Debe ingresar la tarifa'],
+  rate: [(value: string) => value.length >= 1, 'Debe ingresar la tarifa'],
   customer_type: [(value: TypeCustomerModel[]) => value.length >= 1, 'Debe selecccionar almenos un tipo de cliente'],
   requirement: [(value: RequirementModel[]) => value.length >= 1, 'Debe seleccionar almenos un requisito'],
 }
@@ -34,9 +34,9 @@ export const CreateRate = (props: createProps) => {
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   const {
-    name, customer_type, requirement,
+    rate, customer_type, requirement,
     onInputChange, onValueChange, isFormValid, onResetForm,
-    nameValid, requirementValid, customer_typeValid } = useForm(item ?? formFields, formValidations);
+    rateValid, requirementValid, customer_typeValid } = useForm(item ?? formFields, formValidations);
 
   const sendSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -45,14 +45,14 @@ export const CreateRate = (props: createProps) => {
     if (item == null) {
       postCreateRate(
         {
-          name,
+          rate,
           requirement: requirement.map((e: RequirementModel) => e.id),
           customer_type: customer_type.map((e: TypeCustomerModel) => e.id),
         });
     } else {
       patchUpdateRate(item.id,
         {
-          name,
+          rate,
           requirement: requirement.map((e: RequirementModel) => e.id),
           customer_type: customer_type.map((e: TypeCustomerModel) => e.id),
         });
@@ -128,11 +128,11 @@ export const CreateRate = (props: createProps) => {
                 <ComponentInput
                   type="text"
                   label="Nombre"
-                  name="name"
-                  value={name}
+                  name="rate"
+                  value={rate}
                   onChange={onInputChange}
-                  error={!!nameValid && formSubmitted}
-                  helperText={formSubmitted ? nameValid : ''}
+                  error={!!rateValid && formSubmitted}
+                  helperText={formSubmitted ? rateValid : ''}
                 />
               </Grid>
               <Grid item xs={12} sm={12} sx={{ padding: '5px' }}>

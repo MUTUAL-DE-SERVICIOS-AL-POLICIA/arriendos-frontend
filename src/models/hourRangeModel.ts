@@ -1,14 +1,14 @@
 /* HOUR RANGE MODEL */
 export interface HourRangeModel {
     id: number;
-    name: string;
+    time: number;
 }
 /* FORM HOUR RANGE MODEL */
 export interface FormHourRangeModel {
-    name: string;
+    time: number;
 }
 
 /*FORM HOUR RANGE MODEL VALIDATIONS */
 export interface FormHourRangeValidations {
-    name: [(value: string) => boolean, string];
+    time: [(value: number) => boolean, string];
 }

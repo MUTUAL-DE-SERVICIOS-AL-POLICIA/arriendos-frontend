@@ -1,8 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { coffeApiLeandro } from '@/services';
+import { coffeApiKevin } from '@/services';
 import { addHourRanges, removeHourRange, setHourRanges, updateHourRanges } from '@/store';
 import Swal from 'sweetalert2';
 import { HourRangeModel } from '@/models';
+
+const api = coffeApiKevin;
 
 export const useHourRangeStore = () => {
     const { hourRanges } = useSelector((state: any) => state.hourRanges);
@@ -10,7 +12,7 @@ export const useHourRangeStore = () => {
 
     const getHourRanges = async () => {
         console.log('OBTENIENDO TODOS LOS RANGOS DE HORAS')
-        const { data } = await coffeApiLeandro.get('/product/hour-range/');
+        const { data } = await api.get('/product/hour-range/');
         console.log(data);
         dispatch(setHourRanges({ hourRanges: data }))
     }
@@ -18,9 +20,10 @@ export const useHourRangeStore = () => {
     const postCreateHourRange = async (body: object) => {
         try {
             console.log('CREANDO UN NUEVO RANGO DE HORAS');
-            const { data } = await coffeApiLeandro.post(`/product/hour-range/`, body)
+            const { data } = await api.post(`/product/hour-range/`, body)
             console.log(data);
             dispatch(addHourRanges({ hourRange: data }));
+            Swal.fire('Rango de hora creado correctamente', '', 'success');
         } catch (error: any) {
             Swal.fire('Oops ocurrio algo', error.response, 'error');
         }
@@ -29,9 +32,10 @@ export const useHourRangeStore = () => {
     const patchUpdateHourRange = async (id: number, body: object) => {
         try {
             console.log('EDITANDO UN RANGO DE HORAS');
-            const { data } = await coffeApiLeandro.patch(`/product/hour-range/${id}`, body)
+            const { data } = await api.patch(`/product/hour-range/${id}`, body)
             console.log(data);
             dispatch(updateHourRanges({ hourRange: data }));
+            Swal.fire('Rango de hora editado correctamente', '', 'success');
         } catch (error: any) {
             Swal.fire('Oops ocurrio algo', error.response, 'error');
         }
@@ -41,7 +45,7 @@ export const useHourRangeStore = () => {
 
         Swal.fire({
             title: '¿Estás seguro?',
-            text: `Estas eliminando el Rango de hora: ${hourRange.name}`,
+            text: `Estas eliminando el Rango de hora: ${hourRange.time} hora`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -52,12 +56,12 @@ export const useHourRangeStore = () => {
             if (result.isConfirmed) {
                 try {
                     console.log('ELIMINANDO UN RANGO DE HORA')
-                    const { data } = await coffeApiLeandro.delete(`/product/hour-range/${hourRange.id}`)
+                    const { data } = await api.delete(`/product/hour-range/${hourRange.id}`)
                     console.log(data)
                     dispatch(removeHourRange({ hourRange }));
                     Swal.fire(
                         `¡Listo!`,
-                        `${hourRange.name} fue eliminado`,
+                        `${hourRange.time} hora fue eliminado`,
                         'success'
                     )
                 } catch (error: any) {

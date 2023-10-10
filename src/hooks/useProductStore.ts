@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { coffeApiKevin, coffeApiLeandro } from '@/services';
+import { coffeApiKevin } from '@/services';
 import { refreshProduct, setProducts, setLeakedProducts, setLeases } from '@/store';
 import Swal from 'sweetalert2';
 import { ProductModel } from '@/models';
@@ -85,7 +85,9 @@ export const useProductStore = () => {
     const postLeakedProduct = async (day: Date, body: object) => {
         try {
             console.log('OBTENIENDO PRODUCTOS FILTRADOS')
+            console.log(body)
             const { data } = await api.post('/product/Posible_product/', body)
+            console.log(data)
             dispatch(setLeakedProducts({ products: [...data.products.filter((e: any) => e.day.includes(days.days[day.getDay()]))] }));
         } catch (error: any) {
             console.log(error)

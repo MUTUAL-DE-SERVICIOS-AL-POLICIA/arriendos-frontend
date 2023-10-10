@@ -3,7 +3,7 @@ import { useForm, useProductStore } from "@/hooks";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid } from "@mui/material";
 import { FormEvent, useCallback, useState } from "react";
 import { FormProductModel, FormProductValidations, HourRangeModel, ProductModel, RateModel, RoomModel } from "@/models";
-import { ComponentAutoComplete, ComponentInput, ComponentSelect, ModalSelectComponent } from "@/components";
+import { ComponentAutoCompleteSelect, ComponentInput, ComponentSelect, ModalSelectComponent } from "@/components";
 
 import days from '@/models/days.json';
 import { HourRangeTable } from "../hourRanges";
@@ -161,7 +161,7 @@ export const CreateProduct = (props: createProps) => {
           <DialogContent>
             <Grid container>
               <Grid item xs={12} sm={6} sx={{ padding: '5px' }}>
-                <ComponentAutoComplete
+                <ComponentAutoCompleteSelect
                   options={days.days}
                   label="Días"
                   value={day}
@@ -173,7 +173,7 @@ export const CreateProduct = (props: createProps) => {
               <Grid item xs={12} sm={6} sx={{ padding: '5px' }}>
                 <ComponentSelect
                   label={hour_range != null ? 'Rango de horas' : ''}
-                  title={hour_range != null ? hour_range.name : 'Rango de horas'}
+                  title={hour_range != null ? `${hour_range.time} Hrs` : 'Rango de horas'}
                   onPressed={() => handleModalHourRange(true)}
                   error={!!hour_rangeValid && formSubmitted}
                   helperText={formSubmitted ? hour_rangeValid : ''}

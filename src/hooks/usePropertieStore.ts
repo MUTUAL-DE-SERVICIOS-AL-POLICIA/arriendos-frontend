@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { coffeApiLeandro } from '@/services';
+import { coffeApiKevin } from '@/services';
 import { addPropertie, updatePropertie, setProperties } from '@/store';
 import Swal from 'sweetalert2';
 
-const api = coffeApiLeandro;
+const api = coffeApiKevin;
 
 export const usePropertieStore = () => {
     const { properties } = useSelector((state: any) => state.properties);
