@@ -1,11 +1,11 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { coffeApiKevin, coffeApiLeandro } from '@/services';
-import { setCustomers, refreshCustomer, setCustomerSelect, setClearSelectCustomer  } from '@/store';
+import { coffeApiKevin } from '@/services';
+import { setCustomers, refreshCustomer, setCustomerSelect, setClearSelectCustomer } from '@/store';
 import Swal from 'sweetalert2';
 import { ContactModel, CustomerModel } from '@/models';
 
 // const api = coffeApiKevin;
-const api = coffeApiLeandro;
+const api = coffeApiKevin;
 
 export const useCustomerStore = () => {
     const { customers, flag, CustomerSelection } = useSelector((state: any) => state.customers);
@@ -131,7 +131,7 @@ export const useCustomerStore = () => {
     }
 
 
-    const selectCustomer = async(data:any) => {
+    const selectCustomer = async (data: any) => {
         dispatch(setCustomerSelect({ customer: data }))
     }
     const deselectCustomer = async () => {

@@ -11,10 +11,10 @@ interface createProps {
 }
 
 const formFields: FormHourRangeModel = {
-  name: '',
+  time: 0,
 }
 const formValidations: FormHourRangeValidations = {
-  name: [(value: string) => value.length >= 1, 'Debe ingresar un rango'],
+  time: [(value: number) => value != 0, 'Debe ingresar un rango'],
 };
 
 
@@ -29,7 +29,7 @@ export const CreateHourRange = (props: createProps) => {
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   const {
-    name,
+    time,
     onInputChange, isFormValid, onResetForm,
     nameValid } = useForm(item ?? formFields, formValidations);
 
@@ -38,9 +38,9 @@ export const CreateHourRange = (props: createProps) => {
     setFormSubmitted(true);
     if (!isFormValid) return;
     if (item == null) {
-      postCreateHourRange({ name });
+      postCreateHourRange({ time });
     } else {
-      patchUpdateHourRange(item.id, { name });
+      patchUpdateHourRange(item.id, { time });
     }
     handleClose();
     onResetForm();
@@ -49,14 +49,14 @@ export const CreateHourRange = (props: createProps) => {
   return (
     <>
       <Dialog open={open} onClose={handleClose} >
-        <DialogTitle>{item == null ? 'Nuevo Rango de horas' : `${item.name}`}</DialogTitle>
+        <DialogTitle>{item == null ? 'Nuevo Rango de horas' : `${item.time} Horas`}</DialogTitle>
         <form onSubmit={sendSubmit}>
           <DialogContent sx={{ display: 'flex' }}>
             <ComponentInput
               type="text"
               label="Rango de hora"
-              name="name"
-              value={name}
+              name="time"
+              value={time}
               onChange={(V: any) => onInputChange(V, false, true)}
               error={!!nameValid && formSubmitted}
               helperText={formSubmitted ? nameValid : ''}

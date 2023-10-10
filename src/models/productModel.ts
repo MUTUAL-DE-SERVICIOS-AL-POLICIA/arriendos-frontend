@@ -21,10 +21,7 @@ export interface ProductModel {
             photo: string;
         };
     };
-    hour_range: {
-        id: number;
-        name: string;
-    };
+    hour_range: HourRangeModel;
     mount: number;
 }
 

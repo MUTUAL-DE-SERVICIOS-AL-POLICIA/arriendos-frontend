@@ -1,92 +1,102 @@
-import { ComponentInput } from "@/components"
-import { useEventStore } from "@/hooks";
+import { useEventStore, useForm } from "@/hooks";
 import { HighlightOffOutlined, ProductionQuantityLimits } from "@mui/icons-material"
-import { Autocomplete, Chip, FormControl, Grid, IconButton, ListItem, TextField } from "@mui/material"
-import { useEffect, useState } from "react";
+import { Chip, IconButton, ListItem, Paper } from "@mui/material"
+import { useEffect } from "react";
+import { ComponentAutoComplete, ComponentInput, ComponentInputTime } from "@/components";
+import { FormEventModel, FormEventValidations, TypeEventModel } from "@/models";
+
+const formEventFields: FormEventModel = {
+	typeEvent: '',
+	startTime: '',
+	endTime: '',
+	detail: '',
+}
+const formValidations: FormEventValidations = {
+	typeEvent: [(value: string) => value.length >= 1, 'Debe ingresar el tipo de evento'],
+	startTime: [(value: string) => value.length >= 1, 'Debe ingresar la hora'],
+};
 
 interface RenderItemOptions {
-    products: any
-    item: any;
-    handleRemoveProduct: (item: any) => void;
+	formSubmitted: boolean;
+	item: any;
+	handleRemoveProduct: () => void;
+	onFormStateChange: (value: any, state: boolean) => void;
 }
 
 export const CardEvent = (props: RenderItemOptions) => {
-    const {
-        products,
-        item,
-        handleRemoveProduct,
-    } = props;
-    const [detail, setDetail] = useState('')
-    const [value, setValue] = useState<object | string | null>({ name: 'sin eventos' })
-    const [inputValue, setInputValue] = useState('');
-    const { events, getEvents } = useEventStore();
-    useEffect(() => {
-        getEvents()
-    }, [])
+	const {
+		formSubmitted,
+		item,
+		handleRemoveProduct,
+		onFormStateChange,
+	} = props;
+	const { events, getEvents } = useEventStore();
 
-    const handleEvents = (id: number, value: any) => {
-        setValue(value)
-        const productFound: any = products.find((element: any) => element.product == id)
-        productFound.event_type = value.name
-    }
+	const {
+		formState, typeEvent, detail, startTime, endTime,
+		onInputChange, isFormValid, onValueChange, onListValuesChange,
+		typeEventValid, startTimeValid } = useForm(formEventFields, formValidations);
 
-    const handleInputDetail = (id: number, event: any) => {
-        const inputDetail = event
-        setDetail(inputDetail)
-        const productFound: any = products.find((element: any) => element.product == id)
-        productFound.detail = inputDetail
-    }
+	useEffect(() => {
+		getEvents()
+	}, [])
+
+	useEffect(() => {
+		onFormStateChange(formState, isFormValid)
+	}, [formState, typeEvent, detail, startTime, endTime, isFormValid])
 
 
-    return (
-        <Grid container>
-            <ListItem
-                sx={{ display: 'block', margin: '0 auto' }}
-                secondaryAction={
-                    <IconButton
-                        edge="end"
-                        aria-label="delete"
-                        title="Delete"
-                        onClick={() => handleRemoveProduct(item.id)}
-                    >
-                        <HighlightOffOutlined color="primary" />
-                    </IconButton>
-                }
-            >
-                <div style={{ textAlign: 'center' }}>
-                    <Chip
-                        label={`${item.rate.name} ${item.hour_range.name} ${item.active_price.mount} Bs`}
-                        variant="outlined"
-                        icon={<ProductionQuantityLimits />}
-                        sx={{ marginBottom: '0px', backgroundColor: '#DEA427', textAlign: 'center' }}
-                    />
-                </div>
-            </ListItem>
-            <Grid item xs={12} sm={12} sx={{ padding: '2px 5px' }}>
-                <FormControl sx={{ mr: 5, mb: .5, width: '100%' }} size="small">
-                    <Autocomplete
-                        value={value}
-                        onChange={(event: any, newValue: string | null) => handleEvents(item.id, newValue)}
-                        inputValue={inputValue}
-                        onInputChange={(event, newInputValue) => {
-                            setInputValue(newInputValue)
-                        }}
-                        id="event"
-                        options={events}
-                        getOptionLabel={(option: any) => option.name}
-                        renderInput={(params) => <TextField {...params} label="Eventos" />}
-                    />
-                </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={12} sx={{ padding: '1px 5px' }}>
-                <ComponentInput
-                    type={null}
-                    label="Detalle"
-                    name="Detail"
-                    value={detail}
-                    onChange={(event: any) => handleInputDetail(item.id, event.target.value)}
-                />
-            </Grid>
-        </Grid>
-    )
+	const { productSelect, date } = item;
+
+	return (
+		<Paper sx={{ margin: '15px 0px', padding: '7px 7px 2px 7px', borderRadius: '10px', backgroundColor: '#E2F6F0' }}>
+			{/* {JSON.stringify(productSelect)} */}
+			<ListItem
+				sx={{ display: 'block', margin: '0 auto' }}
+				secondaryAction={
+					<IconButton
+						edge="end"
+						aria-label="delete"
+						title="Delete"
+						onClick={handleRemoveProduct}
+					>
+						<HighlightOffOutlined color="primary" />
+					</IconButton>
+				}
+			>
+				<div style={{ textAlign: 'center' }}>
+					<Chip
+						label={`${productSelect.rate.name} ${productSelect.hour_range.time} Hrs`}
+						variant="outlined"
+						icon={<ProductionQuantityLimits />}
+						sx={{ marginBottom: '0px', backgroundColor: '#DEA427', textAlign: 'center' }}
+					/>
+				</div>
+			</ListItem>
+			<ComponentInputTime
+				date={date}
+				value={startTime}
+				timeAdd={productSelect.hour_range.time}
+				onChange={(start, end) => {
+					onListValuesChange(['endTime', 'startTime'], [end, start]);
+				}}
+				error={!!startTimeValid && formSubmitted}
+				helperText={formSubmitted ? startTimeValid : ''}
+			/>
+			<ComponentAutoComplete
+				label="Tipo de evento"
+				options={events.map((option: TypeEventModel) => option.name)}
+				setValue={(value) => onValueChange('typeEvent', value)}
+				error={!!typeEventValid && formSubmitted}
+				helperText={formSubmitted ? typeEventValid : ''}
+			/>
+			<ComponentInput
+				type="text"
+				label="Detalle"
+				name="detail"
+				value={detail}
+				onChange={onInputChange}
+			/>
+		</Paper>
+	)
 }

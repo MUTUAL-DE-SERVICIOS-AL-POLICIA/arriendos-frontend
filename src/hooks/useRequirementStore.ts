@@ -1,8 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { coffeApiLeandro } from '@/services';
+import { coffeApiKevin } from '@/services';
 import { setRequirements, refreshRequirement } from '@/store';
 import Swal from 'sweetalert2';
 import { RequirementModel } from '@/models';
+
+const api = coffeApiKevin;
 
 export const useRequirementStore = () => {
     const { requirements, flag } = useSelector((state: any) => state.requirements);
@@ -10,7 +12,7 @@ export const useRequirementStore = () => {
 
     const getRequirements = async ({ page, limit }: { page: number, limit: number }) => {
         console.log('OBTENIENDO TODOS LOS REQUISITOS')
-        const { data } = await coffeApiLeandro.get(`/plans/requirements/?page=${page}&limit=${limit}`);
+        const { data } = await api.get(`/requirements/?page=${page}&limit=${limit}`);
         console.log(data)
         dispatch(setRequirements({ requirements: data.requirements }));
         return data.total
@@ -20,7 +22,7 @@ export const useRequirementStore = () => {
         try {
             console.log('CREANDO UN NUEVO REQUISITO');
             console.log(body)
-            const { data } = await coffeApiLeandro.post(`/plans/requirements/`, body);
+            const { data } = await api.post(`/requirements/`, body);
             console.log(data)
             dispatch(refreshRequirement());
             Swal.fire('Requisito creado correctamente', '', 'success');
@@ -32,7 +34,7 @@ export const useRequirementStore = () => {
     const patchEditRequirement = async (id: number, body: object) => {
         try {
             console.log('EDITANDO REQUISITO');
-            const { data } = await coffeApiLeandro.patch(`/plans/requirements/${id}`, body);
+            const { data } = await api.patch(`/requirements/${id}`, body);
             console.log(data)
             dispatch(refreshRequirement());
             Swal.fire('Requisito editado correctamente', '', 'success');
@@ -56,7 +58,7 @@ export const useRequirementStore = () => {
             if (result.isConfirmed) {
                 try {
                     console.log('ELIMINANDO UN REQUISITO')
-                    const { data } = await coffeApiLeandro.delete(`/plans/requirements/${requirement.id}`)
+                    const { data } = await api.delete(`/requirements/${requirement.id}`)
                     console.log(data)
                     dispatch(refreshRequirement());
                     Swal.fire(
