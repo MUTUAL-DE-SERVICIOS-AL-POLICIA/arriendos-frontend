@@ -1,12 +1,18 @@
-import { CustomerModel, RoomModel } from ".";
+import { ContactModel, CustomerModel, RoomModel } from ".";
+
 
 /* RENTAL MODEL */
 export interface RentalModel {
-    id: number;
-    Rentalname: string;
-    first_name: string;
-    last_name: string;
-    email: string;
+    end_time: Date;
+    start_time: Date;
+    product_id: string;
+    room_id: number;
+    room_name: string;
+    selected_product_id: number;
+    event_type_name: number;
+    institution_name: string | null;
+    nit: string | null;
+    contacts: ContactModel[]
 }
 
 /* FORM RENTAL MODEL */

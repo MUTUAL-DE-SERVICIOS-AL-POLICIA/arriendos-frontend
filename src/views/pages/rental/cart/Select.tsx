@@ -1,6 +1,5 @@
 import { useProductStore } from "@/hooks";
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material"
-import { useState } from "react";
 
 interface selectProps {
     handleAddProduct: (value: any) => void;
@@ -11,11 +10,8 @@ export const SelectComponent = (props: selectProps) => {
     } = props;
 
     const { leakedProducts = [] } = useProductStore();
-    const [value, setValue] = useState('');
     const onChange = (event: SelectChangeEvent) => {
         let objSelected: any = event.target.value;
-        console.log(objSelected)
-        setValue(objSelected)
         handleAddProduct(objSelected);
     }
     return (
@@ -24,7 +20,7 @@ export const SelectComponent = (props: selectProps) => {
             <Select
                 labelId="products"
                 id="product"
-                value={value}
+                value={''}
                 label="products"
                 onChange={onChange}
                 sx={{ borderRadius: 2 }}

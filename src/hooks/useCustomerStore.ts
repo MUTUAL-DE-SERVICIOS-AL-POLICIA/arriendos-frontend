@@ -1,14 +1,14 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { coffeApiKevin } from '@/services';
-import { setCustomers, refreshCustomer, setCustomerSelect, setClearSelectCustomer } from '@/store';
+import { setCustomers, refreshCustomer } from '@/store';
 import Swal from 'sweetalert2';
-import { ContactModel, CustomerModel } from '@/models';
+import { CustomerModel } from '@/models';
 
 // const api = coffeApiKevin;
 const api = coffeApiKevin;
 
 export const useCustomerStore = () => {
-    const { customers, flag, CustomerSelection } = useSelector((state: any) => state.customers);
+    const { customers, flag } = useSelector((state: any) => state.customers);
     const dispatch = useDispatch();
 
     const getCustomers = async ({ page, limit }: { page: number, limit: number }) => {
@@ -74,70 +74,6 @@ export const useCustomerStore = () => {
         })
     }
 
-    //CONTACTS
-    const postAddContact = async (body: object) => {
-        try {
-            console.log('AGREGANDO UN NUEVO CONTACTO');
-            console.log(body)
-            const { data } = await api.post(`/customers/contact/`, body);
-            console.log(data)
-            dispatch(refreshCustomer());
-            Swal.fire('Contacto creado correctamente', '', 'success');
-        } catch (error: any) {
-            Swal.fire('Oops ocurrio algo', error.response, 'error');
-        }
-    }
-
-    const patchUpdateContact = async (id: number, body: object) => {
-        try {
-            console.log('EDITANDO CONTACTO');
-            const { data } = await api.patch(`/customers/contact/${id}`, body);
-            console.log(data)
-            dispatch(refreshCustomer());
-            Swal.fire('Contacto editado correctamente', '', 'success');
-        } catch (error: any) {
-            Swal.fire('Oops ocurrio algo', error.response, 'error');
-        }
-    }
-
-    const deleteRemoveContact = async (contact: ContactModel) => {
-
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: `Estas eliminando a ${contact.name}`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: '¡Sí, estoy seguro!',
-            cancelButtonText: 'Cancelar'
-        }).then(async (result) => {
-            if (result.isConfirmed) {
-                try {
-                    console.log('ELIMINANDO A UN CONTACTO')
-                    const { data } = await api.delete(`/customers/contact${contact.id}`)
-                    console.log(data)
-                    dispatch(refreshCustomer());
-                    Swal.fire(
-                        `¡Listo!`,
-                        `${contact.name}fue eliminado`,
-                        'success'
-                    )
-                } catch (error: any) {
-                    throw Swal.fire('Oops ocurrio algo', error.response.data.detail, 'error');
-                }
-            }
-        })
-    }
-
-
-    const selectCustomer = async (data: any) => {
-        dispatch(setCustomerSelect({ customer: data }))
-    }
-    const deselectCustomer = async () => {
-        dispatch(setClearSelectCustomer())
-    }
-
     return {
         //* Propiedades
         customers,
@@ -148,13 +84,5 @@ export const useCustomerStore = () => {
         postCreateCustomer,
         patchUpdateCustomer,
         deleteRemoveCustomer,
-        //contacts
-        postAddContact,
-        patchUpdateContact,
-        deleteRemoveContact,
-        // Métodos de selector de empleado
-        CustomerSelection,
-        selectCustomer,
-        deselectCustomer
     }
 }

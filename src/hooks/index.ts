@@ -1,7 +1,6 @@
 
 export * from './useForm';
 export * from './usePopover';
-export * from './useSelectionsStore';
 
 /* AUTH STORE */
 export * from './useAuthStore';
@@ -23,9 +22,6 @@ export * from './useRoomStore';
 
 /* REQUIREMNETS STORE */
 export * from './useRequirementStore';
-
-/* SELECTED PRODUCTS STORE */
-export * from './useSelectedProductStore';
 
 /* PRODUCTS STORE */
 export * from './useProductStore';

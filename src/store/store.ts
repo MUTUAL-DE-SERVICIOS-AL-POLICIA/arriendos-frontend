@@ -9,8 +9,6 @@ import {
     rateSlice,
     requirementSlice,
     roomSlice,
-    selectedProductSlice,
-    selectionSlice,
     typeCustomerSlice,
     userSlice,
 } from '.';
@@ -19,7 +17,6 @@ export const store = configureStore({
     reducer: {
 
         auth: authSlice.reducer,
-        selections: selectionSlice.reducer,
 
         users: userSlice.reducer,
         customers: customerSlice.reducer,
@@ -31,8 +28,6 @@ export const store = configureStore({
         products: productSlice.reducer,
         hourRanges: hourRangeSlice.reducer,
         events: eventSlice.reducer,
-
-        selectedProducts: selectedProductSlice.reducer,
 
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({

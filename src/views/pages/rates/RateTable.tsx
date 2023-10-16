@@ -1,12 +1,11 @@
 import { ComponentSearch, ComponentTablePagination } from "@/components";
 import { useRateStore } from "@/hooks/useRateStore";
 import { RateModel } from "@/models";
-import { DeleteOutline, Edit } from "@mui/icons-material";
+import { DeleteOutline } from "@mui/icons-material";
 import { Checkbox, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
 interface tableProps {
-  handleEdit?: (rate: RateModel) => void;
   limitInit?: number;
   stateSelect?: boolean;
   itemSelect?: (rate: RateModel) => void;
@@ -15,7 +14,6 @@ interface tableProps {
 
 export const RateTable = (props: tableProps) => {
   const {
-    handleEdit,
     limitInit = 10,
     stateSelect = false,
     itemSelect,
@@ -71,9 +69,6 @@ export const RateTable = (props: tableProps) => {
                         direction="row"
                         spacing={2}
                       >
-                        <IconButton onClick={() => handleEdit!(rate)}>
-                          <Edit color="info" />
-                        </IconButton>
                         <IconButton onClick={() => deleteRemoveRate(rate)}>
                           <DeleteOutline color="error" />
                         </IconButton>

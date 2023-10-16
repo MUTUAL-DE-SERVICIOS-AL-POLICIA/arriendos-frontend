@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import { getMessagesES, localizer } from "@/helpers";
 import { CalendarEvent } from ".";
-import { useProductStore, useSelectedProductStore } from "@/hooks";
+import { useProductStore } from "@/hooks";
 import { Calendar } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-
-
 import './styles.css';
 import { Paper } from "@mui/material";
 
@@ -16,21 +14,21 @@ function sameDay(d1: any, d2: any) {
 }
 
 interface calendarProps {
-  select: boolean;
-  onSelect: (isSelected: boolean, daySelected: Date) => void;
   onEvents: (listSelected: []) => void;
+  daySelect: Date | null;
+  onSelectDay: (day: Date | null) => void;
 }
 
 export const CalendarComponent = (props: calendarProps) => {
   const {
-    select,
-    onSelect,
     onEvents,
-  } = props
-  const { selectedProducts, setSelectedProduct, removeProducts } = useSelectedProductStore();
+    daySelect,
+    onSelectDay,
+  } = props;
+
   const [lastView, setLastView] = useState('month');
   const [screenHeight, setScreenHeight] = useState(window.innerHeight);
-  const { leases = [], getLeases } = useProductStore()
+  const { leases = [] } = useProductStore()
 
   useEffect(() => {
     const handleResize = () => {
@@ -40,16 +38,10 @@ export const CalendarComponent = (props: calendarProps) => {
     return () => window.removeEventListener('resize', handleResize);
   }, [window.innerHeight]);
 
-  useEffect(() => {
-    getLeases();
-  }, [])
+
 
   const calendarStyle = (date: any) => {
-
-    const isSelected = selectedProducts.some((product: any) =>
-      sameDay(date, product.start)
-    );
-    if (isSelected) {
+    if (daySelect != null && sameDay(daySelect, date)) {
       return 'selected-day';
     }
     return null;
@@ -58,28 +50,26 @@ export const CalendarComponent = (props: calendarProps) => {
   const onSelectSlot = async (slotInfo: any) => {
 
     const dateEntry = new Date(slotInfo.start).toISOString().split('T')[0]
-    const grouped = leases.reduce((accumulator:any, currentValue:any) => {
+    const grouped = leases.reduce((accumulator: any, currentValue: any) => {
       const index = new Date(currentValue.start)
       const date = index.toISOString().split('T')[0]
-      if(!accumulator[date]) {
+      if (!accumulator[date]) {
         accumulator[date] = []
       }
       accumulator[date].push(currentValue)
       return accumulator
     }, {})
 
-    // console.log(dateEntry)
-    // console.log(grouped[dateEntry])
     grouped[dateEntry] ? onEvents(grouped[dateEntry]) : onEvents([])
 
-    if (selectedProducts.map((e: any) => e.start.getTime()).includes(slotInfo.start.getTime())) {
-      removeProducts()
-      onSelect(false, slotInfo.start)
+    if (daySelect == null) {
+      onSelectDay(slotInfo.start)
     } else {
-      removeProducts()
-      onSelect(false, slotInfo.start)
-      setSelectedProduct(slotInfo)
-      onSelect(true, slotInfo.start)
+      if (sameDay(daySelect, slotInfo.start)) {
+        onSelectDay(null);
+      } else {
+        onSelectDay(slotInfo.start)
+      }
     }
   };
 
@@ -101,7 +91,7 @@ export const CalendarComponent = (props: calendarProps) => {
         }}
         onView={setLastView}
         onSelectSlot={onSelectSlot}
-        selectable={select}
+        selectable={true}
         events={leases}
       />
     </Paper>

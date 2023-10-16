@@ -1,3 +1,3 @@
 export * from './ContactTable';
-export * from './CreateContact';
 export * from './CardContact';
+export * from './Phone';

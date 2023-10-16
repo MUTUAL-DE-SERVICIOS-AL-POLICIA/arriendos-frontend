@@ -37,7 +37,7 @@ export const CreateCustomer = (props: createProps) => {
   const { postCreateCustomer, patchUpdateCustomer } = useCustomerStore();
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [modal, setModal] = useState(false);
-  const [listContacts, setListContacts] = useState<any[]>(item == null ? [{ state: false }] : [...item.contacts.map((e: any) => ({ ...e, state: true }))]);
+  const [listContacts, setListContacts] = useState<any[]>(item == null ? [{ state: false }] : [...item.contacts.map((e: any) => ({ ...e, state: true, phones: e.phone.split(',') }))]);
 
 
   const {
@@ -48,6 +48,7 @@ export const CreateCustomer = (props: createProps) => {
 
 
   const sendSubmit = (event: FormEvent<HTMLFormElement>) => {
+    console.log(listContacts)
     event.preventDefault();
     setFormSubmitted(true);
     if ((listContacts.filter((e: any) => !e.state).length > 0)) return;
@@ -62,6 +63,7 @@ export const CreateCustomer = (props: createProps) => {
     } else {
       data.customer = listContacts[0]
     }
+    console.log(data)
     if (item == null) {
       postCreateCustomer(data);
     } else {
@@ -73,9 +75,13 @@ export const CreateCustomer = (props: createProps) => {
 
   const handleModal = useCallback((value: boolean) => setModal(value), [{}]);
 
-  const changeValues = (value: FormContactModel, index: number, state: boolean) => {
+  const changeValues = (value: FormContactModel, state: boolean, index: number) => {
     const updatedContacts = [...listContacts];
-    updatedContacts[index] = { ...value, state };
+    updatedContacts[index] = {
+      ...value,
+      phone: value.phones.toString(),
+      state
+    };
     setListContacts(updatedContacts);
   }
 
@@ -84,9 +90,6 @@ export const CreateCustomer = (props: createProps) => {
     if (listContacts.length > 1)
       setListContacts(listContacts.filter((_, i) => i !== index));
   };
-
-
-
 
 
   //ajuste de tamaño de scroll
@@ -166,20 +169,19 @@ export const CreateCustomer = (props: createProps) => {
                       <Typography>Datos del contacto:</Typography>
                       <div style={{ maxHeight: `${screenHeight - 350}px`, overflowY: 'auto' }}>
                         <TransitionGroup>
-                          {listContacts.map((element, index) => {
-                            return (
-                              <Collapse key={index}>
-                                <ListItem className="slide-in-from-top">
-                                  <CardContact
-                                    formSubmitted={formSubmitted}
-                                    removeItem={() => handleRemoveContact(index)}
-                                    onFormStateChange={(v, s) => changeValues(v, index, s)}
-                                    item={Object.keys(element).length === 1 && Object.keys(element)[0] === "state" ? null : element}
-                                  />
-                                </ListItem>
-                              </Collapse>
-                            )
-                          })}
+                          {listContacts.map((element, index) => (
+                            <Collapse key={index}>
+                              <ListItem className="slide-in-from-top">
+                                <CardContact
+                                  hiddenDelete={index != 0}
+                                  formSubmitted={formSubmitted}
+                                  removeItem={() => handleRemoveContact(index)}
+                                  onFormStateChange={(v, s) => changeValues(v, s, index)}
+                                  item={Object.keys(element).length === 1 && Object.keys(element)[0] === "state" ? null : element}
+                                />
+                              </ListItem>
+                            </Collapse>
+                          ))}
                         </TransitionGroup>
                       </div>
                       <ComponentButton
