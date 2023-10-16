@@ -18,6 +18,9 @@ export const productSlice = createSlice({
         setLeakedProducts: (state, action) => {
             state.leakedProducts = action.payload.products;
         },
+        setClearLakedProducts: (state) => {
+            state.leakedProducts = [];
+        },
         setLeases: (state, action) => {
             state.leases = action.payload.leases;
         }
@@ -30,5 +33,6 @@ export const {
     setProducts,
     refreshProduct,
     setLeakedProducts,
+    setClearLakedProducts,
     setLeases,
 } = productSlice.actions;

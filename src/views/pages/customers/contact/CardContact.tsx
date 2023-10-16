@@ -4,20 +4,22 @@ import { ContactModel, FormContactModel, FormContactValidations } from "@/models
 import { DeleteOutline } from "@mui/icons-material";
 import { Grid, IconButton } from "@mui/material";
 import { useEffect } from "react";
+import { Phone } from ".";
 
 const formContactFields: FormContactModel = {
     degree: '',
     name: '',
     ci_nit: '',
-    phone: '',
+    phones: [''],
 }
 const formValidations: FormContactValidations = {
     name: [(value: string) => value.length >= 1, 'Debe ingresar un nombre'],
     ci_nit: [(value: string) => value.length >= 1, 'Debe ingresar un carnet'],
-    phone: [(value: string) => value.length >= 1, 'Debe ingresar un teléfono'],
+    phones: [(value: string[]) => value.every((e) => e !== ''), 'Debe completar el número de contacto'],
 };
 
 interface contendProps {
+    hiddenDelete: boolean;
     formSubmitted: boolean;
     onFormStateChange: (value: any, state: boolean) => void;
     removeItem?: () => void;
@@ -27,6 +29,7 @@ interface contendProps {
 
 export const CardContact = (props: contendProps) => {
     const {
+        hiddenDelete,
         formSubmitted,
         onFormStateChange,
         removeItem,
@@ -34,13 +37,15 @@ export const CardContact = (props: contendProps) => {
     } = props;
 
     const {
-        formState, degree, name, ci_nit, phone,
-        onInputChange, isFormValid,
-        nameValid, ci_nitValid, phoneValid } = useForm(item ?? formContactFields, formValidations);
+        formState, degree, name, ci_nit, phones,
+        onInputChange, isFormValid, onValueChange,
+        nameValid, ci_nitValid, phonesValid } = useForm(item ?? formContactFields, formValidations);
 
     useEffect(() => {
+        console.log(`formState ${formState}`)
+        console.log(`isFormValid ${isFormValid}`)
         onFormStateChange(formState, isFormValid)
-    }, [formState, degree, name, ci_nit, phone])
+    }, [isFormValid, degree, name, ci_nit, phones])
 
     return (
         <>
@@ -77,23 +82,21 @@ export const CardContact = (props: contendProps) => {
                     />
                 </Grid>
                 <Grid item xs={12} sm={6} sx={{ padding: '2px' }}>
-                    <ComponentInput
-                        type="text"
-                        label="Teléfono"
-                        name="phone"
-                        value={phone}
-                        onChange={(V: any) => onInputChange(V, false, true)}
-                        error={!!phoneValid && formSubmitted}
-                        helperText={formSubmitted ? phoneValid : ''}
+                    <Phone
+                        phones={phones}
+                        onUpdate={(value) => onValueChange('phones', value)}
+                        error={!!phonesValid && formSubmitted}
+                        helperText={formSubmitted ? phonesValid : ''}
                     />
                 </Grid>
             </Grid>
             {
-                removeItem && <Grid item>
+                hiddenDelete && removeItem && <Grid item>
                     <IconButton onClick={removeItem}>
                         <DeleteOutline color="error" />
                     </IconButton>
-                </Grid>}
+                </Grid>
+            }
         </>
     )
 }

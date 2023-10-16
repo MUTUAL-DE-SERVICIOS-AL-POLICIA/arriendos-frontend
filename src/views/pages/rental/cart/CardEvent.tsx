@@ -7,13 +7,13 @@ import { FormEventModel, FormEventValidations, TypeEventModel } from "@/models";
 
 const formEventFields: FormEventModel = {
 	typeEvent: '',
-	startTime: '',
-	endTime: '',
+	startTime: null,
+	endTime: null,
 	detail: '',
 }
 const formValidations: FormEventValidations = {
 	typeEvent: [(value: string) => value.length >= 1, 'Debe ingresar el tipo de evento'],
-	startTime: [(value: string) => value.length >= 1, 'Debe ingresar la hora'],
+	startTime: [(value: Date) => value != null, 'Debe ingresar la hora'],
 };
 
 interface RenderItemOptions {
@@ -66,7 +66,7 @@ export const CardEvent = (props: RenderItemOptions) => {
 			>
 				<div style={{ textAlign: 'center' }}>
 					<Chip
-						label={`${productSelect.rate.name} ${productSelect.hour_range.time} Hrs`}
+						label={`${productSelect.room.name}/${productSelect.rate.name}/${productSelect.hour_range.time} Hrs`}
 						variant="outlined"
 						icon={<ProductionQuantityLimits />}
 						sx={{ marginBottom: '0px', backgroundColor: '#DEA427', textAlign: 'center' }}

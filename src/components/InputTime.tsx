@@ -6,8 +6,8 @@ import esES from 'date-fns/locale/es';
 import dayjs from 'dayjs';
 interface timeProps {
     date: Date,
-    value: Date;
-    onChange: (start: string, end: string) => void;
+    value: Date | string;
+    onChange: (start: Date, end: Date) => void;
     timeAdd: number;
     error?: boolean,
     helperText?: string,
@@ -22,14 +22,6 @@ export const ComponentInputTime = (props: timeProps) => {
         error = false,
         helperText,
     } = props;
-    const formatDate = (date: Date) => {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        return `${year}-${month}-${day} ${hours}:${minutes}:00.000000`;
-    };
 
     const handleChange = (time: dayjs.Dayjs | null) => {
         if (time == null) return;
@@ -40,9 +32,11 @@ export const ComponentInputTime = (props: timeProps) => {
         const dateEnd: Date = new Date(dateStart);
         dateEnd.setHours(dateStart.getHours() + timeAdd);
         dateEnd.setMinutes(timeInit.getMinutes());
-        const timeStart = formatDate(dateStart);
-        const timeEnd = formatDate(dateEnd);
-        onChange(timeStart, timeEnd);
+        console.log(`INICIO ${dateStart}`);
+        console.log(`FIN ${dateEnd}`);
+        console.log(`INICIO JSON${dateStart.toJSON()}`);
+        console.log(`FIN JSON${dateEnd.toJSON()}`);
+        onChange(dateStart, dateEnd);
     };
 
     return (
@@ -55,7 +49,7 @@ export const ComponentInputTime = (props: timeProps) => {
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <TimePicker
                             label="Hora"
-                            value={dayjs(value)}
+                            value={value == null ? null : dayjs(value)}
                             onChange={(value) => handleChange(value)}
                             sx={{
                                 padding: '2px',
@@ -75,11 +69,11 @@ export const ComponentInputTime = (props: timeProps) => {
                             }}
                         />
                     </LocalizationProvider>
+                    {error && (
+                        <Typography style={{ color: 'red', fontSize: '0.8rem', padding: '2px' }} >{helperText}</Typography>
+                    )}
                 </Grid>
             </Grid>
-            {error && (
-                <Typography style={{ color: 'red', fontSize: '0.8rem', padding: '2px' }} >{helperText}</Typography>
-            )}
         </>
     )
 }

@@ -12,12 +12,12 @@ export interface FormContactModel {
     degree: string;
     name: string;
     ci_nit: string;
-    phone: string;
+    phones: string[];
 }
 
 /*FORM CUSTOMER MODEL VALIDATIONS */
 export interface FormContactValidations {
     name: [(value: string) => boolean, string];
     ci_nit: [(value: string) => boolean, string];
-    phone: [(value: string) => boolean, string];
+    phones: [(value: string[]) => boolean, string];
 }

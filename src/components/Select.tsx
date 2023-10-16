@@ -37,6 +37,7 @@ export const ComponentSelect = React.memo((props: elementsProps) => {
                             backgroundColor: 'white',
                             padding: '2px',
                             zIndex: 1,
+                            fontSize: '0.9rem'
                         }}
                     >
                         {label}

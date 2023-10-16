@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { coffeApiKevin } from '@/services';
-import { refreshProduct, setProducts, setLeakedProducts, setLeases } from '@/store';
+import { refreshProduct, setProducts, setLeakedProducts, setLeases, setClearLakedProducts } from '@/store';
 import Swal from 'sweetalert2';
 import { ProductModel } from '@/models';
 import days from '@/models/days.json';
@@ -95,10 +95,14 @@ export const useProductStore = () => {
         }
     }
 
+    const clearLakedProduct = async () => {
+        dispatch(setClearLakedProducts())
+    }
+
     const postCreateLeases = async (body: object) => {
         try {
-            const { data } = await api.post('/leases/', body)
-
+            await api.post('/leases/', body)
+            getLeases();
             Swal.fire('Producto creado correctamente', '', 'success');
         } catch (error: any) {
             Swal.fire('Oops ocurrio algo', error.response, 'error')
@@ -140,6 +144,7 @@ export const useProductStore = () => {
         patchUpdateProduct,
         deleteRemoveProduct,
         postLeakedProduct,
+        clearLakedProduct,
         postCreateLeases,
         getLeases,
     }

@@ -5,7 +5,6 @@ export const customerSlice = createSlice({
     initialState: {
         customers: [],
         flag: false,
-        CustomerSelection: <object>{}
     },
     reducers: {
         setCustomers: (state, action) => {
@@ -14,13 +13,6 @@ export const customerSlice = createSlice({
         refreshCustomer: (state, /* action */) => {
             state.flag = !state.flag
         },
-        setCustomerSelect: (state, action) => {
-            state.CustomerSelection = action.payload.customer;
-            console.log(state.CustomerSelection)
-        },
-        setClearSelectCustomer: (state) => {
-            state.CustomerSelection = {};
-        }
     }
 });
 
@@ -29,6 +21,4 @@ export const customerSlice = createSlice({
 export const {
     setCustomers,
     refreshCustomer,
-    setCustomerSelect,
-    setClearSelectCustomer
 } = customerSlice.actions;

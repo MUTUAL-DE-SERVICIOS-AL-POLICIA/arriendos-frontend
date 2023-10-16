@@ -69,6 +69,7 @@ export const CreateUser = (props: createProps) => {
               onValueChange('user', v);
               handleModal(false)
             }}
+            items={user == null ? [] : [user.username]}
           />
         </ModalSelectComponent>
       }

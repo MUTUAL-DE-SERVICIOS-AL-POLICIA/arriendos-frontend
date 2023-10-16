@@ -7,7 +7,7 @@ import { CalendarComponent } from "./calendar";
 import { styled } from '@mui/system';
 import { Grid } from "@mui/material";
 import { CustomerTable } from "../customers";
-import { CartSelectedProduct } from ".";
+import { RentalSection } from ".";
 
 const formFields: FormRentalModel = {
   room: null,
@@ -31,12 +31,44 @@ const SliderContent = styled('div')`
   width: 0%;
 `;
 
+const virifyDate = (dayEvaluation: Date) => {
+  const currentDate = new Date()
+  currentDate.setHours(0, 0, 0, 0);
+  if (dayEvaluation < currentDate) {
+    return false;
+  } else {
+    return true;
+  }
+}
 
 export const RentalView = () => {
 
   const { room, customer, onValueChange } = useForm(formFields);
-  const { postLeakedProduct } = useProductStore()
-  const [events, setEvents] = useState([])
+  const { postLeakedProduct, clearLakedProduct } = useProductStore();
+  const { getLeases } = useProductStore();
+  const [events, setEvents] = useState([]);
+  const [showCart, setShowCart] = useState(false);
+  const [daySelect, setDaySelect] = useState<Date | null>(null);
+
+  useEffect(() => {
+    getLeases();
+  }, [room])
+
+  useEffect(() => {
+    if (daySelect != null) setShowCart(virifyDate(daySelect!));
+    if (daySelect != null && room != null && customer != null && virifyDate(daySelect)) {
+      postLeakedProduct(daySelect, {
+        customer_type: customer.customer_type.id,
+        room_id: room.id
+      })
+    } else {
+      clearLakedProduct()
+    }
+  }, [daySelect, room, customer])
+
+  const handleEvents = (value: []) => {
+    setEvents(value)
+  }
 
   // Modal =================================================
   const [modalRoom, setModalRoom] = useState(false);
@@ -48,31 +80,6 @@ export const RentalView = () => {
   const handleModalClient = (value: boolean) => {
     setModalClient(value);
   };
-
-  const [selected, setSelected] = useState(false)
-  const [day, setDay] = useState<Date | null>(null)
-
-  const toggleExpanded = (isSelected: boolean, daySelected: Date) => {
-    setDay(daySelected)
-    if (isSelected) {
-      setSelected(isSelected)
-    } else {
-      setSelected(isSelected)
-    }
-  }
-  useEffect(() => {
-    if (day != null) {
-      postLeakedProduct(day, {
-        customer_type: customer.customer_type.id,
-        room_id: room.id
-      })
-    }
-  }, [day])
-
-  const handleEvents = (value: []) => {
-    setEvents(value)
-  }
-
   return (
     <>
       {modalRoom && <ModalSelectComponent
@@ -120,38 +127,38 @@ export const RentalView = () => {
         </ModalSelectComponent>
       }
       <Container>
-        <SliderCalendar style={{ width: selected ? '70%' : '100%' }}>
+        <SliderCalendar style={{ width: daySelect ? '70%' : '100%' }}>
           <Grid container>
-            <Grid item xs={12} sm={6} sx={{ margin: '0px 0px' }}>
+            <Grid item xs={12} sm={6} sx={{ padding: '5px' }}>
               <ComponentSelect
                 title={customer != null ? (customer.institution_name ?? customer.contacts[0].name) : 'Cliente'}
                 label={customer == null ? '' : 'Cliente'}
                 onPressed={() => handleModalClient(true)}
-                color="#ebfef8"
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={6} sx={{ padding: '5px' }}>
               <ComponentSelect
                 title={room != null ? room.name : 'Ambiente'}
                 label={room == null ? '' : 'Ambiente'}
                 onPressed={() => handleModalRoom(true)}
-                color="#ebfef8"
               />
             </Grid>
           </Grid>
           <CalendarComponent
-            select={room != null && customer != null}
-            onSelect={(isSelected, daySelected) => toggleExpanded(isSelected, daySelected)}
             onEvents={(listEvents: []) => handleEvents(listEvents)}
+            daySelect={daySelect}
+            onSelectDay={(day) => {
+              setDaySelect(day)
+            }}
           />
         </SliderCalendar>
-        <SliderContent style={{ width: selected ? '30%' : '' }}>
-          <CartSelectedProduct
-            selected={selected}
-            day={day}
+        <SliderContent style={{ width: daySelect ? '30%' : '' }}>
+          <RentalSection
+            showCart={showCart}
+            date={daySelect}
             customer={customer}
-            room={room}
             events={events}
+            onClose={() => setDaySelect(null)}
           />
         </SliderContent>
       </Container>

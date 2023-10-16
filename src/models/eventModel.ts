@@ -14,12 +14,12 @@ export interface EventModel {
 export interface FormEventModel {
   typeEvent: string;
   detail: string;
-  startTime: string;
-  endTime: string;
+  startTime: Date | null;
+  endTime: Date | null;
 }
 
 /*FORM EVENT MODEL VALIDATIONS */
 export interface FormEventValidations {
   typeEvent: [(value: string) => boolean, string];
-  startTime: [(value: string) => boolean, string];
+  startTime: [(value: Date) => boolean, string];
 }

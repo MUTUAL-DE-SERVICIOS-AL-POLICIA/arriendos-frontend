@@ -1,5 +1,4 @@
 import { ComponentButton } from "@/components";
-import { useSelectorStore } from "@/hooks";
 import { Add } from "@mui/icons-material";
 import { Stack, SvgIcon, Typography } from "@mui/material";
 import { useCallback, useState } from "react";
@@ -10,13 +9,10 @@ export const ProductsView = () => {
   const [openDialog, setopenDialog] = useState(false);
   const [itemEdit, setItemEdit] = useState<ProductModel | null>(null);
 
-  const { clearSelect } = useSelectorStore();
-
   /*CONTROLADOR DEL DIALOG PARA CREAR O EDITAR */
 
   const handleDialog = useCallback((value: boolean) => {
     if (!value) setItemEdit(null)
-    if (value) clearSelect();
     setopenDialog(value);
   }, []);
 

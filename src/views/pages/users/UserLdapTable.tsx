@@ -1,5 +1,5 @@
 import { ComponentInput } from '@/components';
-import { useSelectorStore, useUserStore } from '@/hooks';
+import { useUserStore } from '@/hooks';
 import { UserLdapModel } from '@/models/userLdapModel';
 import { applyPagination } from '@/utils/applyPagination';
 import { Checkbox, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@mui/material';
@@ -8,12 +8,14 @@ import { useCallback, useEffect, useState } from 'react'
 interface userLdapProps {
   stateSelect: boolean;
   itemSelect: (user: UserLdapModel) => void;
+  items?: any[];
 }
 
 export const UserLdapTable = (props: userLdapProps) => {
   const {
     stateSelect = false,
-    itemSelect
+    itemSelect,
+    items = [],
   } = props;
   const [query, setQuery] = useState<string>('');
 
@@ -23,7 +25,6 @@ export const UserLdapTable = (props: userLdapProps) => {
   };
 
   /*DATA */
-  const { selections = [], selectOne, deselectOne, deselectAll } = useSelectorStore();
   const { usersLDAP } = useUserStore();
 
   /*PAGINATION */
@@ -74,7 +75,7 @@ export const UserLdapTable = (props: userLdapProps) => {
             </TableHead>
             <TableBody>
               {users.map((user: UserLdapModel) => {
-                const isSelected = selections.includes(user.username);
+                const isSelected = items.includes(user.username);
                 return (
                   <TableRow
                     hover
@@ -84,15 +85,7 @@ export const UserLdapTable = (props: userLdapProps) => {
                       stateSelect && <TableCell padding="checkbox">
                         <Checkbox
                           checked={isSelected}
-                          onChange={(value) => {
-                            if (value.target.checked) {
-                              deselectAll?.(users.map((e: UserLdapModel) => e.username));
-                              selectOne(user.username);
-                              itemSelect(user);
-                            } else {
-                              deselectOne(user.username);
-                            }
-                          }}
+                          onChange={() => itemSelect!(user)}
                         />
                       </TableCell>
                     }
