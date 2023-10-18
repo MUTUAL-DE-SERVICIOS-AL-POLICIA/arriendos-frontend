@@ -23,9 +23,9 @@ export const SideNav = ({ open, onClose }: { open: boolean, onClose: any }) => {
             <Stack
                 sx={{
                     listStyle: 'none',
-                    p: 0,
-                    m: 0,
-                    px: 2,
+                    // p: 0,
+                    // m: 0,
+                    px: 1,
                     py: 3
                 }}
             >
@@ -86,7 +86,7 @@ export const SideNav = ({ open, onClose }: { open: boolean, onClose: any }) => {
                     sx: {
                         backgroundColor: '#1E635A',
                         color: 'white',
-                        width: 220
+                        width: 190
                     }
                 }}
                 variant="permanent"
@@ -105,7 +105,7 @@ export const SideNav = ({ open, onClose }: { open: boolean, onClose: any }) => {
                 sx: {
                     backgroundColor: '#1E635A',
                     color: 'white',
-                    width: 220
+                    width: 190
                 }
             }}
             sx={{ zIndex: (theme) => theme.zIndex.appBar + 100 }}

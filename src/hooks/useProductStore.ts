@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { coffeApiKevin } from '@/services';
-import { refreshProduct, setProducts, setLeakedProducts, setLeases, setClearLakedProducts } from '@/store';
+import { refreshProduct, setProducts, setLeakedProducts, setClearLakedProducts } from '@/store';
 import Swal from 'sweetalert2';
 import { ProductModel } from '@/models';
 import days from '@/models/days.json';
@@ -8,7 +8,7 @@ import days from '@/models/days.json';
 const api = coffeApiKevin;
 
 export const useProductStore = () => {
-    const { products, flag, leakedProducts, leases = [] } = useSelector((state: any) => state.products);
+    const { products, flag, leakedProducts } = useSelector((state: any) => state.products);
     const dispatch = useDispatch();
 
     const getProducts = async ({ page, limit, isFilter }: { page: number, limit: number, isFilter: boolean }) => {
@@ -88,7 +88,7 @@ export const useProductStore = () => {
             console.log(body)
             const { data } = await api.post('/product/Posible_product/', body)
             console.log(data)
-            dispatch(setLeakedProducts({ products: [...data.products.filter((e: any) => e.day.includes(days.days[day.getDay()]))] }));
+            dispatch(setLeakedProducts({ products: [...data.products.filter((e: ProductModel) => e.day.includes(days.days[day.getDay()]))] }));
         } catch (error: any) {
             console.log(error)
             Swal.fire('Oops ocurrio algo', error.response, 'error')
@@ -99,53 +99,19 @@ export const useProductStore = () => {
         dispatch(setClearLakedProducts())
     }
 
-    const postCreateLeases = async (body: object) => {
-        try {
-            await api.post('/leases/', body)
-            getLeases();
-            Swal.fire('Producto creado correctamente', '', 'success');
-        } catch (error: any) {
-            Swal.fire('Oops ocurrio algo', error.response, 'error')
-        }
-    }
-
-    const getLeases = async () => {
-        try {
-            console.log("OBTENIENDO ARRIENDOS")
-            const { data } = await api.get('/leases/')
-            console.log(data)
-            let i = 0;
-            const events: any = []
-            data.forEach((element: any) => {
-                const event: any = {}
-                event.id = i
-                event.title = element.event_type_name
-                event.start = new Date(element.start_time)
-                event.end = new Date(element.end_time)
-                events.push(event)
-                i++
-            });
-            dispatch(setLeases({ leases: events }))
-            return data;
-        } catch (error: any) {
-            Swal.fire('Oops ocurrio algo', error.response, 'error')
-        }
-    }
 
     return {
         //* Propiedades
         products,
         flag,
         leakedProducts,
-        leases,
-        //* Métodos
+        //* Métodos productos
         getProducts,
         postCreateProduct,
         patchUpdateProduct,
         deleteRemoveProduct,
+        //* Métodos filtro de productos
         postLeakedProduct,
         clearLakedProduct,
-        postCreateLeases,
-        getLeases,
     }
 }

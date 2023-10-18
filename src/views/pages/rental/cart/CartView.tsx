@@ -1,43 +1,61 @@
-import { CustomerModel } from "@/models";
-import { Collapse, Grow, Paper } from "@mui/material";
+import { CustomerModel, PlanModel, ProductModel } from "@/models";
+import { Collapse, Grow, Paper, Typography } from "@mui/material";
 import { TransitionGroup } from "react-transition-group";
-import { ComponentButton } from "@/components";
-import { FormEvent, useState } from "react";
-import { useProductStore } from "@/hooks";
-import { CardEvent, SelectComponent } from ".";
+import { ComponentButton, SelectComponent } from "@/components";
+import { FormEvent, useEffect, useState } from "react";
+import { usePlanStore, useProductStore, useRentalStore } from "@/hooks";
+import { CardEvent } from ".";
+
+const getDateJSON = (date: Date | null) => {
+  if (!date) return null;
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const seconds = date.getSeconds();
+  const fechaEnFormatoJSON = `${year}-${(month < 10 ? '0' : '') + month}-${(day < 10 ? '0' : '') + day}T${(hours < 10 ? '0' : '') + hours}:${(minutes < 10 ? '0' : '') + minutes}:${(seconds < 10 ? '0' : '') + seconds}.000Z`;
+  return fechaEnFormatoJSON
+}
 
 interface cartProps {
   date: Date;
   customer: CustomerModel;
   onClose: () => void;
+  screenHeight: number;
 }
+
 export const CartView = (props: cartProps) => {
   const {
     date,
     customer,
     onClose,
+    screenHeight,
   } = props;
   const [shoppingCart, setShoppingCart] = useState<any[]>([]);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const { plans = [], getPlans } = usePlanStore();
+  const [planSelect, setPlanSelect] = useState<any>(0);
+  const { leakedProducts = [] } = useProductStore();
+  const { postCreateRental } = useRentalStore();
 
-  const { postCreateLeases } = useProductStore();
+  useEffect(() => {
+    getPlans();
+  }, [])
 
   const handleAddProduct = (value: any) => {
-    setShoppingCart([...shoppingCart, { productSelect: value, date, state: false }])
+    console.log(value)
+    setShoppingCart([...shoppingCart, { productSelect: leakedProducts.find((product: ProductModel) => product.id == value), date, state: false }])
   }
+
+  const handlePlan = (value: any) => {
+    console.log(value)
+    setShoppingCart([])
+    setPlanSelect(value)
+  }
+
   const handleRemoveProduct = (index: number) => {
     setShoppingCart(shoppingCart.filter((_, i) => i !== index));
-  }
-  const getDateJSON = (date: Date | null) => {
-    if (!date) return null;
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    const seconds = date.getSeconds();
-    const fechaEnFormatoJSON = `${year}-${(month < 10 ? '0' : '') + month}-${(day < 10 ? '0' : '') + day}T${(hours < 10 ? '0' : '') + hours}:${(minutes < 10 ? '0' : '') + minutes}:${(seconds < 10 ? '0' : '') + seconds}.000Z`;
-    return fechaEnFormatoJSON
   }
 
   const changeValues = (formState: any, state: boolean, index: number) => {
@@ -58,45 +76,56 @@ export const CartView = (props: cartProps) => {
     event.preventDefault();
     setFormSubmitted(true);
     if (shoppingCart.filter((e: any) => !e.state).length > 0) return;
-    console.log('paso todo');
     const request: any = new Object();
-    request.customer = customer.customer_type.id;
+    request.customer = customer.id;
+    if (planSelect !== 0) request.plan = planSelect
     request.selected_products = shoppingCart;
-    postCreateLeases(request);
-    // restablecer todo
-    setShoppingCart([])
-    onClose();
+    postCreateRental(request, setShoppingCart, onClose)
   }
 
   return (
-    <Paper sx={{ margin: '15px 0px', padding: '7px 7px 2px 7px', borderRadius: '10px' }}>
+    <Paper sx={{ margin: '15px 0px', padding: '7px 7px 2px 7px', borderRadius: '10px', backgroundColor: '#d3f4eb' }}>
+      <Typography variant="h6" style={{ textAlign: 'center' }}>Nuevo Alquiler</Typography>
       <Grow in={true} style={{ transformOrigin: '0 0 0' }} {...({ timeout: 2300 })}>
         <form onSubmit={sendSubmit}>
           <SelectComponent
-            handleAddProduct={handleAddProduct}
+            handleSelect={handlePlan}
+            label={"Plan"}
+            options={[{ id: 0, name: 'SIN PLAN' }, ...plans.map((plan: PlanModel) => ({ id: plan.id, name: plan.plan_name }))]}
+            value={planSelect}
           />
-          <TransitionGroup >
-            {shoppingCart.map((item: any, index) => (
-              <Collapse key={index} >
-                <CardEvent
-                  item={item}
-                  handleRemoveProduct={() => handleRemoveProduct(index)}
-                  onFormStateChange={(formState, state) => changeValues(formState, state, index)}
-                  formSubmitted={formSubmitted}
-                />
-
-              </Collapse>
-            ))}
-          </TransitionGroup>
-          <ComponentButton
-            type="submit"
-            text="Crear arriendo"
-            width="100%"
-            height="90%"
-            disable={shoppingCart.length === 0}
+          <SelectComponent
+            handleSelect={handleAddProduct}
+            label="Seleccionar Producto"
+            options={[...leakedProducts.map((product: ProductModel) => ({ id: product.id, name: `${product.rate.name} ${product.hour_range.time}Hrs-${product.mount}Bs` }))]}
+            value={''}
+            disabled={planSelect === 0 && shoppingCart.length == 1}
           />
+          <div style={{ maxHeight: `${screenHeight / 3.5}px`, overflowY: 'auto' }}>
+            <TransitionGroup >
+              {shoppingCart.map((item: any, index) => (
+                <Collapse key={index} >
+                  <CardEvent
+                    item={item}
+                    handleRemoveProduct={() => handleRemoveProduct(index)}
+                    onFormStateChange={(formState, state) => changeValues(formState, state, index)}
+                    formSubmitted={formSubmitted}
+                  />
+                </Collapse>
+              ))}
+            </TransitionGroup>
+          </div>
+          <div style={{ padding: '10px' }}>
+            <ComponentButton
+              type="submit"
+              text={`Crear Alquiler con ${shoppingCart.length} producto(s)`}
+              width="100%"
+              height="90%"
+              disable={shoppingCart.length === 0}
+            />
+          </div>
         </form>
       </Grow>
-    </Paper>
+    </Paper >
   )
 }

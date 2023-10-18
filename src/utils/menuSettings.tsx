@@ -37,7 +37,6 @@ export const menuSettings = () => {
                 },
             ]
         },
-
         {
             title: "Gestión de Usuarios",
             permission: "show-rent",

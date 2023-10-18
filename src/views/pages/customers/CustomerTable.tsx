@@ -50,7 +50,7 @@ export const CustomerTable = (props: tableProps) => {
               <TableCell sx={{ fontWeight: 'bold' }} >Nombre</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }} >Tipo de Cliente</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }} >Contactos</TableCell>
-              {stateSelect && <TableCell sx={{ fontWeight: 'bold' }} >Acciones</TableCell>}
+              {!stateSelect && <TableCell sx={{ fontWeight: 'bold' }} >Acciones</TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -69,7 +69,7 @@ export const CustomerTable = (props: tableProps) => {
                         </TableCell>
                       }
                       <TableCell>{customer.nit ?? customer.contacts.length > 0 ? customer.contacts[0].ci_nit : ''} </TableCell>
-                      <TableCell>{customer.institution_name ?? customer.contacts.length > 0 ? customer.contacts[0].name : ''}</TableCell>
+                      <TableCell>{customer.institution_name ?? (customer.contacts.length > 0 ? customer.contacts[0].name : '')}</TableCell>
                       <TableCell>{customer.customer_type.name}</TableCell>
                       {
                         customer.customer_type.is_institution ?
@@ -91,7 +91,7 @@ export const CustomerTable = (props: tableProps) => {
                           </TableCell> :
                           <TableCell />
                       }
-                      <TableCell>
+                      {!stateSelect && <TableCell>
                         <Stack
                           alignItems="center"
                           direction="row"
@@ -104,12 +104,11 @@ export const CustomerTable = (props: tableProps) => {
                             <DeleteOutline color="error" />
                           </IconButton>
                         </Stack>
-                      </TableCell>
+                      </TableCell>}
                     </TableRow>
                     <ContactTable
                       open={openIndex == customer.id}
                       contacts={customer.contacts}
-                      customerId={customer.id}
                     />
                   </React.Fragment>
                 )

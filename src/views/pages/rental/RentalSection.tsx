@@ -9,6 +9,7 @@ interface rentalProps {
   customer: CustomerModel;
   events: any[];
   onClose: () => void;
+  screenHeight: number;
 }
 export const RentalSection = (props: rentalProps) => {
 
@@ -18,10 +19,10 @@ export const RentalSection = (props: rentalProps) => {
     customer,
     events,
     onClose,
+    screenHeight,
   } = props;
 
   const [showGrow, setShowGrow] = useState(false);
-
   useEffect(() => {
     if (date) {
       setShowGrow(false);
@@ -36,7 +37,7 @@ export const RentalSection = (props: rentalProps) => {
 
 
   return (
-    <div style={{ borderRadius: '20px', padding: '5px', backgroundColor: '#F7F4F4' }}>
+    <>
       {date && <>
         <RentalCard
           showGrow={showGrow}
@@ -47,9 +48,10 @@ export const RentalSection = (props: rentalProps) => {
           date={date}
           customer={customer}
           onClose={onClose}
+          screenHeight={screenHeight}
         />}
       </>
       }
-    </div>
+    </>
   )
 }

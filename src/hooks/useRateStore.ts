@@ -34,19 +34,6 @@ export const useRateStore = () => {
         }
     }
 
-    const patchUpdateRate = async (id: number, body: object) => {
-        try {
-            console.log('EDITANDO UNA TARIFA CON SU ASIGNACIÓN');
-            console.log(body)
-            const { data } = await api.patch(`/requirements/rates/${id}`, body);
-            console.log(data)
-            dispatch(refreshRate());
-            Swal.fire('Tarifa editado correctamente', '', 'success');
-        } catch (error: any) {
-            throw Swal.fire('Oops ocurrio algo', error.response.data.detail, 'error');
-        }
-    }
-
     const deleteRemoveRate = async (rate: RateModel) => {
 
         Swal.fire({
@@ -84,7 +71,6 @@ export const useRateStore = () => {
         //* Métodos
         getRates,
         postCreateRate,
-        patchUpdateRate,
         deleteRemoveRate,
     }
 }
