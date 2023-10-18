@@ -29,6 +29,7 @@ export const useRentalStore = () => {
         event.id = i
         event.title = element.event_type_name
         event.start = getFormatDate(element.start_time)
+        event.rental = element.rental
         event.end = getFormatDate(element.end_time)
         events.push(event)
         i++

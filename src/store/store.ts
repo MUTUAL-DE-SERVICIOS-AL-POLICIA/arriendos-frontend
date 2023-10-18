@@ -5,6 +5,7 @@ import {
     eventSlice,
     hourRangeSlice,
     planSlice,
+    leaseStateSlice,
     productSlice,
     propertieSlice,
     rateSlice,
@@ -32,6 +33,7 @@ export const store = configureStore({
         events: eventSlice.reducer,
         plans: planSlice.reducer,
         rentals: rentalSlice.reducer,
+        leaseStates: leaseStateSlice.reducer
 
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({

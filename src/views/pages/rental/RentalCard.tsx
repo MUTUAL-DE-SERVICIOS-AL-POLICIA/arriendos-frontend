@@ -3,6 +3,7 @@ import { CalendarIcon } from "@mui/x-date-pickers"
 import { format } from "date-fns";
 import esES from 'date-fns/locale/es';
 import React, { useEffect, useState } from "react";
+import { EventDialog } from "./createRental";
 
 const dividerStyle = {
   height: '1px',
@@ -18,6 +19,7 @@ interface cardProps {
   date: Date;
   events: any[]
 }
+
 export const RentalCard = (props: cardProps) => {
   const {
     showGrow,
@@ -34,6 +36,16 @@ export const RentalCard = (props: cardProps) => {
     return () => window.removeEventListener('resize', handleResize);
   }, [window.innerHeight]);
 
+
+    const [ openDialog, setOpenDialog ] = useState(false)
+    const [ selectedEvent, setSelectedEvent ] = useState([])
+
+    const handleDialog = (value: boolean, event: any) => {
+        setOpenDialog(value)
+        console.log(event)
+        setSelectedEvent(event)
+    }
+
   return (
     <>
       <>
@@ -49,11 +61,14 @@ export const RentalCard = (props: cardProps) => {
             </div>
             <div style={{ maxHeight: `${screenHeight / 3.5}px`, overflowY: 'auto' }}>
               <List sx={{ width: '100%' }}>
-                {events.map((e: any, index: number) => (
+                {events.map((event: any, index: number) => (
                   <React.Fragment key={index}>
-                    <ListItem sx={{ padding: '0px 10px' }}>
+                    <ListItem
+                                    sx={{ padding: '0px 10px', cursor: 'pointer' }}
+                                    onClick={() => handleDialog(true, event)}
+                                >
                       <ListItemText
-                        primary={e.title}
+                        primary={event.title}
                         secondary={
                           <>
                             <Typography
@@ -64,7 +79,7 @@ export const RentalCard = (props: cardProps) => {
                             >
                               Inicio:
                             </Typography>
-                            {` ${format(e.start, 'EEEE dd-MMMM-yyyy HH:mm', { locale: esES })}`}
+                            {` ${format(event.start, 'EEEE dd-MMMM-yyyy HH:mm', { locale: esES })}`}
                             <br />
                             <Typography
                               sx={{ display: 'inline' }}
@@ -74,7 +89,7 @@ export const RentalCard = (props: cardProps) => {
                             >
                               Fin:
                             </Typography>
-                            {` ${format(e.end, 'EEEE dd-MMMM-yyyy HH:mm', { locale: esES })}`}
+                            {` ${format(event.end, 'EEEE dd-MMMM-yyyy HH:mm', { locale: esES })}`}
                           </>
                         }
                       >
@@ -89,6 +104,9 @@ export const RentalCard = (props: cardProps) => {
           </Paper>
         </Grow>
       </>
+            {
+                openDialog && <EventDialog open={openDialog} handleClose={() => handleDialog(false, null)} selectedEvent={selectedEvent}/>
+            }
     </>
   )
 }

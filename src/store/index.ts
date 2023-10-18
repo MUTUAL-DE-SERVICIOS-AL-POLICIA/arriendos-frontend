@@ -12,5 +12,7 @@ export * from './hourRanges/hourRangeSlice';
 export * from './events/eventSlice';
 export * from './plans/planSlice';
 export * from './rentals/rentalSlice';
+export * from './leaseStates/leaseStateSlice';
+
 
 export * from './store';
