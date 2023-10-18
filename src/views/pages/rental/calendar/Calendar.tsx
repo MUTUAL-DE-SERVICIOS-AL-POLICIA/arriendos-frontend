@@ -1,44 +1,47 @@
-import { useEffect, useState } from "react";
 import { getMessagesES, localizer } from "@/helpers";
 import { CalendarEvent } from ".";
-import { useProductStore } from "@/hooks";
+import { useRentalStore } from "@/hooks";
 import { Calendar } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './styles.css';
 import { Paper } from "@mui/material";
+import { format } from "date-fns";
 
-function sameDay(d1: any, d2: any) {
+
+const groupEventsByDate = (events: any[], date: Date) => {
+  return events.filter((event: any) => {
+    const dateCurrent = format(date, 'yyyy-MM-dd');
+    const start = format(event.start, 'yyyy-MM-dd');
+    const end = format(event.end, 'yyyy-MM-dd');
+    if (dateCurrent == start || dateCurrent == end) {
+      return event
+    }
+  });
+}
+
+const sameDay = (d1: any, d2: any) => {
   return d1.getFullYear() === d2.getFullYear() &&
     d1.getMonth() === d2.getMonth() &&
     d1.getDate() === d2.getDate();
 }
 
 interface calendarProps {
-  onEvents: (listSelected: []) => void;
+  onEvents: (listSelected: any[]) => void;
   daySelect: Date | null;
   onSelectDay: (day: Date | null) => void;
+  screenHeight: number;
 }
+
 
 export const CalendarComponent = (props: calendarProps) => {
   const {
     onEvents,
     daySelect,
     onSelectDay,
+    screenHeight,
   } = props;
 
-  const [lastView, setLastView] = useState('month');
-  const [screenHeight, setScreenHeight] = useState(window.innerHeight);
-  const { leases = [] } = useProductStore()
-
-  useEffect(() => {
-    const handleResize = () => {
-      setScreenHeight(window.innerHeight);
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [window.innerHeight]);
-
-
+  const { rentals = [] } = useRentalStore()
 
   const calendarStyle = (date: any) => {
     if (daySelect != null && sameDay(daySelect, date)) {
@@ -48,27 +51,16 @@ export const CalendarComponent = (props: calendarProps) => {
   };
 
   const onSelectSlot = async (slotInfo: any) => {
-
-    const dateEntry = new Date(slotInfo.start).toISOString().split('T')[0]
-    const grouped = leases.reduce((accumulator: any, currentValue: any) => {
-      const index = new Date(currentValue.start)
-      const date = index.toISOString().split('T')[0]
-      if (!accumulator[date]) {
-        accumulator[date] = []
-      }
-      accumulator[date].push(currentValue)
-      return accumulator
-    }, {})
-
-    grouped[dateEntry] ? onEvents(grouped[dateEntry]) : onEvents([])
-
     if (daySelect == null) {
       onSelectDay(slotInfo.start)
+      onEvents(groupEventsByDate(rentals, slotInfo.start))
     } else {
       if (sameDay(daySelect, slotInfo.start)) {
         onSelectDay(null);
+        onEvents([])
       } else {
         onSelectDay(slotInfo.start)
+        onEvents(groupEventsByDate(rentals, slotInfo.start))
       }
     }
   };
@@ -78,21 +70,32 @@ export const CalendarComponent = (props: calendarProps) => {
       <Calendar
         culture='es'
         localizer={localizer}
-        defaultView={lastView}
         startAccessor="start"
         endAccessor="end"
         style={{ height: `${screenHeight - 150}px`, cursor: 'pointer' }}
         messages={getMessagesES()}
-        dayPropGetter={(date: any) => ({
-          className: calendarStyle(date),
-        })}
+        dayPropGetter={(date: any) => {
+          return { className: calendarStyle(date) as string };
+        }}
+        eventPropGetter={() => {
+
+
+          return {
+            style: {
+              backgroundColor: '#a7e8d8',
+              color: '#000',
+              opacity: 0.8,
+              display: 'block',
+              fontSize: '0.9rem'
+            },
+          };
+        }}
         components={{
           event: CalendarEvent
         }}
-        onView={setLastView}
         onSelectSlot={onSelectSlot}
         selectable={true}
-        events={leases}
+        events={rentals}
       />
     </Paper>
   )

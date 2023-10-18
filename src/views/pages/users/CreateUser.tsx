@@ -2,7 +2,7 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { useForm, useUserStore } from "@/hooks";
-import { ComponentSelect, ModalSelectComponent } from "@/components";
+import { ComponentInputSelect, ModalSelectComponent } from "@/components";
 import { UserLdapTable } from ".";
 import { FormUserModel, FormUserValidations } from "@/models";
 import { UserLdapModel } from "@/models/userLdapModel";
@@ -78,7 +78,7 @@ export const CreateUser = (props: createProps) => {
         <form onSubmit={sendSubmit}>
           <DialogContent>
             <Box sx={{ flexDirection: 'column' }}>
-              <ComponentSelect
+              <ComponentInputSelect
                 label={user != null ? 'Cuenta' : ''}
                 title={user != null ? user.first_name : 'Cuenta'}
                 onPressed={() => handleModal(true)}

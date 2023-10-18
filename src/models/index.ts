@@ -10,3 +10,4 @@ export * from './productModel';
 export * from './hourRangeModel';
 export * from './contactModel';
 export * from './eventModel';
+export * from './planModel';

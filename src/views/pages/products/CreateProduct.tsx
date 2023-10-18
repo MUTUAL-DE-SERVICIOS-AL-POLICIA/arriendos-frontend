@@ -3,7 +3,7 @@ import { useForm, useProductStore } from "@/hooks";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid } from "@mui/material";
 import { FormEvent, useCallback, useState } from "react";
 import { FormProductModel, FormProductValidations, HourRangeModel, ProductModel, RateModel, RoomModel } from "@/models";
-import { ComponentAutoCompleteSelect, ComponentInput, ComponentSelect, ModalSelectComponent } from "@/components";
+import { ComponentAutoCompleteSelect, ComponentInput, ComponentInputSelect, ModalSelectComponent } from "@/components";
 
 import days from '@/models/days.json';
 import { HourRangeTable } from "../hourRanges";
@@ -171,7 +171,7 @@ export const CreateProduct = (props: createProps) => {
                 />
               </Grid>
               <Grid item xs={12} sm={6} sx={{ padding: '5px' }}>
-                <ComponentSelect
+                <ComponentInputSelect
                   label={hour_range != null ? 'Rango de horas' : ''}
                   title={hour_range != null ? `${hour_range.time} Hrs` : 'Rango de horas'}
                   onPressed={() => handleModalHourRange(true)}
@@ -180,7 +180,7 @@ export const CreateProduct = (props: createProps) => {
                 />
               </Grid>
               <Grid item xs={12} sm={6} sx={{ padding: '5px' }}>
-                <ComponentSelect
+                <ComponentInputSelect
                   label={room != null ? 'Ambiente' : ''}
                   title={room != null ? room.name : 'Ambiente'}
                   onPressed={() => handleModalRoom(true)}
@@ -188,7 +188,7 @@ export const CreateProduct = (props: createProps) => {
                   helperText={formSubmitted ? roomValid : ''}
                 />
               </Grid><Grid item xs={12} sm={6} sx={{ padding: '5px' }}>
-                <ComponentSelect
+                <ComponentInputSelect
                   label={rate != null ? 'Tarifa' : ''}
                   title={rate != null ? rate.name : 'Tarifa'}
                   onPressed={() => handleModalRate(true)}

@@ -31,3 +31,9 @@ export * from './useHourRangeStore';
 
 /* EVENTS STORE */
 export * from './useEventStore';
+
+/* PLAN STORE */
+export * from './usePlanStore';
+
+/* RENTAL STORE */
+export * from './useRentalStore';

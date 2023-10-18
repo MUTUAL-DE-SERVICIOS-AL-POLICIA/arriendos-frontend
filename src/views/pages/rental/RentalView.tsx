@@ -1,6 +1,6 @@
-import { useForm, useProductStore } from "@/hooks";
+import { useForm, useProductStore, useRentalStore } from "@/hooks";
 import { useEffect, useState } from "react";
-import { ComponentSelect, ModalSelectComponent } from "@/components";
+import { ComponentInputSelect, ModalSelectComponent } from "@/components";
 import { FormRentalModel } from "@/models";
 import { PropertieTable } from "../properties";
 import { CalendarComponent } from "./calendar";
@@ -45,13 +45,13 @@ export const RentalView = () => {
 
   const { room, customer, onValueChange } = useForm(formFields);
   const { postLeakedProduct, clearLakedProduct } = useProductStore();
-  const { getLeases } = useProductStore();
-  const [events, setEvents] = useState([]);
+  const { getRentals } = useRentalStore();
+  const [events, setEvents] = useState<any>([]);
   const [showCart, setShowCart] = useState(false);
   const [daySelect, setDaySelect] = useState<Date | null>(null);
 
   useEffect(() => {
-    getLeases();
+    getRentals(room == null ? null : room.id);
   }, [room])
 
   useEffect(() => {
@@ -66,10 +66,18 @@ export const RentalView = () => {
     }
   }, [daySelect, room, customer])
 
-  const handleEvents = (value: []) => {
+  const handleEvents = (value: any[]) => {
     setEvents(value)
   }
+  const [screenHeight, setScreenHeight] = useState(window.innerHeight);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenHeight(window.innerHeight);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [window.innerHeight]);
   // Modal =================================================
   const [modalRoom, setModalRoom] = useState(false);
   const handleModalRoom = (value: boolean) => {
@@ -127,17 +135,17 @@ export const RentalView = () => {
         </ModalSelectComponent>
       }
       <Container>
-        <SliderCalendar style={{ width: daySelect ? '70%' : '100%' }}>
+        <SliderCalendar style={{ width: daySelect ? '68%' : '100%' }}>
           <Grid container>
             <Grid item xs={12} sm={6} sx={{ padding: '5px' }}>
-              <ComponentSelect
+              <ComponentInputSelect
                 title={customer != null ? (customer.institution_name ?? customer.contacts[0].name) : 'Cliente'}
                 label={customer == null ? '' : 'Cliente'}
                 onPressed={() => handleModalClient(true)}
               />
             </Grid>
             <Grid item xs={12} sm={6} sx={{ padding: '5px' }}>
-              <ComponentSelect
+              <ComponentInputSelect
                 title={room != null ? room.name : 'Ambiente'}
                 label={room == null ? '' : 'Ambiente'}
                 onPressed={() => handleModalRoom(true)}
@@ -145,20 +153,25 @@ export const RentalView = () => {
             </Grid>
           </Grid>
           <CalendarComponent
-            onEvents={(listEvents: []) => handleEvents(listEvents)}
+            onEvents={(listEvents: any[]) => handleEvents(listEvents)}
             daySelect={daySelect}
             onSelectDay={(day) => {
               setDaySelect(day)
             }}
+            screenHeight={screenHeight}
           />
         </SliderCalendar>
-        <SliderContent style={{ width: daySelect ? '30%' : '' }}>
+        <SliderContent style={{ width: daySelect ? '32%' : '' }}>
           <RentalSection
             showCart={showCart}
             date={daySelect}
             customer={customer}
             events={events}
-            onClose={() => setDaySelect(null)}
+            onClose={() => {
+              setDaySelect(null);
+              getRentals(room.id);
+            }}
+            screenHeight={screenHeight}
           />
         </SliderContent>
       </Container>

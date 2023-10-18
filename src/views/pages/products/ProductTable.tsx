@@ -1,6 +1,6 @@
 import { IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { DeleteOutline, EditOutlined } from "@mui/icons-material";
+import { DeleteOutline } from "@mui/icons-material";
 import { ComponentSearch, ComponentTablePagination } from "@/components";
 import { useProductStore } from "@/hooks";
 import { ProductModel } from "@/models";
@@ -13,7 +13,6 @@ interface tableProps {
 
 export const ProductTable = (props: tableProps) => {
   const {
-    handleEdit,
     limitInit = 10,
     isFilter = false
   } = props;
@@ -62,9 +61,6 @@ export const ProductTable = (props: tableProps) => {
                     direction="row"
                     spacing={2}
                   >
-                    <IconButton onClick={() => handleEdit(product)}>
-                      <EditOutlined color="info" />
-                    </IconButton>
                     <IconButton onClick={() => deleteRemoveProduct(product)}>
                       <DeleteOutline color="error" />
                     </IconButton>

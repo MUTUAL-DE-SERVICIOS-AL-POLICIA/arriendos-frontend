@@ -1,4 +1,4 @@
-import { ComponentButton, ComponentInput, ComponentSelect, ModalSelectComponent } from "@/components"
+import { ComponentButton, ComponentInput, ComponentInputSelect, ModalSelectComponent } from "@/components"
 import { useCustomerStore, useForm } from "@/hooks";
 import { Button, Collapse, Dialog, DialogActions, DialogContent, DialogTitle, Grid, ListItem, Typography } from "@mui/material"
 import { FormEvent, useCallback, useEffect, useState } from "react";
@@ -130,7 +130,7 @@ export const CreateCustomer = (props: createProps) => {
           <DialogContent >
             <Grid container>
               <Grid item xs={12} sm={12} sx={{ padding: '5px' }}>
-                <ComponentSelect
+                <ComponentInputSelect
                   label={customer_type != null ? 'Tipo de Cliente' : ''}
                   title={customer_type != null ? customer_type.name : 'Tipo de Cliente'}
                   onPressed={() => handleModal(true)}

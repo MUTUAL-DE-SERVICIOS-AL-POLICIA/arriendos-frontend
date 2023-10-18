@@ -8,7 +8,7 @@ export const menu = () => {
             icon: <Home />
         },
         {
-            title: "Gestión de Arriendos",
+            title: "Gestión de Alquileres",
             permission: "show-rent",
             group: [
                 {
@@ -25,7 +25,7 @@ export const menu = () => {
                 },
                 {
                     path: "/rentalView",
-                    title: "Arriendos",
+                    title: "Alquileres",
                     icon: <Receipt />,
                     permission: "show-rates"
                 }

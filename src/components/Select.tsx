@@ -1,85 +1,59 @@
-import { Button, Chip, Typography } from '@mui/material';
-import React from 'react';
+import { FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material"
+import { ClearIcon } from "@mui/x-date-pickers";
 
-interface elementsProps {
-    label?: string;
-    title: string;
-    onPressed: any;
-    items?: any;
-    color?: any;
-    onRemove?: (value: number) => void;
-    error?: boolean;
-    helperText?: string;
+interface selectProps {
+  label: string;
+  handleSelect: (value: any) => void;
+  options: any[];
+  value: any;
+  onClear?: () => void;
+  disabled?: boolean;
 }
 
-export const ComponentSelect = React.memo((props: elementsProps) => {
-    const {
-        label = '',
-        title,
-        onPressed,
-        items = [],
-        color,
-        onRemove,
-        error = false,
-        helperText,
-    } = props;
+export const SelectComponent = (props: selectProps) => {
+  const {
+    label,
+    handleSelect,
+    options,
+    value,
+    onClear,
+    disabled = false,
+  } = props;
 
 
-    return (
-        <>
-            <>
-                <div style={{ position: 'relative', paddingTop: '5px', marginBottom: '10px' }}>
-                    <span
-                        style={{
-                            position: 'absolute',
-                            top: -8,
-                            left: 2,
-                            backgroundColor: 'white',
-                            padding: '2px',
-                            zIndex: 1,
-                            fontSize: '0.9rem'
-                        }}
-                    >
-                        {label}
-                    </span>
-                    <Button
-                        variant="outlined"
-                        onClick={onPressed}
-                        style={{
-                            width: '100%',
-                            paddingTop: '5px',
-                            paddingBottom: '5px',
-                            color: 'black',
-                            borderColor: error ? 'red' : 'black',
-                            textTransform: 'none',
-                            zIndex: 0,
-                            backgroundColor: color
-                        }}
-                    >
-                        {title}
-                    </Button>
-                </div>
-                {
-                    items.length > 0 ?
-                        <div style={{ display: 'flex', flexWrap: 'wrap', marginTop: '8px' }}>
-                            {[...items].map((data) => {
-                                return (
-                                    <Chip
-                                        key={data.id}
-                                        color="primary"
-                                        label={data.name}
-                                        style={{ margin: '1px' }}
-                                        onDelete={() => onRemove!(data.id)}
-                                    />
-                                );
-                            })}
-                        </div>
-                        : <></>
-                }
-                {error && (
-                    <Typography style={{ color: 'red', fontSize: '0.8rem', padding: '2px' }} >{helperText}</Typography>
-                )}
-            </>
-        </>
-    )
-})
+  const onChange = (event: SelectChangeEvent) => {
+    let objSelected: any = event.target.value;
+    handleSelect(objSelected);
+  }
+
+  return (
+    <FormControl sx={{ mr: 5, mb: .5, width: '100%', padding: '5px' }} size="small">
+      <InputLabel id="select">{label}</InputLabel>
+      <Select
+        labelId="select"
+        id="select"
+        value={value}
+        label="select"
+        onChange={onChange}
+        sx={{ borderRadius: 2 }}
+        disabled={disabled}
+        endAdornment={
+          (
+            onClear && (value != "") && <InputAdornment position="end">
+              <IconButton
+                onClick={onClear}
+                color="secondary"
+              >
+                <ClearIcon />
+              </IconButton>
+            </InputAdornment>
+          )
+        }
+      >
+        {
+          options.map((value: any) => <MenuItem key={value.id} value={value.id}>{value.name}</MenuItem>)
+        }
+      </Select>
+    </FormControl>
+  )
+}

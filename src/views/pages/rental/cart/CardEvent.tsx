@@ -1,6 +1,6 @@
 import { useEventStore, useForm } from "@/hooks";
-import { HighlightOffOutlined, ProductionQuantityLimits } from "@mui/icons-material"
-import { Chip, IconButton, ListItem, Paper } from "@mui/material"
+import { HighlightOffOutlined } from "@mui/icons-material"
+import { IconButton, ListItem, Paper, Typography } from "@mui/material"
 import { useEffect } from "react";
 import { ComponentAutoComplete, ComponentInput, ComponentInputTime } from "@/components";
 import { FormEventModel, FormEventValidations, TypeEventModel } from "@/models";
@@ -49,10 +49,8 @@ export const CardEvent = (props: RenderItemOptions) => {
 	const { productSelect, date } = item;
 
 	return (
-		<Paper sx={{ margin: '15px 0px', padding: '7px 7px 2px 7px', borderRadius: '10px', backgroundColor: '#E2F6F0' }}>
-			{/* {JSON.stringify(productSelect)} */}
+		<Paper sx={{ margin: '7px', padding: '7px', borderRadius: '10px', backgroundColor: '##f2fbf9' }}>
 			<ListItem
-				sx={{ display: 'block', margin: '0 auto' }}
 				secondaryAction={
 					<IconButton
 						edge="end"
@@ -60,18 +58,13 @@ export const CardEvent = (props: RenderItemOptions) => {
 						title="Delete"
 						onClick={handleRemoveProduct}
 					>
-						<HighlightOffOutlined color="primary" />
+						<HighlightOffOutlined color="error" />
 					</IconButton>
 				}
 			>
-				<div style={{ textAlign: 'center' }}>
-					<Chip
-						label={`${productSelect.room.name}/${productSelect.rate.name}/${productSelect.hour_range.time} Hrs`}
-						variant="outlined"
-						icon={<ProductionQuantityLimits />}
-						sx={{ marginBottom: '0px', backgroundColor: '#DEA427', textAlign: 'center' }}
-					/>
-				</div>
+				<Typography sx={{ fontWeight: 'bold' }}>
+					{`${productSelect.room.name}/${productSelect.rate.name}/${productSelect.hour_range.time} Hrs/ ${productSelect.mount} Bs`}
+				</Typography>
 			</ListItem>
 			<ComponentInputTime
 				date={date}

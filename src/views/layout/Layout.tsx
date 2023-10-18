@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles';
 import { useLocation } from 'react-router-dom';
 import { SettingsNav, SideNav, TopNav } from '.';
 
-const SIDE_NAV_WIDTH = 220;
+const SIDE_NAV_WIDTH = 190;
 
 const LayoutRoot = styled('div')(({ theme }) => ({
     display: 'flex',
@@ -28,10 +28,10 @@ export const Layout = ({ children }: { children: any }) => {
     const handlePathnameChange = useCallback(
         () => {
 
-            if(settingsOpenNav)setSettingsOpenNav(false)
-            if (openNav)setOpenNav(false)
+            if (settingsOpenNav) setSettingsOpenNav(false)
+            if (openNav) setOpenNav(false)
         },
-        [openNav,settingsOpenNav]
+        [openNav, settingsOpenNav]
     );
 
     useEffect(
@@ -43,9 +43,9 @@ export const Layout = ({ children }: { children: any }) => {
 
     return (
         <>
-            <TopNav onNavOpen={() => setOpenNav(true)} onTapSettings={()=>setSettingsOpenNav(true)} />
+            <TopNav onNavOpen={() => setOpenNav(true)} onTapSettings={() => setSettingsOpenNav(true)} />
             <SideNav onClose={() => setOpenNav(false)} open={openNav} />
-            <SettingsNav onClose={() => {setSettingsOpenNav(false)}} open={settingsOpenNav} />
+            <SettingsNav onClose={() => { setSettingsOpenNav(false) }} open={settingsOpenNav} />
             <LayoutRoot>
                 <LayoutContainer>
                     {children}

@@ -1,16 +1,15 @@
-import { ComponentInput, ComponentSelect, ModalSelectComponent } from "@/components";
+import { ComponentInput, ComponentInputSelect, ModalSelectComponent } from "@/components";
 import { useForm } from "@/hooks";
 import { useRateStore } from "@/hooks/useRateStore";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid } from "@mui/material";
 import { FormEvent, useCallback, useState } from "react";
-import { FormRateModel, FormRateValidations, RateModel, RequirementModel, TypeCustomerModel } from "@/models";
+import { FormRateModel, FormRateValidations, RequirementModel, TypeCustomerModel } from "@/models";
 import { RequirementTable } from "../requirements";
 import { TypeCustomerTable } from "../typesCustomers";
 
 interface createProps {
   open: boolean;
   handleClose: () => void;
-  item: RateModel | null;
 }
 const formFields: FormRateModel = {
   rate: '',
@@ -27,36 +26,26 @@ export const CreateRate = (props: createProps) => {
   const {
     open,
     handleClose,
-    item,
   } = props;
 
-  const { postCreateRate, patchUpdateRate } = useRateStore();
+  const { postCreateRate } = useRateStore();
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   const {
     rate, customer_type, requirement,
     onInputChange, onValueChange, isFormValid, onResetForm,
-    rateValid, requirementValid, customer_typeValid } = useForm(item ?? formFields, formValidations);
+    rateValid, requirementValid, customer_typeValid } = useForm(formFields, formValidations);
 
   const sendSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setFormSubmitted(true);
     if (!isFormValid) return;
-    if (item == null) {
-      postCreateRate(
-        {
-          rate,
-          requirement: requirement.map((e: RequirementModel) => e.id),
-          customer_type: customer_type.map((e: TypeCustomerModel) => e.id),
-        });
-    } else {
-      patchUpdateRate(item.id,
-        {
-          rate,
-          requirement: requirement.map((e: RequirementModel) => e.id),
-          customer_type: customer_type.map((e: TypeCustomerModel) => e.id),
-        });
-    }
+    postCreateRate(
+      {
+        rate,
+        requirement: requirement.map((e: RequirementModel) => e.id),
+        customer_type: customer_type.map((e: TypeCustomerModel) => e.id),
+      })
     handleClose();
     onResetForm();
   }
@@ -120,7 +109,7 @@ export const CreateRate = (props: createProps) => {
           <></>
       }
       <Dialog open={open} onClose={handleClose} >
-        <DialogTitle>{item == null ? 'Nueva Tarifa' : `${item.name}`}</DialogTitle>
+        <DialogTitle>{'Nueva Tarifa'}</DialogTitle>
         <form onSubmit={sendSubmit}>
           <DialogContent sx={{ display: 'flex' }}>
             <Grid container>
@@ -136,7 +125,7 @@ export const CreateRate = (props: createProps) => {
                 />
               </Grid>
               <Grid item xs={12} sm={12} sx={{ padding: '5px' }}>
-                <ComponentSelect
+                <ComponentInputSelect
                   title={'Tipos de clientes'}
                   onPressed={() => handleModalCustomerType(true)}
                   items={customer_type.map((e: TypeCustomerModel) => ({ id: e.id, name: e.name }))}
@@ -146,7 +135,7 @@ export const CreateRate = (props: createProps) => {
                 />
               </Grid>
               <Grid item xs={12} sm={12} sx={{ padding: '5px' }}>
-                <ComponentSelect
+                <ComponentInputSelect
                   title={'Requisitos'}
                   onPressed={() => handleModalRequirement(true)}
                   items={requirement.map((e: RequirementModel) => ({ id: e.id, name: e.requirement_name }))}
@@ -160,7 +149,7 @@ export const CreateRate = (props: createProps) => {
           <DialogActions>
             <Button onClick={handleClose}>Cancelar</Button>
             <Button type="submit">
-              {item == null ? 'CREAR' : 'EDITAR'}
+              {'CREAR'}
             </Button>
           </DialogActions>
         </form>
