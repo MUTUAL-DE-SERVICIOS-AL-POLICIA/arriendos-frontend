@@ -2,8 +2,8 @@ import { Chip, Divider, Grow, List, ListItem, ListItemText, Paper, Typography } 
 import { CalendarIcon } from "@mui/x-date-pickers"
 import { format } from "date-fns";
 import esES from 'date-fns/locale/es';
-import React, { useEffect, useState } from "react";
-import { EventDialog } from "./createRental";
+import React, { useState } from "react";
+import { EventDialog } from ".";
 
 const dividerStyle = {
   height: '1px',
@@ -15,6 +15,7 @@ const dividerStyle = {
 }
 
 interface cardProps {
+  screenHeight:number;
   showGrow: boolean;
   date: Date;
   events: any[]
@@ -22,20 +23,11 @@ interface cardProps {
 
 export const RentalCard = (props: cardProps) => {
   const {
+    screenHeight,
     showGrow,
     date,
     events,
   } = props;
-  const [screenHeight, setScreenHeight] = useState(window.innerHeight);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setScreenHeight(window.innerHeight);
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [window.innerHeight]);
-
 
     const [ openDialog, setOpenDialog ] = useState(false)
     const [ selectedEvent, setSelectedEvent ] = useState([])
@@ -47,7 +39,6 @@ export const RentalCard = (props: cardProps) => {
     }
 
   return (
-    <>
       <>
         <Typography variant="h6" style={{ textAlign: 'center' }}>Alquileres creados</Typography>
         <Grow in={true} style={{ transformOrigin: '0 0 0 0' }} {...(showGrow ? { timeout: 2300 } : {})}>
@@ -103,10 +94,9 @@ export const RentalCard = (props: cardProps) => {
             </div>
           </Paper>
         </Grow>
-      </>
             {
                 openDialog && <EventDialog open={openDialog} handleClose={() => handleDialog(false, null)} selectedEvent={selectedEvent}/>
             }
-    </>
+      </>
   )
 }
