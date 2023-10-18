@@ -1,21 +1,10 @@
-import { Button, Card, CardContent, Dialog, DialogTitle, Divider, Grid, Grow, IconButton, Paper, Step, StepButton, Stepper, Typography } from "@mui/material"
+import { Button, Card, Dialog, DialogTitle, Divider,IconButton, Step, StepButton, Stepper, Typography } from "@mui/material"
 import { Box } from "@mui/system"
 import { useEffect, useState } from "react"
 import { Close } from "@mui/icons-material"
-// import { Form } from "react-router-dom"
 import { useLeasesStates } from "@/hooks/useLeasesStates"
+import { InfoRental } from "."
 
-const convertDateWithTime = (date: any) => {
-	const currentDate = new Date(date);
-	const year = currentDate.getFullYear();
-	const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Los meses van de 0 a 11, así que sumamos 1
-	const day = String(currentDate.getDate()).padStart(2, '0');
-	const hours = String(currentDate.getHours()).padStart(2, '0');
-	const minutes = String(currentDate.getMinutes()).padStart(2, '0');
-
-	const dateFormatted = `${day}/${month}/${year} ${hours}:${minutes}`;
-	return dateFormatted;
-};
 
 interface elementsProps {
 	open: boolean;
@@ -62,7 +51,7 @@ export const EventDialog = (props: elementsProps) => {
 	const handleNext = () => {
 		const newActiveStep =
 			isLastStep() && !allStepsCompleted()
-				? leaseStates.findIndex((_, i) => !(i in completed))
+				? leaseStates.findIndex((_:any, i:number) => !(i in completed))
 				: activeStep + 1
 		setActiveStep(newActiveStep)
 	}
@@ -100,36 +89,7 @@ export const EventDialog = (props: elementsProps) => {
 				>
 					<Close />
 				</IconButton>
-				<Grid container spacing={2}>
-					<Grid item xs={4}>
-						<Card variant="outlined" sx={{ margin: '0px 0px 12px 0px', borderRadius: '10px' }}>
-							<CardContent>
-								<Typography sx={{ fontSize: 18 }} color="text.primary" gutterBottom>
-									<i>{selectedEvent.title}</i>
-								</Typography>
-								<Typography sx={{ fontSize: 15 }} color="text.primary" gutterBottom>
-									&emsp;<b>Fecha inicial:</b> {convertDateWithTime(selectedEvent.start)}
-								</Typography>
-								<Typography sx={{ fontSize: 15 }} color="text.primary" gutterBottom>
-									&emsp;<b>Fecha final:</b> {convertDateWithTime(selectedEvent.end)}
-								</Typography>
-								<Typography sx={{ fontSize: 15 }} color="text.primary" gutterBottom>
-									&emsp;<b>Detalle:</b> Algun detalle
-								</Typography>
-							</CardContent>
-						</Card>
-					</Grid>
-					<Grid item xs={4}>
-						<Card variant="outlined" >
-							<CardContent></CardContent>
-						</Card>
-					</Grid>
-					<Grid item xs={4}>
-						<Card variant="outlined" >
-							<CardContent></CardContent>
-						</Card>
-					</Grid>
-				</Grid>
+				<InfoRental selectedEvent={selectedEvent}/>
 				{JSON.stringify(currentState)}
 				<Card sx={{ margin: '20px 0px', padding: '10px 10px 0px 10px', borderRadius: '10px' }} variant="outlined">
 					<Stepper nonLinear activeStep={currentState ? currentState.current_state.id - 1 : 0}>
@@ -148,19 +108,19 @@ export const EventDialog = (props: elementsProps) => {
 						</>
 					) : (
 						<>
-              {currentState && <>
-                
-							{currentState.current_state.id == 2 && (
-								<Button
-									color="inherit"
-								>
-									Componente paso 1
-								</Button>
-							)}
-							{currentState.current_state.id == 3 && (
-								<p>Paso 3</p>
-							)}
-              </>}
+							{currentState && <>
+
+								{currentState.current_state.id == 2 && (
+									<Button
+										color="inherit"
+									>
+										Componente paso 1
+									</Button>
+								)}
+								{currentState.current_state.id == 3 && (
+									<p>Paso 3</p>
+								)}
+							</>}
 							{/* <Typography sx={{ mt:2, mb: 1, py: 1}}>
 									Paso {activeStep + 1}
 							</Typography> */}

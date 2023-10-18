@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { RentalCard } from ".";
+import { RentalCard } from "./stateRental";
 import { CartView } from "./cart";
 import { CustomerModel } from "@/models";
 
@@ -40,6 +40,7 @@ export const RentalSection = (props: rentalProps) => {
     <>
       {date && <>
         <RentalCard
+        screenHeight={screenHeight}
           showGrow={showGrow}
           date={date}
           events={events}
