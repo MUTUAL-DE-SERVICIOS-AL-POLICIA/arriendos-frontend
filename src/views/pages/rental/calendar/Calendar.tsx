@@ -65,8 +65,9 @@ export const CalendarComponent = (props: calendarProps) => {
     }
   };
 
+
   return (
-    <Paper sx={{ padding: '15px', borderRadius: '10px' }}>
+    <Paper sx={{ padding: '16px', borderRadius: '10px' }}>
       <Calendar
         culture='es'
         localizer={localizer}
