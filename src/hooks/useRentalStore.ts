@@ -16,7 +16,6 @@ export const useRentalStore = () => {
   const { rentals = [] } = useSelector((state: any) => state.rentals);
   const dispatch = useDispatch();
 
-
   const getRentals = async (roomId?: number) => {
     try {
       console.log("OBTENIENDO ALQUILERES")
@@ -65,11 +64,68 @@ export const useRentalStore = () => {
       }
     })
   }
+  const getRentalRequirements = async (rental: number) => {
+    try {
+      
+      const { data } = await api.get('/requirements/customer/', {
+        params: {
+          rental: rental
+        }
+      })
+      return data.data
+    } catch(error: any) {
+      Swal.fire('Oops ocurrio algo', error.response, 'error')
+    }
+  }
+  const postSendRequirements = async (body: object) => {
+    try {
+      const res = await api.post('/requirements/register_delivered_requirements', body)
+      if(res.status == 200) {
+        return true
+      } else return false
+    } catch(error: any) {
+      throw Swal.fire('Oops ocurrio algo', error.response, 'error')
+    }
+  }
+
+  const postRegisterPayment = async (body: object) => {
+    try {
+      const res = await api.post('/leases/register_payment/', body)
+      if(res.status == 200) {
+        Swal.fire('Registro exitoso', res.data.message, 'success')
+      } else {
+        new Error("Error en la llamada al servidor")
+      }
+    } catch(error: any) {
+      throw Swal.fire('Oops ocurrio algo', error.message, 'error')
+    }
+  }
+
+  const getRegistersPayments = async (rental:number) => {
+    try {
+      const res = await api.get('/leases/register_payment/', {
+        params: {
+          rental: rental
+        }
+      })
+      if(res.status == 200) {
+        const { data } = res
+        return data
+      } else new Error("Error en la llamada al servidor")
+    } catch(error: any) {
+      Swal.fire('Oops ocurrio algo', error.message, 'error')
+    }
+  }
+
   return {
     //* Propiedades
     rentals,
     //* Métodos
     postCreateRental,
     getRentals,
+    getRentalRequirements,
+    postSendRequirements,
+    postRegisterPayment,
+    getRegistersPayments
   }
 }
