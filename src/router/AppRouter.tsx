@@ -10,6 +10,7 @@ import { PropertiesView } from '@/views/pages/properties';
 import { CustomersView } from '@/views/pages/customers';
 import { TypesCustomersView } from '@/views/pages/typesCustomers';
 import { RatesView } from '@/views/pages/rates';
+import { RentalCalendarView } from '@/views/pages/rentalCalendar';
 import { RentalView } from '@/views/pages/rental';
 import { HourRangeView } from '@/views/pages/hourRanges';
 import { RequirementsView } from '@/views/pages/requirements';
@@ -34,6 +35,8 @@ export const AppRouter = () => {
                     <Route path="/propertiesView" element={<PropertiesView />} />
                     {/* productos */}
                     <Route path="/productsView" element={<ProductsView />} />
+                    {/* arriendos con calendario */}
+                    <Route path="/rentalCalendarView" element={<RentalCalendarView />} />
                     {/* arriendos */}
                     <Route path="/rentalView" element={<RentalView />} />
                     {/* rangos de horas */}

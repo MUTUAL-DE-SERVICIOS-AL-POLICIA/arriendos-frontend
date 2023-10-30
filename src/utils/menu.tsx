@@ -1,4 +1,4 @@
-import { Bento, Group, Home, Receipt } from "@mui/icons-material"
+import { Bento, CalendarMonth, Group, Home, Receipt } from "@mui/icons-material"
 
 export const menu = () => {
     return [
@@ -23,6 +23,18 @@ export const menu = () => {
                     icon: <Bento />,
                     permission: "show-rates"
                 },
+            ]
+        },
+        {
+            title: "Gestión de Alquileres",
+            permission: "show-rent",
+            group: [
+                {
+                    path: "/rentalCalendarView",
+                    title: "Calendario",
+                    icon: <CalendarMonth />,
+                    permission: "show-rates"
+                },
                 {
                     path: "/rentalView",
                     title: "Alquileres",
@@ -31,18 +43,6 @@ export const menu = () => {
                 }
             ]
         },
-        // {
-        //     title: "Gestión de Planes",
-        //     permission: "show-rent",
-        //     group: [
-        //         {
-        //             path: "/rent/hallsView",
-        //             title: "Planes",
-        //             icon: <Wifi />,
-        //             permission: "show-halls"
-        //         }
-        //     ]
-        // },
         {
             title: "Gestión de Clientes",
             permission: "show-rent",

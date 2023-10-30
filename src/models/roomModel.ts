@@ -1,3 +1,9 @@
+/* Sub Eviroment MODEL */
+export interface SubEnvironments {
+    name: string;
+    state: string;
+    quantity: number;
+}
 
 /* Room MODEL */
 export interface RoomModel {
@@ -7,6 +13,7 @@ export interface RoomModel {
     capacity: number;
     warranty: number;
     property: number;
+    sub_environments: SubEnvironments[];
 }
 
 
@@ -22,6 +29,6 @@ export interface FormRoomModel {
 /*FORM Room MODEL VALIDATIONS */
 export interface FormRoomValidations {
     name: [(value: string) => boolean, string];
-    capacity: [(value:number) => boolean, string];
-    warranty: [(value:number) => boolean, string];
+    capacity: [(value: number) => boolean, string];
+    warranty: [(value: number) => boolean, string];
 }

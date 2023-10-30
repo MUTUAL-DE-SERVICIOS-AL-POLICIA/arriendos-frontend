@@ -51,6 +51,7 @@ export const UserTable = (props: tableProps) => {
                     <TableCell>{user.email}</TableCell>
                     <TableCell>
                       <Switch
+
                         checked={user.is_active}
                         onChange={() => toggleActivation(user)}
                         color="success"

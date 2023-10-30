@@ -71,10 +71,14 @@ export const RequirementTable = (props: tableProps) => {
                       direction="row"
                       spacing={2}
                     >
-                      <IconButton onClick={() => handleEdit!(requirement)} >
+                      <IconButton
+                        sx={{ p: 0 }}
+                        onClick={() => handleEdit!(requirement)} >
                         <EditOutlined color="info" />
                       </IconButton>
-                      <IconButton onClick={() => deleteRemoveRequirement(requirement)} >
+                      <IconButton
+                        sx={{ p: 0 }}
+                        onClick={() => deleteRemoveRequirement(requirement)} >
                         <DeleteOutline color="error" />
                       </IconButton>
                     </Stack>

@@ -19,9 +19,8 @@ export const RequirementsView = () => {
     <>
       <Stack
         direction="row"
-        justifyContent="space-between"
+        justifyContent="end"
       >
-        <Typography variant="h6">Requisitos</Typography>
         <ComponentButton
           text="Nuevo Requisito"
           onClick={() => handleDialog(true)}

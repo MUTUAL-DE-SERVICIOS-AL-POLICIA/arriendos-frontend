@@ -22,9 +22,8 @@ export const HourRangeView = () => {
     <>
       <Stack
         direction="row"
-        justifyContent="space-between"
+        justifyContent="end"
       >
-        <Typography variant="h6">Rangos de horas</Typography>
         <ComponentButton
           text="Nuevo rango de hora"
           onClick={() => handleDialog(true)}

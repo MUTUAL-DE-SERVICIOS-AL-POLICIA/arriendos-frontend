@@ -23,9 +23,8 @@ export const CustomersView = () => {
     <>
       <Stack
         direction="row"
-        justifyContent="space-between"
+        justifyContent="end"
       >
-        <Typography variant="h6">Clientes</Typography>
         <ComponentButton
           text="Nuevo Cliente"
           onClick={() => handleDialog(true)}

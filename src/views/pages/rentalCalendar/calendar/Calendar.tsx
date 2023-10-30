@@ -1,15 +1,16 @@
 import { getMessagesES, localizer } from "@/helpers";
 import { CalendarEvent } from ".";
 import { useRentalStore } from "@/hooks";
-import { Calendar } from 'react-big-calendar';
+import { Calendar, SlotInfo } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './styles.css';
 import { Paper } from "@mui/material";
 import { format } from "date-fns";
+import { EventsCalendarModel } from "@/models";
 
 
-const groupEventsByDate = (events: any[], date: Date) => {
-  return events.filter((event: any) => {
+const groupEventsByDate = (events: EventsCalendarModel[], date: Date) => {
+  return events.filter((event: EventsCalendarModel) => {
     const dateCurrent = format(date, 'yyyy-MM-dd');
     const start = format(event.start, 'yyyy-MM-dd');
     const end = format(event.end, 'yyyy-MM-dd');
@@ -26,7 +27,7 @@ const sameDay = (d1: any, d2: any) => {
 }
 
 interface calendarProps {
-  onEvents: (listSelected: any[]) => void;
+  onEvents: (listSelected: EventsCalendarModel[]) => void;
   daySelect: Date | null;
   onSelectDay: (day: Date | null) => void;
   screenHeight: number;
@@ -50,7 +51,8 @@ export const CalendarComponent = (props: calendarProps) => {
     return null;
   };
 
-  const onSelectSlot = async (slotInfo: any) => {
+  const onSelectSlot = async (slotInfo: SlotInfo) => {
+    console.log(slotInfo)
     if (daySelect == null) {
       onSelectDay(slotInfo.start)
       onEvents(groupEventsByDate(rentals, slotInfo.start))
@@ -67,7 +69,7 @@ export const CalendarComponent = (props: calendarProps) => {
 
 
   return (
-    <Paper sx={{ padding: '16px', borderRadius: '10px' }}>
+    <Paper sx={{ p: .5, borderRadius: '10px' }}>
       <Calendar
         culture='es'
         localizer={localizer}
@@ -79,13 +81,11 @@ export const CalendarComponent = (props: calendarProps) => {
           return { className: calendarStyle(date) as string };
         }}
         eventPropGetter={() => {
-
-
           return {
             style: {
               backgroundColor: '#a7e8d8',
               color: '#000',
-              opacity: 0.8,
+              opacity: 0.6,
               display: 'block',
               fontSize: '0.9rem'
             },
@@ -94,6 +94,7 @@ export const CalendarComponent = (props: calendarProps) => {
         components={{
           event: CalendarEvent
         }}
+        onSelectEvent={onSelectSlot}
         onSelectSlot={onSelectSlot}
         selectable={true}
         events={rentals}

@@ -1,44 +1,39 @@
 
-import {
-    Avatar,
-    Box,
-    IconButton,
-    Stack,
-    useMediaQuery
-} from '@mui/material';
-import { alpha, useTheme } from '@mui/material/styles';
+import { Avatar, Box, IconButton, Stack, Typography, useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { MenuOutlined } from '@mui/icons-material';
-// import { useSelector } from 'react-redux';
 import { usePopover } from '@/hooks';
 import { AccountPopover } from '.';
 import noimage from '@/assets/images/profile.png';
 
-const SIDE_NAV_WIDTH = 200;
-const TOP_NAV_HEIGHT = 50;
+interface topProps {
+    onNavOpen: () => void;
+    onTapSettings: () => void;
+    title: string;
+}
 
-export const TopNav = (({ onNavOpen,onTapSettings }: { onNavOpen: any,onTapSettings:any }) => {
 
-    // const { data } = useSelector((state: any) => state.auth);
+export const TopNav = (props: topProps) => {
+    const {
+        onNavOpen,
+        onTapSettings,
+        title,
+    } = props;
     const theme = useTheme();
     const lgUp = useMediaQuery(theme.breakpoints.up('md'));
 
     const accountPopover = usePopover();
-
     return (
         <>
             <Box
                 component="header"
                 sx={{
                     backdropFilter: 'blur(6px)',
-                    backgroundColor: (theme) => 'transparent',
+                    backgroundColor: 'transparent',
                     position: 'sticky',
-                    left: {
-                        lg: `${SIDE_NAV_WIDTH}px`
-                    },
                     top: 0,
-                    width: {
-                        lg: `calc(100% - ${SIDE_NAV_WIDTH}px)`
-                    },
+                    width: '100%',
+                    py: 1,
                     zIndex: (theme) => theme.zIndex.appBar
                 }}
             >
@@ -46,17 +41,9 @@ export const TopNav = (({ onNavOpen,onTapSettings }: { onNavOpen: any,onTapSetti
                     alignItems="center"
                     direction="row"
                     justifyContent="space-between"
-                    spacing={2}
-                    sx={{
-                        minHeight: TOP_NAV_HEIGHT,
-                        px: 2
-                    }}
+
                 >
-                    <Stack
-                        alignItems="center"
-                        direction="row"
-                        spacing={2}
-                    >
+                    <Stack alignItems="center" direction="row">
                         {!lgUp && (
                             <IconButton onClick={onNavOpen}>
                                 <MenuOutlined color="primary" />
@@ -66,25 +53,30 @@ export const TopNav = (({ onNavOpen,onTapSettings }: { onNavOpen: any,onTapSetti
                     <Stack
                         alignItems="center"
                         direction="row"
+                        justifyContent="space-between"
+                        sx={{ flexGrow: 2, pl: 10 }}
                     >
+                        <Typography variant="h6">{title}</Typography>
                         <Avatar
                             onClick={accountPopover.handleOpen}
                             ref={accountPopover.anchorRef}
-                            sx={{cursor: 'pointer',width: 45, height: 45 }}
+                            sx={{ cursor: 'pointer', width: 45, height: 45 }}
                             src={noimage}
                         />
                     </Stack>
                 </Stack>
+
             </Box>
+
             <AccountPopover
                 anchorEl={accountPopover.anchorRef.current}
                 open={accountPopover.open}
                 onClose={accountPopover.handleClose}
-                onTapSettings={()=>{
+                onTapSettings={() => {
                     accountPopover.handleClose();
                     onTapSettings();
                 }}
             />
         </>
     );
-});
+};

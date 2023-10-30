@@ -1,12 +1,12 @@
 .selected-day {
-  background-color: #47baa6;
+  background-color: orange;
   font-weight: bold;
   transition: transform 50ms, box-shadow 50ms;
   border-radius: 8px;
 }
 
 .selected-day:hover {
-  background-color: #88CBC2;
+  background-color: orange;
   transition-duration: initial;
   transform: scale(0.94);
 }

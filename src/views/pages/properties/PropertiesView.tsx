@@ -8,9 +8,7 @@ import { PropertieModel } from '@/models';
 
 const SIDE_NAV_WIDTH = 100;
 
-
 export const PropertiesView = () => {
-
   const [openDialog, setopenDialog] = useState(false);
   const [itemEdit, setItemEdit] = useState<PropertieModel | null>(null);
 
@@ -43,9 +41,8 @@ export const PropertiesView = () => {
       >
         <Stack
           direction="row"
-          justifyContent="space-between"
+          justifyContent="end"
         >
-          <Typography variant="h6" sx={{ paddingLeft: 2 }}>Inmuebles</Typography>
           <ComponentButton
             text="Nuevo Inmueble"
             onClick={() => handleDialog(true)}

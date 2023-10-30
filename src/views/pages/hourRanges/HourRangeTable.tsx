@@ -68,11 +68,13 @@ export const HourRangeTable = (props: tableProps) => {
                         spacing={2}
                       >
                         <IconButton
+                          sx={{ p: 0 }}
                           onClick={() => handleEdit!(hourRange)}
                         >
                           <EditOutlined color="info" />
                         </IconButton>
                         <IconButton
+                          sx={{ p: 0 }}
                           onClick={() => deleteRemoveHourRange(hourRange)}
                         >
                           <DeleteOutline color="error" />

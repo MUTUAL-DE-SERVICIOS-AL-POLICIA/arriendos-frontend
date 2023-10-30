@@ -12,7 +12,13 @@ export const ComponentButton = memo(({ type, text, onClick, width, startIcon, di
             disabled={disable}
             startIcon={startIcon}
             onClick={onClick}
-            sx={{ fontWeight: 'bold', margin: { margin }, width: { width }, height: { height } }}
+            sx={{
+                fontWeight: 'bold',
+                display: 'flex',
+                margin: { margin },
+                width: { width },
+                height: { height },
+            }}
         >
             {text}
         </Button>

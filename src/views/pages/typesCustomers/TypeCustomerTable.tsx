@@ -76,10 +76,14 @@ export const TypeCustomerTable = (props: tableProps) => {
                         direction="row"
                         spacing={2}
                       >
-                        <IconButton onClick={() => handleEdit!(typeCustomer)} >
+                        <IconButton
+                          sx={{ p: 0 }}
+                          onClick={() => handleEdit!(typeCustomer)} >
                           <EditOutlined color="info" />
                         </IconButton>
-                        <IconButton onClick={() => deleteRemoveTypeCustomer(typeCustomer)} >
+                        <IconButton
+                          sx={{ p: 0 }}
+                          onClick={() => deleteRemoveTypeCustomer(typeCustomer)} >
                           <DeleteOutline color="error" />
                         </IconButton>
                       </Stack>
