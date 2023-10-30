@@ -37,6 +37,7 @@ export const ProductTable = (props: tableProps) => {
         <Table sx={{ minWidth: 350 }} size="small">
           <TableHead >
             <TableRow sx={{ backgroundColor: '#E2F6F0' }}>
+              <TableCell sx={{ fontWeight: 'bold' }}>Cod.</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>Inmueble</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>Ambiente</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>Tarifa</TableCell>
@@ -49,19 +50,21 @@ export const ProductTable = (props: tableProps) => {
           <TableBody>
             {products.map((product: ProductModel) => (
               <TableRow key={product.id}>
+                <TableCell>{product.id}</TableCell>
                 <TableCell>{product.room.property.name}</TableCell>
                 <TableCell>{product.room.name}</TableCell>
                 <TableCell>{product.rate.name}</TableCell>
                 <TableCell>{`${product.hour_range.time} Hrs`}</TableCell>
-                <TableCell>{product.day.map((day, index) => (<Typography key={index}>- {day}</Typography>))}</TableCell>
+                <TableCell>{product.day.map((day, index) => (<Typography key={index} >- {day}</Typography>))}</TableCell>
                 <TableCell>{product.mount}</TableCell>
                 <TableCell>
                   <Stack
                     alignItems="center"
                     direction="row"
-                    spacing={2}
                   >
-                    <IconButton onClick={() => deleteRemoveProduct(product)}>
+                    <IconButton
+                      sx={{ p: 0 }}
+                      onClick={() => deleteRemoveProduct(product)}>
                       <DeleteOutline color="error" />
                     </IconButton>
                   </Stack>

@@ -17,9 +17,8 @@ export const UsersView = () => {
     <>
       <Stack
         direction="row"
-        justifyContent="space-between"
+        justifyContent="end"
       >
-        <Typography variant="h6">Usuarios</Typography>
         <ComponentButton
           text="Nuevo usuario"
           onClick={() => handleDialog(true)}

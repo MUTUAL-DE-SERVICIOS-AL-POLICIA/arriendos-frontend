@@ -67,9 +67,8 @@ export const RateTable = (props: tableProps) => {
                       <Stack
                         alignItems="center"
                         direction="row"
-                        spacing={2}
                       >
-                        <IconButton onClick={() => deleteRemoveRate(rate)}>
+                        <IconButton sx={{ p: 0 }} onClick={() => deleteRemoveRate(rate)}>
                           <DeleteOutline color="error" />
                         </IconButton>
                       </Stack>

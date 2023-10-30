@@ -77,30 +77,22 @@ export const CustomerTable = (props: tableProps) => {
                             <IconButton
                               aria-label="expand row"
                               size="small"
-                              onClick={() => {
-                                if (openIndex == customer.id) {
-                                  setOpenIndex(null)
-                                } else {
-
-                                  setOpenIndex(customer.id);
-                                }
-                              }}
+                              onClick={() => setOpenIndex(openIndex == customer.id ? null : customer.id)}
                             >
                               {openIndex == customer.id ? <KeyboardArrowUpOutlined /> : <KeyboardArrowDownOutlined />}
                             </IconButton>
                           </TableCell> :
-                          <TableCell />
+                          <TableCell>{customer.contacts.length > 0 ? customer.contacts[0].phone : ''}</TableCell>
                       }
                       {!stateSelect && <TableCell>
                         <Stack
                           alignItems="center"
                           direction="row"
-                          spacing={2}
                         >
-                          <IconButton onClick={() => itemEdit!(customer)} >
+                          <IconButton sx={{ p: 0 }} onClick={() => itemEdit!(customer)} >
                             <EditOutlined color="info" />
                           </IconButton>
-                          <IconButton onClick={() => deleteRemoveCustomer(customer)} >
+                          <IconButton sx={{ p: 0 }} onClick={() => deleteRemoveCustomer(customer)} >
                             <DeleteOutline color="error" />
                           </IconButton>
                         </Stack>

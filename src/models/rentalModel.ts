@@ -1,18 +1,30 @@
-import { ContactModel, CustomerModel, RoomModel } from ".";
+import { CustomerModel, RoomModel } from ".";
 
+export interface EventsCalendarModel {
+    id: number;
+    start: Date;
+    end: Date;
+    product_id: number;
+    rental: number
+    title: string;
+}
+
+export interface ProductRentalModel {
+    id: number;
+    property: string;
+    room: string;
+    hour_range: number;
+    start_time: string;
+    end_time: string;
+    detail: string;
+    event: string;
+    rental: number;
+}
 
 /* RENTAL MODEL */
 export interface RentalModel {
-    end_time: Date;
-    start_time: Date;
-    product_id: string;
-    room_id: number;
-    room_name: string;
-    selected_product_id: number;
-    event_type_name: number;
-    institution_name: string | null;
-    nit: string | null;
-    contacts: ContactModel[]
+    customer: CustomerModel;
+    products: ProductRentalModel[];
 }
 
 /* FORM RENTAL MODEL */

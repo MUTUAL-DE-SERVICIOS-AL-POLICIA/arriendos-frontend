@@ -20,9 +20,8 @@ export const ProductsView = () => {
     <>
       <Stack
         direction="row"
-        justifyContent="space-between"
+        justifyContent="end"
       >
-        <Typography variant="h6">Productos</Typography>
         <ComponentButton
           text="Nuevo Producto"
           onClick={() => handleDialog(true)}

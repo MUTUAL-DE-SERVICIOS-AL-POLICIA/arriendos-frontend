@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux"
 import { coffeApiKevin } from "@/services";
-import { setCurrentLeaseState, setLeaseState } from '@/store';
+import { setLeaseState } from '@/store';
 import Swal from "sweetalert2";
 
 const api = coffeApiKevin;
@@ -32,11 +32,24 @@ export const useLeasesStates = () => {
     }
   }
 
+  const patchUpdateTime = async (productId: number, body: object) => {
+    try {
+      console.log('EDITANDO LA HORA DE UN PRODUCTO SELECCIONADO');
+      const { data } = await api.patch(`/leases/selected_product/${productId}`, body);
+      console.log(data)
+      // dispatch(refreshCustomer());
+      Swal.fire('Se edito correctamente la fecha', '', 'success');
+    } catch (error: any) {
+      Swal.fire('Oops ocurrio algo', error.response, 'error');
+    }
+  }
+
   return {
     leaseStates,
     currentLeaseState,
     getLeaseState,
     getCurrentLeaseState,
-    postChangeRentalState
+    postChangeRentalState,
+    patchUpdateTime
   }
 }

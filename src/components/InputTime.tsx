@@ -32,10 +32,6 @@ export const ComponentInputTime = (props: timeProps) => {
     const dateEnd: Date = new Date(dateStart);
     dateEnd.setHours(dateStart.getHours() + timeAdd);
     dateEnd.setMinutes(timeInit.getMinutes());
-    console.log(`INICIO ${dateStart}`);
-    console.log(`FIN ${dateEnd}`);
-    console.log(`INICIO JSON${dateStart.toJSON()}`);
-    console.log(`FIN JSON${dateEnd.toJSON()}`);
     onChange(dateStart, dateEnd);
   };
 

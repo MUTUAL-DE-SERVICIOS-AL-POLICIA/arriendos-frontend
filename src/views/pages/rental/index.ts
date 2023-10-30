@@ -1,2 +1,3 @@
 export * from './RentalView';
-export * from './RentalSection'; 
+export * from './RentalTable';
+export * from './CreateDamage';

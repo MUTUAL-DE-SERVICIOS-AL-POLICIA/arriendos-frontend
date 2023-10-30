@@ -1,6 +1,6 @@
 import { ComponentButton } from "@/components";
 import { Add } from "@mui/icons-material";
-import { Stack, SvgIcon, Typography } from "@mui/material";
+import { Stack, SvgIcon } from "@mui/material";
 import { useCallback, useState } from "react";
 import { CreateRate, RateTable } from ".";
 
@@ -17,9 +17,8 @@ export const RatesView = () => {
     <>
       <Stack
         direction="row"
-        justifyContent="space-between"
+        justifyContent="end"
       >
-        <Typography variant="h6">Tarifas</Typography>
         <ComponentButton
           text="Nueva Tarifa"
           onClick={() => handleDialog(true)}

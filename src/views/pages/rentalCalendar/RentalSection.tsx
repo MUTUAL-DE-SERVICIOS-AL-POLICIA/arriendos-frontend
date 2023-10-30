@@ -1,20 +1,19 @@
 import { useEffect, useState } from "react";
-import { RentalCard } from "./stateRental";
 import { CartView } from "./cart";
-import { CustomerModel } from "@/models";
+import { CustomerModel, EventsCalendarModel } from "@/models";
+import { virifyDate } from "@/helpers";
+import { RentalCard } from "./stateRental/RentalCard";
 
 interface rentalProps {
-  showCart: boolean;
   date: Date | null;
   customer: CustomerModel;
-  events: any[];
+  events: EventsCalendarModel[];
   onClose: () => void;
   screenHeight: number;
 }
 export const RentalSection = (props: rentalProps) => {
 
   const {
-    showCart,
     date,
     customer,
     events,
@@ -40,12 +39,12 @@ export const RentalSection = (props: rentalProps) => {
     <>
       {date && <>
         <RentalCard
-        screenHeight={screenHeight}
+          screenHeight={screenHeight}
           showGrow={showGrow}
           date={date}
           events={events}
         />
-        {showCart && <CartView
+        {virifyDate(date) && <CartView
           date={date}
           customer={customer}
           onClose={onClose}

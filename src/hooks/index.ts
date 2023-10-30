@@ -37,3 +37,5 @@ export * from './usePlanStore';
 
 /* RENTAL STORE */
 export * from './useRentalStore';
+
+export * from './useLeasesStates';

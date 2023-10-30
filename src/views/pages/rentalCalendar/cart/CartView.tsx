@@ -5,18 +5,7 @@ import { ComponentButton, SelectComponent } from "@/components";
 import { FormEvent, useEffect, useState } from "react";
 import { usePlanStore, useProductStore, useRentalStore } from "@/hooks";
 import { CardEvent } from ".";
-
-const getDateJSON = (date: Date | null) => {
-  if (!date) return null;
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
-  const seconds = date.getSeconds();
-  const fechaEnFormatoJSON = `${year}-${(month < 10 ? '0' : '') + month}-${(day < 10 ? '0' : '') + day}T${(hours < 10 ? '0' : '') + hours}:${(minutes < 10 ? '0' : '') + minutes}:${(seconds < 10 ? '0' : '') + seconds}.000Z`;
-  return fechaEnFormatoJSON
-}
+import { getDateJSON } from "@/helpers";
 
 interface cartProps {
   date: Date;
@@ -119,7 +108,6 @@ export const CartView = (props: cartProps) => {
             <ComponentButton
               type="submit"
               text={`Crear Alquiler con ${shoppingCart.length} producto(s)`}
-              width="100%"
               height="90%"
               disable={shoppingCart.length === 0}
             />
