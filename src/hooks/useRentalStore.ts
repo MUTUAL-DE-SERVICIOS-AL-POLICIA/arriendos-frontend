@@ -177,6 +177,28 @@ export const useRentalStore = () => {
     }
   }
 
+  const postRegisterDiscountWarranty = async (body: object) => {
+    try {
+      const res = await api.post('/financials/discount_warranty/', body, {
+        responseType: 'arraybuffer'
+      })
+
+      const blob = new Blob([res.data], {
+        type: "application/pdf"
+      })
+      const pdfURL = window.URL.createObjectURL(blob)
+      printJS(pdfURL)
+      return true
+
+    } catch (error: any) {
+      if (error.response && error.response.status == 400) {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error')
+      }
+      throw new Error('Ocurrió algun error en el backend')
+    }
+  }
+
   const postWarrantyReturn = async (body: object) => {
     try {
       const res = await api.post('/financials/warranty_returned/', body)
@@ -202,6 +224,7 @@ export const useRentalStore = () => {
     postRegisterPayment,
     getRegistersPayments,
     postRegisterWarranty,
+    postRegisterDiscountWarranty,
     postWarrantyReturn,
     getRental,
     postCreateRental,

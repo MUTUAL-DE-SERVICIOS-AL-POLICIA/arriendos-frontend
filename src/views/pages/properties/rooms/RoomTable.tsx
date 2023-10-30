@@ -90,10 +90,10 @@ export const RoomTable = (props: tableProps) => {
                         </TableCell>
                       }
                     </TableRow>
-                    <SubEnviromentTable
+                    {/* <SubEnviromentTable
                       open={openIndex == room.id}
                       subEnvironments={room.sub_environments}
-                    />
+                    /> */}
                   </React.Fragment>
                 )
               })}

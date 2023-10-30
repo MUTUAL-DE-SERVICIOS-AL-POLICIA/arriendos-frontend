@@ -37,3 +37,41 @@ export interface FormRentalModel {
 export interface FormRentalValidations {
     room: [(value: string) => boolean, string];
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*FORM DAMAGE */
+export interface FormDamageModel {
+    detail: string;
+    discount: number;
+}
+
+/*FORM DAMAGE VALIDATIONS */
+export interface FormDamageValidations {
+    detail: [(value: string) => boolean, string];
+    discount: [(value: number) => boolean, string];
+}
+/*FORM PAYMENT */
+export interface FormPayment {
+    amount: number;
+    voucherNumber: number;
+    paymentDetail: string;
+}
+
+/*FORM PAYMENT VALIDATIONS */
+export interface FormPaymentValidations {
+    amount: [(value: number) => boolean, string];
+    voucherNumber: [(value: number) => boolean, string];
+    // paymentDetail: [(value: string) => boolean, string];
+}

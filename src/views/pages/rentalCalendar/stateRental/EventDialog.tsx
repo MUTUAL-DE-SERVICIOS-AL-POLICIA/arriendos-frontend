@@ -266,8 +266,9 @@ export const EventDialog = (props: elementsProps) => {
       maxWidth={'md'}
       fullWidth={true}
       onClose={handleClose}
+      sx={{ zIndex: 9998 }}
     >
-      <Box sx={{ width: '95%', padding: '0px 20px', marginBottom: '0px', backgroundColor: '#f7f4f4' }}>
+      <Box sx={{ width: '95%', padding: '0px 20px', marginBottom: '0px', backgroundColor: '#f7f4f4', zIndex: 'tooltip' }}>
         <DialogTitle sx={{ marginBottom: '0px' }}>Estado del arriendo</DialogTitle>
         <IconButton
           aria-label="close"
@@ -282,7 +283,7 @@ export const EventDialog = (props: elementsProps) => {
           <Close />
         </IconButton>
         {rental && <InfoRental
-          // selectedEvent={selectedEvent}
+          selectedEvent={selectedEvent}
           date={date}
           productId={selectedEvent.product_id}
           rental={rental}
