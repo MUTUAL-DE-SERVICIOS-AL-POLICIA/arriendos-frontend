@@ -107,6 +107,7 @@ export const useForm = (initialForm: any = {}, formValidations: any = {}) => {
     return {
         ...formState,
         formState,
+        setFormState,
         onInputChange,
         isSelectChange,
         onFileChange,

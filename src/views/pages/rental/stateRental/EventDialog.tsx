@@ -6,20 +6,25 @@ import { useLeasesStates } from "@/hooks/useLeasesStates"
 import { InfoRental } from "."
 import { useForm, useRentalStore } from "@/hooks"
 import { Requirement } from "./reserve"
-import { ComponentInput } from "@/components"
 import { FormPaymentModel, FormPaymentValidations } from "@/models/paymentModel"
 import Swal from "sweetalert2"
+import { PaidContent } from "./paid/PaidContent"
 
 
 const formPaymentFields: FormPaymentModel = {
   amount: 0,
   voucherNumber: 0,
-  paymentDetail: ''
+  paymentDetail: '',
+  amountWarranty: 0,
+  voucherNumberWarranty: 0,
+  detailWarranty: ''
 }
 
 const formValidations: FormPaymentValidations = {
   amount: [(value: number) => value > 0, 'Debe ingresar el monto del pago'],
   voucherNumber: [(value: number) => value > 0, 'Debe ingresar el número de comprobante'],
+  amountWarranty: [(value: number) => value > 0, 'Debe ingresar el monto de la garantia'],
+  voucherNumberWarranty: [(value: number) => value > 0, 'Debe ingresar el número de comprobante de la garantía']
 }
 
 interface elementsProps {
@@ -40,7 +45,7 @@ export const EventDialog = (props: elementsProps) => {
 	const [ completed, setCompleted ] = useState<{ [k: number]: boolean }>({})
 	const [ currentState, setCurrentState ] = useState<any>(null)
 	const { leaseStates, getLeaseState, getCurrentLeaseState, postChangeRentalState } = useLeasesStates();
-	const { getRentalRequirements, postSendRequirements, getRegistersPayments, postRegisterPayment } = useRentalStore()
+	const { getRentalRequirements, postSendRequirements, getRegistersPayments, postRegisterPayment, postRegisterWarranty, postWarrantyReturn } = useRentalStore()
 	const [ requirements, setRequirements ] = useState([])
 	const [ optionals, setOptionals ] = useState([])
 	const [ checkedItems, setCheckedItems ] = useState<any[]>([])
@@ -50,9 +55,12 @@ export const EventDialog = (props: elementsProps) => {
   const [ payments, setPayments ] = useState<Array<any>>([])
 
   const {
-    amount, voucherNumber, paymentDetail,
-    onInputChange, amountValid, voucherNumberValid
+    amount, voucherNumber, paymentDetail, setFormState,
+    amountWarranty, voucherNumberWarranty, detailWarranty,
+    onInputChange, amountValid, voucherNumberValid,
+    amountWarrantyValid, voucherNumberWarrantyValid
   } = useForm(formPaymentFields, formValidations)
+
 
 	useEffect(() => {
 		(async () => {
@@ -127,7 +135,7 @@ export const EventDialog = (props: elementsProps) => {
       setCurrentState(stepCurrent)
       setActiveStep(stepCurrent.current_state.id)
       getStoppedAction(stepCurrent.next_states)
-      Swal.fire('Exitoso', 'Proceso exitoso', 'success')
+      // Swal.fire('Exitoso', 'Proceso exitoso', 'success')
     }
   }
 
@@ -159,18 +167,16 @@ export const EventDialog = (props: elementsProps) => {
   }
 
   const registerPayment = async () => {
-    console.log(amount)
-    console.log(voucherNumber)
-    console.log(paymentDetail)
     const body = {
       rental: selectedEvent.rental,
-      mount: parseInt(amount),
-      voucher_number: parseInt(voucherNumber),
+      mount: parseFloat(amount),
+      voucher_number: parseFloat(voucherNumber),
       detail: paymentDetail || null
     }
     await postRegisterPayment(body)
     const data = await getRegistersPayments(selectedEvent.rental)
     setPayments(data.payments)
+    emptyForm()
   }
 
   const getStoppedAction = (nextStates: Array<object>) => {
@@ -218,6 +224,33 @@ export const EventDialog = (props: elementsProps) => {
       }
     })
   }
+
+  const emptyForm = () => {
+    setFormState({amount: 0, voucherNumber: 0, paymentDetail: ''})
+  }
+
+  const emptyFormWarranty = () => {
+    setFormState({amountWarranty: 0, voucherNumberWarranty: 0, detailWarranty: ''})
+  }
+
+  const registerWarranty = async () => {
+    const body = {
+      rental: selectedEvent.rental,
+      income: parseFloat(amountWarranty),
+      voucher_number: parseFloat(voucherNumberWarranty),
+      detail: detailWarranty || null
+    }
+    await postRegisterWarranty(body)
+    emptyFormWarranty()
+  }
+
+  const warrantyReturn = async () => {
+    const body = {
+      rental: selectedEvent.rental,
+    }
+    await postWarrantyReturn(body)
+  }
+
 
 	return (
 		<Dialog
@@ -269,66 +302,48 @@ export const EventDialog = (props: elementsProps) => {
               )}
               {activeStep == 3 && (
                 <Box>
-                  <Grid container spacing={2} sx={{padding: 2}}>
+                  <Grid container spacing={2} sx={{padding: '20px 0px'}}>
                     <Grid item xs={12} sm={6}>
-                      <Grid container spacing={2}>
-                        <Grid item sm={6} sx={{padding: '0px 10px'}}>
-                          <ComponentInput
-                            type="text"
-                            label="Monto"
-                            name="amount"
-                            value={amount}
-                            onChange={onInputChange}
-                            error={!!amountValid}
-                            helperText={amountValid}
-                          />
-                        </Grid>
-                        <Grid item sm={6}>
-                          <ComponentInput
-                            type="text"
-                            label="Número de comprobante"
-                            name="voucherNumber"
-                            value={voucherNumber}
-                            onChange={onInputChange}
-                            error={!!voucherNumberValid}
-                            helperText={voucherNumberValid}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <ComponentInput
-                            type="text"
-                            label="Detalle del pago"
-                            name="paymentDetail"
-                            value={paymentDetail}
-                            onChange={onInputChange}
-                          />
-                        </Grid>
-                        <Grid item sm={6}>
-                          <Button onClick={registerPayment}>
-                            Pagar
-                          </Button>
-                        </Grid>
-                      </Grid>
+                      <PaidContent /* Registro de pago */
+                        labels={['Monto Pago', 'Número de Comprobante', 'Detalle del pago']}
+                        values={[amount, voucherNumber, paymentDetail]}
+                        names={['amount', 'voucherNumber', 'paymentDetail']}
+                        actionFunction={registerPayment}
+                        onInputChange={onInputChange}
+                        errors={[amountValid, voucherNumberValid]}
+                        helperTexts={[amountValid, voucherNumberWarrantyValid]}
+                      />
+                      <PaidContent /* Registro de la garantía */
+                        labels={['Monto garantía', 'Nro Comprobante', 'Detalle de la garantía']}
+                        values={[amountWarranty, voucherNumberWarranty, detailWarranty]}
+                        names={['amountWarranty', 'voucherNumberWarranty', 'detailWarranty']}
+                        actionFunction={registerWarranty}
+                        onInputChange={onInputChange}
+                        errors={[amountWarrantyValid, voucherNumberWarrantyValid]}
+                        helperTexts={[amountWarrantyValid, voucherNumberWarrantyValid]}
+                      />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                      <TableContainer component={Paper}>
-                        <Table size="small">
+                      <TableContainer component={Paper} sx={{borderRadius: 2, maxHeight: 450}}>
+                        <Table stickyHeader size="small" sx={{ border: '1px solid #ccc', borderCollapse: 'collapse', borderSpacing: '0' }}>
                           <TableHead>
                             <TableRow>
-                              <TableCell align="center">N° Comprobante</TableCell>
-                              <TableCell align="center">Monto cancelado</TableCell>
-                              <TableCell align="center">Monto a pagar</TableCell>
+                              <TableCell align="center" sx={{fontWeight: 'bold', backgroundColor: '#AEEDE1'}}>N° Comprobante</TableCell>
+                              <TableCell align="center" sx={{fontWeight: 'bold', backgroundColor: '#AEEDE1' }}>Monto cancelado</TableCell>
+                              <TableCell align="center" sx={{fontWeight: 'bold', backgroundColor: '#AEEDE1'}}>Monto a pagar</TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
                             {payments && payments.map((payment) => (
                               <TableRow
                                 key={payment.id}
-                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 },
+                                borderBottom: '1px solic #ccc'
+                               }}
                               >
-                                <TableCell align="center">{payment.voucher_number}</TableCell>
-                                <TableCell align="center">{payment.amount_paid}</TableCell>
-                                <TableCell align="center">{payment.payable_mount}</TableCell>
+                                <TableCell align="right">{payment.voucher_number}</TableCell>
+                                <TableCell align="right">{payment.amount_paid}</TableCell>
+                                <TableCell align="right">{payment.payable_mount}</TableCell>
                               </TableRow>
                             ))}
                           </TableBody>
@@ -339,7 +354,25 @@ export const EventDialog = (props: elementsProps) => {
                 </Box>
               )}
               {activeStep == 4 && (
-                <p>Arriendo ejecutado</p>
+                <Box>
+                  <Grid container sx={{padding: '20px 20px'}}>
+                    <Grid item xs={12} sm={4}>
+                      <Button variant="contained" onClick={warrantyReturn}>
+                        Devolver Garantía
+                      </Button>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <Button variant="contained">
+                        Imprimir Actas
+                      </Button>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <Button variant="contained">
+                        Imprimir Nota
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </Box>
               )}
             </>}
             <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>

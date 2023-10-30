@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { coffeApiKevin } from '@/services';
 import Swal from 'sweetalert2';
 import { setRentals } from '@/store';
+import printJS from 'print-js';
 
 const api = coffeApiKevin;
 
@@ -36,9 +37,14 @@ export const useRentalStore = () => {
       dispatch(setRentals({ rentals: events }))
       return data;
     } catch (error: any) {
-      Swal.fire('Oops ocurrio algo', error.response, 'error')
+      if(error.message && error.response.status == 400) {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error')
+      }
+      throw new Error('Ocurrió algun error en el backend')
     }
   }
+
   const postCreateRental = async (body: object, setShoppingCart: Function, onClose: Function) => {
     Swal.fire({
       title: '¿Estás seguro?',
@@ -59,14 +65,18 @@ export const useRentalStore = () => {
           setShoppingCart([])
           onClose()
         } catch (error: any) {
-          throw Swal.fire('Oops ocurrio algo', error.response, 'error');
+          if(error.message && error.response.status == 400) {
+            const message = error.response.data.error
+            Swal.fire('Error', message, 'error')
+          }
+          throw new Error('Ocurrió algun error en el backend')
         }
       }
     })
   }
+
   const getRentalRequirements = async (rental: number) => {
     try {
-      
       const { data } = await api.get('/requirements/customer/', {
         params: {
           rental: rental
@@ -74,36 +84,59 @@ export const useRentalStore = () => {
       })
       return data.data
     } catch(error: any) {
-      Swal.fire('Oops ocurrio algo', error.response, 'error')
+      if(error.message && error.response.status == 400) {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error')
+      }
+      throw new Error('Ocurrió algun error en el backend')
     }
   }
+
   const postSendRequirements = async (body: object) => {
     try {
-      const res = await api.post('/requirements/register_delivered_requirements', body)
-      if(res.status == 200) {
-        return true
-      } else return false
+      const res = await api.post('/requirements/register_delivered_requirements', body, {
+        responseType: 'arraybuffer'
+      })
+      if(res.status != 200 && res.status != 404) {
+        return false
+      }
+      const contentType = res.headers['content-type']
+      if(contentType != 'application/pdf') {
+        return false
+      }
+      const blob = new Blob([res.data], {
+        type: "application/pdf"
+      })
+      const pdfURL = window.URL.createObjectURL(blob)
+      printJS(pdfURL)
+      return true
     } catch(error: any) {
-      throw Swal.fire('Oops ocurrio algo', error.response, 'error')
+      if(error.message && error.response.status == 400) {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error')
+      }
+      throw new Error('Ocurrió algun error en el backend')
     }
   }
 
   const postRegisterPayment = async (body: object) => {
     try {
-      const res = await api.post('/leases/register_payment/', body)
-      if(res.status == 200) {
+      const res = await api.post('/financials/register_payment/', body)
+      if(res.status == 201) {
         Swal.fire('Registro exitoso', res.data.message, 'success')
-      } else {
-        new Error("Error en la llamada al servidor")
       }
     } catch(error: any) {
-      throw Swal.fire('Oops ocurrio algo', error.message, 'error')
+      if(error.response && error.response.status == 400) {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error')
+      }
+      throw new Error("Ocurrió algun error en el backend")
     }
   }
 
   const getRegistersPayments = async (rental:number) => {
     try {
-      const res = await api.get('/leases/register_payment/', {
+      const res = await api.get('/financials/register_payment/', {
         params: {
           rental: rental
         }
@@ -111,9 +144,43 @@ export const useRentalStore = () => {
       if(res.status == 200) {
         const { data } = res
         return data
-      } else new Error("Error en la llamada al servidor")
+      }
     } catch(error: any) {
-      Swal.fire('Oops ocurrio algo', error.message, 'error')
+      if(error.response && error.response.status == 400) {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error')
+      }
+      throw new Error("Ocurrió algun error en el backend")
+    }
+  }
+
+  const postRegisterWarranty = async (body: object) => {
+    try {
+      const res = await api.post('/financials/register_warranty/', body)
+      if(res.status == 201) {
+        Swal.fire('Registro exitoso', res.data.message, 'success')
+      }
+    } catch(error: any) {
+      if(error.response && error.response.status == 400) {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error')
+      }
+      throw new Error('Ocurrió algun error en el backend')
+    }
+  }
+
+  const postWarrantyReturn = async (body: object) => {
+    try {
+      const res = await api.post('/financials/warranty_returned/', body)
+      if(res.status == 201) {
+        Swal.fire('Devolución exitosa', res.data.message, 'success')
+      }
+    } catch(error: any) {
+      if(error.response && error.response.status == 400) {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error')
+      }
+      throw new Error('Ocurrió algun error en el backend')
     }
   }
 
@@ -126,6 +193,8 @@ export const useRentalStore = () => {
     getRentalRequirements,
     postSendRequirements,
     postRegisterPayment,
-    getRegistersPayments
+    getRegistersPayments,
+    postRegisterWarranty,
+    postWarrantyReturn
   }
 }
