@@ -31,11 +31,12 @@ export const EventDialog = (props: elementsProps) => {
   const [rental, setRental] = useState<RentalModel>();
   const { getRental, postSendRequirements } = useRentalStore();
 
-  const [activeStep, setActiveStep] = useState(0)
-  const [completed, setCompleted] = useState<{ [k: number]: boolean }>({})
-  const [currentState, setCurrentState] = useState<any>(null)
+  const [ activeStep, setActiveStep ] = useState(0)
+  const [ completed, setCompleted ] = useState<{ [k: number]: boolean }>({})
+  const [ currentState, setCurrentState ] = useState<any>(null)
   const { leaseStates, getLeaseState, getCurrentLeaseState, postChangeRentalState } = useLeasesStates();
-  const [stopAction, setStopAction] = useState<any>(null)
+  const [ stopAction, setStopAction ] = useState<any>(null)
+  const [ nextAction, setNextAction ] = useState<any>(null)
 
   const [ checked, setChecked ] = useState<Array<any>>([])
   const [ checkedOptional, setCheckedOptional] = useState<Array<any>>([])
@@ -52,6 +53,7 @@ export const EventDialog = (props: elementsProps) => {
       setActiveStep(res.current_state.id)
       setCurrentState(res)
       getStoppedAction(res.next_states)
+      getNextAction(res.next_states)
     })();
   }, [])
 
@@ -78,20 +80,21 @@ export const EventDialog = (props: elementsProps) => {
       const success = await postSendRequirements(requirementsToSend)
       if (success) {
         nextStep()
-      } else
-        alert("No todo correcto")
+      } else Swal.fire('Error', 'Hubo un error', 'error')
     } else if (activeStep == 3) {
       nextStep()
     } else if (activeStep == 4) {
       nextStep()
       handleComplete()
+      handleClose()
     }
   }
 
   const nextStep = async () => {
     const changeRentalState = {
       rental: selectedEvent.rental,
-      state: currentState.current_state.id + 1 // esto esta mal
+      // state: currentState.current_state.id + 1 // esto esta mal
+      state: nextAction
     }
     const successChange = await postChangeRentalState(changeRentalState)
     if (successChange) {
@@ -100,6 +103,7 @@ export const EventDialog = (props: elementsProps) => {
       setCurrentState(stepCurrent)
       setActiveStep(stepCurrent.current_state.id)
       getStoppedAction(stepCurrent.next_states)
+      getNextAction(stepCurrent.next_states)
     }
   }
 
@@ -121,11 +125,24 @@ export const EventDialog = (props: elementsProps) => {
   const getStoppedAction = (nextStates: Array<object>) => {
     if (nextStates.length !== 0) {
       const foundItem: any = nextStates.filter((elem: any) => elem.name.toLowerCase() == 'anulado' || elem.name.toLowerCase() == 'cancelado')
-      if (foundItem) {
+      console.log("acción de parar")
+      console.log(foundItem)
+      if (foundItem.length !== 0) {
         if (foundItem[0].name.toLowerCase() === 'anulado') {
           foundItem[0].name = 'ANULAR'
         } else foundItem[0].name = 'CANCELAR'
         setStopAction(foundItem[0])
+      }
+    }
+  }
+
+  const getNextAction = (nextStates: Array<object>) => {
+    if(nextStates.length !== 0) {
+      const foundItem: any = nextStates.filter((elem: any) => (elem.name.toLowerCase() !== 'anular' && elem.name.toLowerCase() !== 'anulado') && (elem.name.toLowerCase() !== 'cancelar' && elem.name.toLowerCase() !== 'cancelado'))
+      console.log("acción de siguiente")
+      console.log(foundItem)
+      if(foundItem.length !== 0) {
+        setNextAction(foundItem[0].id)
       }
     }
   }
@@ -225,14 +242,18 @@ export const EventDialog = (props: elementsProps) => {
             </>}
             <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
               <Box sx={{ flex: '1 1 auto' }} />
-              {currentState && currentState.next_states.length != 0 &&
+              { currentState &&
+                currentState.next_states.length != 0 &&
+                activeStep < leaseStates.length &&
                 <Button onClick={stoppedAction} sx={{ mr: 1, color: 'red' }}>
                   {stopAction !== null ? stopAction.name : 'sin nada'}
                 </Button>
               }
-              <Button onClick={handleNext} sx={{ mr: 1 }}>
-                Siguiente
-              </Button>
+              {
+                activeStep <= leaseStates.length && <Button onClick={handleNext} sx={{mr: 1}}>
+                    { activeStep == leaseStates.length ? 'Finalizar' : 'Siguiente'}
+                  </Button>
+              }
             </Box>
           </Card>
         </Box>
