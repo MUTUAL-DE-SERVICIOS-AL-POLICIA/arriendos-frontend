@@ -1,4 +1,4 @@
-import { ComponentButton, ComponentDate, ItemPaper } from "@/components";
+import { ComponentDate, ItemPaper } from "@/components";
 import { ContactModel, EventsCalendarModel, ProductRentalModel, RentalModel } from "@/models";
 import { Grid, Typography } from '@mui/material';
 import { formatDate, getDateJSON, virifyDate } from "@/helpers";
@@ -130,7 +130,7 @@ export const InfoRental = (props: infoProps) => {
                   </div>
                 </>
             }
-            <ComponentButton
+            {/* <ComponentButton
               text={`Registro de pagos`}
               onClick={() => handleModal(true, Reason.payment)}
               height="35px"
@@ -157,7 +157,7 @@ export const InfoRental = (props: infoProps) => {
               height="35px"
               width="100%"
               margin="1px"
-            />
+            /> */}
           </ItemPaper>
         </Grid>
         <Grid item xs={12} sm={rental.products.length == 1 ? 8 : 4} style={{ padding: '5px' }}>

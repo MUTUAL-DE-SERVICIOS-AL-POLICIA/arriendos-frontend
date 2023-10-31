@@ -37,7 +37,6 @@ export const RentalCard = (props: cardProps) => {
   const handleDialog = (value: boolean, event: EventsCalendarModel | null) => {
     setSelectedEvent(event)
     setOpenDialog(value)
-    // console.log(event)
   }
 
   return (
