@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { coffeApiKevin } from '@/services';
+import { coffeApiKevin, coffeApiLeandro } from '@/services';
 import Swal from 'sweetalert2';
 import { setRentals } from '@/store';
 import printJS from 'print-js';
@@ -214,6 +214,21 @@ export const useRentalStore = () => {
     }
   }
 
+  const deleteLastRegisteredPayment = async (rental: number) => {
+    try {
+      const res = await api.delete(`/financials/register_payment/${rental}/`)
+      if(res.status == 200) {
+        Swal.fire('Registro eliminado', res.data.message, 'success')
+      }
+    } catch(error: any) {
+      if(error.response && error.response.status == 400) {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error')
+      }
+      throw new Error('Ocurrió algun error en el backend')
+    }
+  }
+
   return {
     //* Propiedades
     rentals,
@@ -228,5 +243,6 @@ export const useRentalStore = () => {
     postWarrantyReturn,
     getRental,
     postCreateRental,
+    deleteLastRegisteredPayment
   }
 }
