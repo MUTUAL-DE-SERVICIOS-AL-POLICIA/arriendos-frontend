@@ -214,6 +214,36 @@ export const useRentalStore = () => {
     }
   }
 
+  const getPrintWarrantyReturn = async (rental: number) => {
+    try {
+      const res = await api.get('/financials/warranty_request/', {
+        params:{
+          rental: rental
+        },
+        responseType: 'arraybuffer'
+      })
+      if (res.status != 200 && res.status != 404) {
+        return false
+      }
+      const contentType = res.headers['content-type']
+      if (contentType != 'application/pdf') {
+        return false
+      }
+      const blob = new Blob([res.data], {
+        type: "application/pdf"
+      })
+      const pdfURL = window.URL.createObjectURL(blob)
+      printJS(pdfURL)
+      return true
+    } catch(error: any) {
+      if(error.response && error.response.status == 400) {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error')
+      }
+      throw new Error('Ocurrió algun error')
+    }
+  }
+
   const deleteLastRegisteredPayment = async (rental: number) => {
     try {
       const res = await api.delete(`/financials/register_payment/${rental}/`)
@@ -243,6 +273,7 @@ export const useRentalStore = () => {
     postWarrantyReturn,
     getRental,
     postCreateRental,
-    deleteLastRegisteredPayment
+    deleteLastRegisteredPayment,
+    getPrintWarrantyReturn
   }
 }
