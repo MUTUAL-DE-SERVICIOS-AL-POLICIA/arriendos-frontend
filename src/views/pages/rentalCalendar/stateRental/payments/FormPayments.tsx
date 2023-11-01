@@ -11,6 +11,7 @@ export enum Reason {
 }
 
 interface elementsProps {
+  amountTotal: number;
   selectedEvent: EventsCalendarModel;
   rental: RentalModel;
   open: boolean;
@@ -21,6 +22,7 @@ interface elementsProps {
 
 export const FormPayments = (props: elementsProps) => {
   const {
+    amountTotal,
     selectedEvent,
     rental,
     open,
@@ -28,16 +30,17 @@ export const FormPayments = (props: elementsProps) => {
     tabReason,
   } = props;
 
-  const { postRegisterPayment, postRegisterWarranty, postRegisterDiscountWarranty } = useRentalStore();
+  const { getRegistersPayments, postRegisterPayment, postRegisterWarranty, postRegisterDiscountWarranty } = useRentalStore();
 
   const registerPayment = async (data: any) => {
     const body = {
       rental: selectedEvent.rental,
       mount: parseFloat(data.amount),
       voucher_number: parseFloat(data.voucherNumber),
-      detail: data.paymentDetail
+      detail: data.paymentDetail || null
     }
     await postRegisterPayment(body)
+    await getRegistersPayments(selectedEvent.rental)
     // const data = await getRegistersPayments(selectedEvent.rental)
     // setPayments(data.payments)
   }
@@ -46,7 +49,7 @@ export const FormPayments = (props: elementsProps) => {
       rental: selectedEvent.rental,
       income: parseFloat(data.amount),
       voucher_number: parseFloat(data.voucherNumber),
-      detail: data.paymentDetail
+      detail: data.paymentDetail || null
     }
     await postRegisterWarranty(body)
     // const data = await getRegistersPayments(selectedEvent.rental)
@@ -84,6 +87,8 @@ export const FormPayments = (props: elementsProps) => {
           <ComponentPayment
             handleClose={handleClose}
             sendData={(data) => registerPayment(data)}
+            amountRecomend={amountTotal}
+            disalbleMount={rental.products.length == 1}
           />
         }
         {
@@ -91,6 +96,7 @@ export const FormPayments = (props: elementsProps) => {
           <ComponentPayment
             handleClose={handleClose}
             sendData={(data) => registerWarranty(data)}
+            amountRecomend={0}
           />
         }
         {

@@ -1,28 +1,29 @@
 import { ComponentButton } from "@/components"
 import { ComponentTableContent } from "@/components/TableContent"
-import { Grid, Tab, Tabs } from "@mui/material"
-import { Box } from "@mui/system"
+import { Grid, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Stack } from "@mui/system"
 import { useEffect, useState } from "react"
-import { Reason } from "."
+import { FormPayments, Reason } from "."
 import { useRentalStore } from "@/hooks"
-import { DeleteForever } from "@mui/icons-material"
+import { EventsCalendarModel, RentalModel } from "@/models";
 
 
 interface Props {
-  handleModal: (arg1: boolean, arg2: any) => void;
-  rental: number;
+  selectedEvent: EventsCalendarModel;
+  rental: RentalModel;
 }
 
 export const Rented = (props: Props) => {
 
   const {
-    handleModal,
-    rental
+    selectedEvent,
+    rental,
   } = props
 
   const [tabValueRegister, setTabValueRegister] = useState(0)
-  const [payments, setPayments] = useState<Array<any>>([])
-  const { getRegistersPayments, deleteLastRegisteredPayment } = useRentalStore()
+  // const [payments, setPayments] = useState<Array<any>>([])
+  // const [amountTotal, setAmountTotal] = useState(100);
+  const { payments = [], amountTotal, getRegistersPayments } = useRentalStore()
 
   const properties = (index: number) => {
     return {
@@ -35,26 +36,20 @@ export const Rented = (props: Props) => {
     setTabValueRegister(newValue)
   }
 
-  const handleDelete = () => {
-    deleteLastRegisteredPayment(rental)
-  }
-
   useEffect(() => {
-    (async() => {
-      const data = await getRegistersPayments(rental)
-      const payments:Array<any> = []
-      data.payments.map((e: any, index: number) => {
-        payments.push(e.voucher_number)
-        payments.push(e.amount_paid)
-        payments.push(e.payable_mount)
-        if(index === data.payments.length - 1) {
-          payments.push(<DeleteForever onClick={handleDelete} color="primary" sx={{cursor: 'pointer'}}/>)
-        } else payments.push('')
-      })
-      setPayments(payments)
+    (async () => {
+      await getRegistersPayments(selectedEvent.rental)
+
     })()
   }, [])
 
+
+  const [tabSelect, setTabSelect] = useState<Reason>(Reason.payment);
+  const [modal, setModal] = useState(false);
+  const handleModal = (value: boolean, reason?: Reason) => {
+    if (reason) setTabSelect(reason!);
+    setModal(value);
+  };
 
   return (
     <>
@@ -65,26 +60,35 @@ export const Rented = (props: Props) => {
           <Tab label="Registro de horas extra" {...properties(2)} />
           <Tab label="Registro de daños" {...properties(3)} />
         </Tabs>
-        {tabValueRegister === 0 && (
-          <Grid container spacing={2} sx={{ padding: '10px 50px' }}>
-            <Grid item xs={12} sm={12} style={{ textAlign: 'right' }}>
+        {
+          tabValueRegister === 0 &&
+          <>
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              sx={{ py: 1 }}
+            >
+              <Typography>El monto del alquiler es: {amountTotal} Bs</Typography>
               <ComponentButton
-                text={`Registro de pagos`}
+                text={`Registrar pago`}
                 onClick={() => handleModal(true, Reason.payment)}
                 height="35px"
                 width="30%"
                 margin="1px"
+                disable={payments.length > 0 && payments[payments.length - 1].payable_mount == 0}
               />
-            </Grid>
-            <Grid item xs={12} sm={12}>
+            </Stack>
+            {
+              payments.length !== 0 &&
               <ComponentTableContent
-                headers={['N° Comprobante', 'Monto Cancelado', 'Monto a pagar', 'Acción']}
+                headers={['N° Comprobante', 'Monto Cancelado', 'Monto a pagar', 'Detalle', 'Acción']}
                 data={payments}
               />
-            </Grid>
-          </Grid>
-        )}
-        {tabValueRegister === 1 && (
+            }
+          </>
+        }
+        {
+          tabValueRegister === 1 &&
           <Grid container spacing={2} sx={{ padding: '10px 50px' }}>
             <Grid item xs={12} sm={12} style={{ textAlign: 'right' }}>
               <ComponentButton
@@ -102,8 +106,9 @@ export const Rented = (props: Props) => {
               />
             </Grid>
           </Grid>
-        )}
-        {tabValueRegister === 2 && (
+        }
+        {
+          tabValueRegister === 2 &&
           <Grid container spacing={2} sx={{ padding: '10px 50px' }}>
             <Grid item xs={12} sm={12}>
               <ComponentButton
@@ -115,8 +120,9 @@ export const Rented = (props: Props) => {
               />
             </Grid>
           </Grid>
-        )}
-        {tabValueRegister === 3 && (
+        }
+        {
+          tabValueRegister === 3 &&
           <Grid container spacing={2} sx={{ padding: '10px 50px' }}>
             <Grid item xs={12} sm={12}>
               <ComponentButton text={`Registro de daños`}
@@ -127,8 +133,19 @@ export const Rented = (props: Props) => {
               />
             </Grid>
           </Grid>
-        )}
+        }
       </Box>
+      {
+        modal &&
+        <FormPayments
+          amountTotal={amountTotal}
+          open={modal}
+          handleClose={() => handleModal(false)}
+          tabReason={tabSelect}
+          selectedEvent={selectedEvent}
+          rental={rental!}
+        />
+      }
     </>
   )
 }

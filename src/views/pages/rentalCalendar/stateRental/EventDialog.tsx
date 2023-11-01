@@ -7,7 +7,6 @@ import { useRentalStore } from "@/hooks"
 import Swal from "sweetalert2"
 import { EventsCalendarModel, RentalModel } from "@/models"
 import { InfoRental } from "./InfoRental"
-import { FormPayments, Reason } from "./payments"
 import { Reserver } from "./reserve/Main"
 import { Rented } from "./payments/Main"
 import { Concluded } from "./concluded/Main"
@@ -38,8 +37,8 @@ export const EventDialog = (props: elementsProps) => {
   const [ stopAction, setStopAction ] = useState<any>(null)
   const [ nextAction, setNextAction ] = useState<any>(null)
 
-  const [ checked, setChecked ] = useState<Array<any>>([])
-  const [ checkedOptional, setCheckedOptional] = useState<Array<any>>([])
+  const [checked, setChecked] = useState<Array<any>>([])
+  const [checkedOptional, setCheckedOptional] = useState<Array<any>>([])
 
   useEffect(() => {
     (async () => {
@@ -47,7 +46,7 @@ export const EventDialog = (props: elementsProps) => {
       setRental(rental)
       getLeaseState()
       const res = await getCurrentLeaseState(selectedEvent.rental)
-      if(res.current_state.id === 1) {
+      if (res.current_state.id === 1) {
         stepsExecuted(res.current_state.id + 1)
       } else stepsExecuted(res.current_state.id)
       setActiveStep(res.current_state.id)
@@ -181,12 +180,7 @@ export const EventDialog = (props: elementsProps) => {
   }
 
 
-  const [tabSelect, setTabSelect] = useState<Reason>(Reason.payment);
-  const [modal, setModal] = useState(false);
-  const handleModal = (value: boolean, reason?: Reason) => {
-    if (reason) setTabSelect(reason!);
-    setModal(value);
-  };
+
 
 
   return (
@@ -229,17 +223,31 @@ export const EventDialog = (props: elementsProps) => {
               ))}
             </Stepper>
             <Divider style={{ height: '1px', width: '95%', marginLeft: '20px', backgroundColor: 'green', marginTop: '10px', borderRadius: '10px' }} />
-            {currentState && <>
-              {activeStep == 2 && (
-                <Reserver rental={selectedEvent.rental} checkeds={mergeRequirements} />
-              )}
-              {activeStep == 3 && (
-                <Rented handleModal={handleModal} rental={selectedEvent.rental} />
-              )}
-              {activeStep == 4 && (
-                <Concluded rental={selectedEvent.rental} />
-              )}
-            </>}
+            {
+              currentState &&
+              <>
+                {
+                  activeStep == 2 &&
+                  <Reserver
+                    rentalId={selectedEvent.rental}
+                    checkeds={mergeRequirements}
+                  />
+                }
+                {
+                  activeStep == 3 && rental &&
+                  <Rented
+                    selectedEvent={selectedEvent}
+                    rental={rental!}
+                  />
+                }
+                {
+                  activeStep == 4 &&
+                  <Concluded
+                    rental={selectedEvent.rental}
+                  />
+                }
+              </>
+            }
             <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
               <Box sx={{ flex: '1 1 auto' }} />
               { currentState &&
@@ -258,13 +266,7 @@ export const EventDialog = (props: elementsProps) => {
           </Card>
         </Box>
       </Dialog>
-      <FormPayments
-        open={modal}
-        handleClose={() => handleModal(false)}
-        tabReason={tabSelect}
-        selectedEvent={selectedEvent}
-        rental={rental!}
-      />
+
     </>
   )
 }
