@@ -1,14 +1,16 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { coffeApiKevin, coffeApiLeandro } from '@/services';
+import { coffeApiKevin } from '@/services';
 import Swal from 'sweetalert2';
-import { setRentals } from '@/store';
+import { setPayments, setRentals } from '@/store';
 import printJS from 'print-js';
 import { formatDate } from '@/helpers';
+import { DeleteForever } from '@mui/icons-material';
 
 const api = coffeApiKevin;
 
 export const useRentalStore = () => {
   const { rentals = [] } = useSelector((state: any) => state.rentals);
+  const { payments = [], amountTotal } = useSelector((state: any) => state.payments);
   const dispatch = useDispatch();
 
   const getRentals = async (roomId?: number) => {
@@ -144,15 +146,27 @@ export const useRentalStore = () => {
 
   const getRegistersPayments = async (rental: number) => {
     try {
-      const res = await api.get('/financials/register_payment/', {
+      console.log(`OBTENIENDO LA INFORMACIÓN DE LOS PAGOS ${rental}`)
+      const { data } = await api.get('/financials/register_payment/', {
         params: {
           rental: rental
         }
-      })
-      if (res.status == 200) {
-        const { data } = res
-        return data
-      }
+      });
+      const payments = data.payments.map((e: any, index: number) => ({
+        voucher_number: e.voucher_number,
+        amount_paid: e.amount_paid,
+        payable_mount: e.payable_mount,
+        detail: e.detail,
+        action: index === data.payments.length - 1 ?
+          <DeleteForever
+            onClick={() => deleteLastRegisteredPayment(rental)}
+            color="error"
+            sx={{ cursor: 'pointer' }}
+          /> : ''
+      }));
+      console.log(payments)
+      dispatch(setPayments({ payments: payments, amountTotal: data.total_mount }));
+
     } catch (error: any) {
       if (error.response && error.response.status == 400) {
         const message = error.response.data.error
@@ -213,11 +227,10 @@ export const useRentalStore = () => {
       throw new Error('Ocurrió algun error en el backend')
     }
   }
-
   const getPrintWarrantyReturn = async (rental: number) => {
     try {
       const res = await api.get('/financials/warranty_request/', {
-        params:{
+        params: {
           rental: rental
         },
         responseType: 'arraybuffer'
@@ -235,23 +248,23 @@ export const useRentalStore = () => {
       const pdfURL = window.URL.createObjectURL(blob)
       printJS(pdfURL)
       return true
-    } catch(error: any) {
-      if(error.response && error.response.status == 400) {
+    } catch (error: any) {
+      if (error.response && error.response.status == 400) {
         const message = error.response.data.error
         Swal.fire('Error', message, 'error')
       }
       throw new Error('Ocurrió algun error')
     }
   }
-
   const deleteLastRegisteredPayment = async (rental: number) => {
     try {
       const res = await api.delete(`/financials/register_payment/${rental}/`)
-      if(res.status == 200) {
+      if (res.status == 200) {
         Swal.fire('Registro eliminado', res.data.message, 'success')
       }
-    } catch(error: any) {
-      if(error.response && error.response.status == 400) {
+      getRegistersPayments(rental);
+    } catch (error: any) {
+      if (error.response && error.response.status == 400) {
         const message = error.response.data.error
         Swal.fire('Error', message, 'error')
       }
@@ -262,6 +275,8 @@ export const useRentalStore = () => {
   return {
     //* Propiedades
     rentals,
+    payments,
+    amountTotal,
     //* Métodos
     getRentals,
     getRentalRequirements,
@@ -273,7 +288,7 @@ export const useRentalStore = () => {
     postWarrantyReturn,
     getRental,
     postCreateRental,
-    deleteLastRegisteredPayment,
-    getPrintWarrantyReturn
+    getPrintWarrantyReturn,
+    deleteLastRegisteredPayment
   }
 }

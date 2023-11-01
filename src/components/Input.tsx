@@ -13,6 +13,7 @@ export const ComponentInput = memo((
         multiline = false,
         error = false,
         helperText = '',
+        disabled = false,
     }:
         {
             id?: string,
@@ -25,6 +26,7 @@ export const ComponentInput = memo((
             multiline?: boolean
             error?: boolean,
             helperText?: string,
+            disabled?: boolean,
         }) => {
     return (
         <TextField
@@ -34,6 +36,7 @@ export const ComponentInput = memo((
             label={label}
             name={name}
             value={value}
+            disabled={disabled}
             onChange={onChange}
             autoComplete='off'
             style={{ width: '100%' }}

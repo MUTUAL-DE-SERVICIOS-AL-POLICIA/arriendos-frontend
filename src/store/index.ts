@@ -13,6 +13,6 @@ export * from './events/eventSlice';
 export * from './plans/planSlice';
 export * from './rentals/rentalSlice';
 export * from './leaseStates/leaseStateSlice';
-
+export * from './payments/paymentSlice';
 
 export * from './store';

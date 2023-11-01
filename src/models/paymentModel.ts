@@ -1,4 +1,13 @@
 
+export interface PaymentTableModel {
+    id: number;
+    voucher_number: number;
+    amount_paid: string;
+    detail: string;
+    payable_mount: number;
+}
+
+
 export interface PaymentModel {
     rentalId: number;
     amount: number;

@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { paymentSlice } from './payments/paymentSlice';
 import {
     authSlice,
     customerSlice,
@@ -33,7 +34,8 @@ export const store = configureStore({
         events: eventSlice.reducer,
         plans: planSlice.reducer,
         rentals: rentalSlice.reducer,
-        leaseStates: leaseStateSlice.reducer
+        leaseStates: leaseStateSlice.reducer,
+        payments: paymentSlice.reducer,
 
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
