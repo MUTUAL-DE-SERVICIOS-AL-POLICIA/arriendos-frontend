@@ -6,6 +6,7 @@ import { ComponentButton } from '.';
 import { useState } from 'react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
+import { EditCalendar } from '@mui/icons-material';
 
 interface dateProps {
   date: Date;
@@ -92,9 +93,8 @@ export const ComponentDate = (props: dateProps) => {
           <ComponentButton
             text={`Cambiar fecha`}
             onClick={() => setNewDate(date)}
-            height="35px"
-            width="100%"
-            margin="1px"
+            sx={{height: "35px", width: "90%", margin: "7px 10px"}}
+            startIcon={<EditCalendar />}
           />
       }
     </>

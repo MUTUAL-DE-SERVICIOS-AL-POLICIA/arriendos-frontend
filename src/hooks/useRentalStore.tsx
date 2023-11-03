@@ -227,6 +227,7 @@ export const useRentalStore = () => {
       throw new Error('Ocurrió algun error en el backend')
     }
   }
+  // Solicitud de devolución de garantía
   const getPrintWarrantyReturn = async (rental: number) => {
     try {
       const res = await api.get('/financials/warranty_request/', {
@@ -272,6 +273,65 @@ export const useRentalStore = () => {
     }
   }
 
+  // Impresión de acta de entrega
+  const postPrintDeliveryForm = async (body: object) => {
+    try {
+      const res = await api.post('/leases/deliveryform/', body, {
+        responseType: 'arraybuffer'
+      })
+      if(res.status != 200 && res.status != 404) {
+        return false
+      }
+      const contentType = res.headers['content-type']
+      if(contentType != 'application/pdf') {
+        return false
+      }
+      const blob = new Blob([res.data], {
+        type: "application/pdf"
+      })
+      const pdfURL = window.URL.createObjectURL(blob)
+      printJS(pdfURL)
+      return true
+    } catch(error: any) {
+      if(error.response && error.response.status == 400) {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error')
+      }
+      throw new Error('Ocurrió algun error en el backend')
+    }
+  }
+
+  // Impresión de conformidad
+  const getPrintReturnWarrantyForm = async (rental: number) => {
+    try {
+      const res = await api.get('/financials/return_warranty_form/', {
+        params: {
+          rental: rental
+        },
+        responseType: 'arraybuffer'
+      })
+      if(res.status != 200 && res.status != 404) {
+        return false
+      }
+      const contentType = res.headers['content-type']
+      if(contentType != 'application/pdf') {
+        return false
+      }
+      const blob = new Blob([res.data], {
+        type: "application/pdf"
+      })
+      const pdfURL = window.URL.createObjectURL(blob)
+      printJS(pdfURL)
+      return true
+    } catch(error: any) {
+      if(error.response && error.response.status == 400) {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error')
+      }
+      throw new Error('Ocurrió algun error en el backend')
+    }
+  }
+
   return {
     //* Propiedades
     rentals,
@@ -289,6 +349,8 @@ export const useRentalStore = () => {
     getRental,
     postCreateRental,
     getPrintWarrantyReturn,
-    deleteLastRegisteredPayment
+    deleteLastRegisteredPayment,
+    postPrintDeliveryForm,
+    getPrintReturnWarrantyForm
   }
 }
