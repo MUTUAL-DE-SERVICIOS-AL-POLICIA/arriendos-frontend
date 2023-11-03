@@ -1,6 +1,6 @@
 import { Drawer, Stack } from "@mui/material"
 import { ComponentDamage, ComponentExtraHour, ComponentPayment } from ".";
-import { useRentalStore } from "@/hooks";
+import { useDamageStore, useExtraHourStore, usePaymentsStore, useWarrantyStore } from "@/hooks";
 import { EventsCalendarModel, ProductRentalModel, RentalModel } from "@/models";
 
 export enum Reason {
@@ -11,6 +11,7 @@ export enum Reason {
 }
 
 interface elementsProps {
+  eventSelect: number;
   amountTotal: number;
   selectedEvent: EventsCalendarModel;
   rental: RentalModel;
@@ -22,6 +23,7 @@ interface elementsProps {
 
 export const FormPayments = (props: elementsProps) => {
   const {
+    eventSelect,
     amountTotal,
     selectedEvent,
     rental,
@@ -30,7 +32,11 @@ export const FormPayments = (props: elementsProps) => {
     tabReason,
   } = props;
 
-  const { getRegistersPayments, postRegisterPayment, postRegisterWarranty, postRegisterDiscountWarranty } = useRentalStore();
+  const { getRegistersPayments, postRegisterPayment } = usePaymentsStore();
+  const { postRegisterWarranty } = useWarrantyStore();
+  const { postRegisterDiscountWarranty } = useDamageStore();
+
+  const { postRegisterExtraHour } = useExtraHourStore();
 
   const registerPayment = async (data: any) => {
     const body = {
@@ -41,8 +47,6 @@ export const FormPayments = (props: elementsProps) => {
     }
     await postRegisterPayment(body)
     await getRegistersPayments(selectedEvent.rental)
-    // const data = await getRegistersPayments(selectedEvent.rental)
-    // setPayments(data.payments)
   }
   const registerWarranty = async (data: any) => {
     const body = {
@@ -52,8 +56,16 @@ export const FormPayments = (props: elementsProps) => {
       detail: data.paymentDetail || null
     }
     await postRegisterWarranty(body)
-    // const data = await getRegistersPayments(selectedEvent.rental)
-    // setPayments(data.payments)
+  }
+  const registerExtraHour = async (data: any) => {
+    const body = {
+      selected_product: eventSelect,
+      number: parseInt(data.quantity),
+      description: data.detail || null,
+      voucher_number: parseFloat(data.voucherNumber),
+      price: amountTotal
+    };
+    await postRegisterExtraHour(selectedEvent.rental, body);
   }
   const registerDamage = async (data: any) => {
     const body = {
@@ -61,7 +73,6 @@ export const FormPayments = (props: elementsProps) => {
       detail: data.detail,
       discount: parseFloat(data.discount),
       product: rental.products.filter((product: ProductRentalModel) => product.id == selectedEvent.product_id)[0].id
-      // rental.products[0].id
     }
     await postRegisterDiscountWarranty(body)
   }
@@ -96,13 +107,14 @@ export const FormPayments = (props: elementsProps) => {
           <ComponentPayment
             handleClose={handleClose}
             sendData={(data) => registerWarranty(data)}
-            amountRecomend={0}
           />
         }
         {
           tabReason == Reason.extraHour &&
           <ComponentExtraHour
             handleClose={handleClose}
+            amountRecomend={amountTotal}
+            sendData={(data) => registerExtraHour(data)}
           />
         }
         {

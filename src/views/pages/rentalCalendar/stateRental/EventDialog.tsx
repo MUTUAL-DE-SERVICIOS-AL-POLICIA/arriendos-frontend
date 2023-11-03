@@ -1,7 +1,7 @@
 import { Card, Dialog, DialogTitle, Divider, IconButton, Step, StepButton, Stepper } from "@mui/material"
 import { Box } from "@mui/system"
 import { useEffect, useState } from "react"
-import { ArrowCircleRight, Cancel, Clear, Close } from "@mui/icons-material"
+import { ArrowCircleRight, Cancel, Close } from "@mui/icons-material"
 import { useLeasesStates } from "@/hooks/useLeasesStates"
 import { useRentalStore } from "@/hooks"
 import Swal from "sweetalert2"
@@ -31,16 +31,16 @@ export const EventDialog = (props: elementsProps) => {
   const [rental, setRental] = useState<RentalModel>();
   const { getRental, postSendRequirements } = useRentalStore();
 
-  const [ activeStep, setActiveStep ] = useState(0)
-  const [ completed, setCompleted ] = useState<{ [k: number]: boolean }>({})
-  const [ currentState, setCurrentState ] = useState<any>(null)
+  const [activeStep, setActiveStep] = useState(0)
+  const [completed, setCompleted] = useState<{ [k: number]: boolean }>({})
+  const [currentState, setCurrentState] = useState<any>(null)
   const { leaseStates, getLeaseState, getCurrentLeaseState, postChangeRentalState } = useLeasesStates();
-  const [ stopAction, setStopAction ] = useState<any>(null)
-  const [ nextAction, setNextAction ] = useState<any>(null)
+  const [stopAction, setStopAction] = useState<any>(null)
+  const [nextAction, setNextAction] = useState<any>(null)
 
   const [checked, setChecked] = useState<Array<any>>([])
   const [checkedOptional, setCheckedOptional] = useState<Array<any>>([])
-  const [ loading, setLoading ] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     (async () => {
@@ -139,11 +139,11 @@ export const EventDialog = (props: elementsProps) => {
   }
 
   const getNextAction = (nextStates: Array<object>) => {
-    if(nextStates.length !== 0) {
+    if (nextStates.length !== 0) {
       const foundItem: any = nextStates.filter((elem: any) => (elem.name.toLowerCase() !== 'anular' && elem.name.toLowerCase() !== 'anulado') && (elem.name.toLowerCase() !== 'cancelar' && elem.name.toLowerCase() !== 'cancelado'))
       console.log("acción de siguiente")
       console.log(foundItem)
-      if(foundItem.length !== 0) {
+      if (foundItem.length !== 0) {
         setNextAction(foundItem[0].id)
       }
     }
@@ -190,7 +190,7 @@ export const EventDialog = (props: elementsProps) => {
     <>
       <Dialog
         open={open}
-        maxWidth={'md'}
+        maxWidth={'lg'}
         fullWidth={true}
         onClose={handleClose}
         sx={{ zIndex: 9998 }}
@@ -253,7 +253,7 @@ export const EventDialog = (props: elementsProps) => {
             }
             <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2, pb: 1 }}>
               <Box sx={{ flex: '1 1 auto' }} />
-              { currentState &&
+              {currentState &&
                 currentState.next_states.length != 0 &&
                 activeStep < leaseStates.length &&
                 <ComponentButton
@@ -261,18 +261,18 @@ export const EventDialog = (props: elementsProps) => {
                   onClick={stoppedAction}
                   variant={'outlined'}
                   endIcon={<Cancel />}
-                  sx={{mr: 1, color: 'red', borderColor: 'red', '&:hover': { backgroundColor: '#fadad9', borderColor: 'red'}}}
+                  sx={{ mr: 1, color: 'red', borderColor: 'red', '&:hover': { backgroundColor: '#fadad9', borderColor: 'red' } }}
                 />
               }
               {
                 activeStep <= leaseStates.length &&
-                  <ComponentButton
-                    text={activeStep == leaseStates.length ? 'Finalizar' : 'Siguiente'}
-                    onClick={handleNext}
-                    loading={loading}
-                    variant={'outlined'}
-                    endIcon={activeStep == leaseStates.length ? <Cancel/> : <ArrowCircleRight />}
-                  />
+                <ComponentButton
+                  text={activeStep == leaseStates.length ? 'Finalizar' : 'Siguiente'}
+                  onClick={handleNext}
+                  loading={loading}
+                  variant={'outlined'}
+                  endIcon={activeStep == leaseStates.length ? <Cancel /> : <ArrowCircleRight />}
+                />
               }
             </Box>
           </Card>

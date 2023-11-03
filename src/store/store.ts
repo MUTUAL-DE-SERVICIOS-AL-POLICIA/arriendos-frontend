@@ -15,6 +15,7 @@ import {
     roomSlice,
     typeCustomerSlice,
     userSlice,
+    extraHourSlice,
 } from '.';
 
 export const store = configureStore({
@@ -36,6 +37,7 @@ export const store = configureStore({
         rentals: rentalSlice.reducer,
         leaseStates: leaseStateSlice.reducer,
         payments: paymentSlice.reducer,
+        extraHours: extraHourSlice.reducer,
 
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({

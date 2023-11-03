@@ -29,7 +29,7 @@ export const useForm = (initialForm: any = {}, formValidations: any = {}) => {
 
     if (onlynumber) {
       // Si solo se permiten números, elimina cualquier carácter no numérico del valor
-      const numericValue = value.replace(/[^0-9]/g, '');
+      const numericValue = value.replace(/[^0-9.]/g, '');
       setFormState({
         ...formState,
         [name]: numericValue

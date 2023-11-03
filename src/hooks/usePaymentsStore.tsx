@@ -1,0 +1,83 @@
+import { coffeApiKevin } from "@/services";
+import { setPayments } from "@/store";
+import { DeleteForever } from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
+import Swal from "sweetalert2";
+
+const api = coffeApiKevin;
+
+export const usePaymentsStore = () => {
+  const { payments = [], amountTotal } = useSelector((state: any) => state.payments);
+  const dispatch = useDispatch();
+  const getRegistersPayments = async (rental: number) => {
+    try {
+      console.log(`OBTENIENDO LA INFORMACIÓN DE LOS PAGOS ${rental}`)
+      const { data } = await api.get('/financials/register_payment/', {
+        params: {
+          rental: rental
+        }
+      });
+      const payments = [...data.payments.map((e: any, index: number) => ({
+        voucher_number: e.voucher_number,
+        amount_paid: e.amount_paid,
+        payable_mount: e.payable_mount,
+        detail: e.detail,
+        action: index === data.payments.length - 1 ?
+          <DeleteForever
+            onClick={() => deleteLastRegisteredPayment(rental)}
+            color="error"
+            sx={{ cursor: 'pointer' }}
+          /> : ''
+      }))];
+      console.log(payments)
+      dispatch(setPayments({ payments: payments, amountTotal: data.total_mount }));
+    } catch (error: any) {
+      if (error.response && error.response.status == 400) {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error')
+      }
+      throw new Error("Ocurrió algun error en el backend")
+    }
+  }
+
+  const postRegisterPayment = async (body: object) => {
+    try {
+      const res = await api.post('/financials/register_payment/', body)
+      if (res.status == 201) {
+        Swal.fire('Registro exitoso', res.data.message, 'success')
+      }
+    } catch (error: any) {
+      if (error.response && error.response.status == 400) {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error')
+      }
+      throw new Error("Ocurrió algun error en el backend")
+    }
+  }
+
+  const deleteLastRegisteredPayment = async (rental: number) => {
+    try {
+      const res = await api.delete(`/financials/register_payment/${rental}/`)
+      if (res.status == 200) {
+        Swal.fire('Registro eliminado', res.data.message, 'success')
+      }
+      getRegistersPayments(rental);
+    } catch (error: any) {
+      if (error.response && error.response.status == 400) {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error')
+      }
+      throw new Error('Ocurrió algun error en el backend')
+    }
+  }
+  return {
+    //* Propiedades
+    payments,
+    amountTotal,
+    //* Métodos
+
+    getRegistersPayments,
+    postRegisterPayment,
+    deleteLastRegisteredPayment
+  }
+}

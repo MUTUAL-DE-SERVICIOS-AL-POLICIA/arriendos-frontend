@@ -51,17 +51,6 @@ export interface FormRentalValidations {
 
 
 
-/*FORM DAMAGE */
-export interface FormDamageModel {
-    detail: string;
-    discount: number;
-}
-
-/*FORM DAMAGE VALIDATIONS */
-export interface FormDamageValidations {
-    detail: [(value: string) => boolean, string];
-    discount: [(value: number) => boolean, string];
-}
 /*FORM PAYMENT */
 export interface FormPayment {
     amount: number;
@@ -73,5 +62,31 @@ export interface FormPayment {
 export interface FormPaymentValidations {
     amount: [(value: number) => boolean, string];
     voucherNumber: [(value: number) => boolean, string];
-    // paymentDetail: [(value: string) => boolean, string];
+}
+
+/*FORM EXTRA HOUR */
+export interface FormExtraHourModel {
+    amount: number;
+    quantity: number;
+    voucherNumber: number;
+    detail: string;
+}
+
+/*FORM EXTRA HOUR VALIDATIONS */
+export interface FormExtraHourValidations {
+    quantity: [(value: number) => boolean, string];
+    voucherNumber: [(value: number) => boolean, string];
+}
+
+
+/*FORM DAMAGE */
+export interface FormDamageModel {
+    detail: string;
+    discount: number;
+}
+
+/*FORM DAMAGE VALIDATIONS */
+export interface FormDamageValidations {
+    detail: [(value: string) => boolean, string];
+    discount: [(value: number) => boolean, string];
 }

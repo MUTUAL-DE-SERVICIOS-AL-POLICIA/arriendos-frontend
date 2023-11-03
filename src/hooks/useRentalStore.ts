@@ -1,16 +1,14 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { coffeApiKevin } from '@/services';
 import Swal from 'sweetalert2';
-import { setPayments, setRentals } from '@/store';
+import { setRentals } from '@/store';
 import printJS from 'print-js';
 import { formatDate } from '@/helpers';
-import { DeleteForever } from '@mui/icons-material';
 
 const api = coffeApiKevin;
 
 export const useRentalStore = () => {
   const { rentals = [] } = useSelector((state: any) => state.rentals);
-  const { payments = [], amountTotal } = useSelector((state: any) => state.payments);
   const dispatch = useDispatch();
 
   const getRentals = async (roomId?: number) => {
@@ -129,90 +127,6 @@ export const useRentalStore = () => {
     }
   }
 
-  const postRegisterPayment = async (body: object) => {
-    try {
-      const res = await api.post('/financials/register_payment/', body)
-      if (res.status == 201) {
-        Swal.fire('Registro exitoso', res.data.message, 'success')
-      }
-    } catch (error: any) {
-      if (error.response && error.response.status == 400) {
-        const message = error.response.data.error
-        Swal.fire('Error', message, 'error')
-      }
-      throw new Error("Ocurrió algun error en el backend")
-    }
-  }
-
-  const getRegistersPayments = async (rental: number) => {
-    try {
-      console.log(`OBTENIENDO LA INFORMACIÓN DE LOS PAGOS ${rental}`)
-      const { data } = await api.get('/financials/register_payment/', {
-        params: {
-          rental: rental
-        }
-      });
-      const payments = data.payments.map((e: any, index: number) => ({
-        voucher_number: e.voucher_number,
-        amount_paid: e.amount_paid,
-        payable_mount: e.payable_mount,
-        detail: e.detail,
-        action: index === data.payments.length - 1 ?
-          <DeleteForever
-            onClick={() => deleteLastRegisteredPayment(rental)}
-            color="error"
-            sx={{ cursor: 'pointer' }}
-          /> : ''
-      }));
-      console.log(payments)
-      dispatch(setPayments({ payments: payments, amountTotal: data.total_mount }));
-
-    } catch (error: any) {
-      if (error.response && error.response.status == 400) {
-        const message = error.response.data.error
-        Swal.fire('Error', message, 'error')
-      }
-      throw new Error("Ocurrió algun error en el backend")
-    }
-  }
-
-  const postRegisterWarranty = async (body: object) => {
-    try {
-      const res = await api.post('/financials/register_warranty/', body)
-      if (res.status == 201) {
-        Swal.fire('Registro exitoso', res.data.message, 'success')
-      }
-    } catch (error: any) {
-      if (error.response && error.response.status == 400) {
-        const message = error.response.data.error
-        Swal.fire('Error', message, 'error')
-      }
-      throw new Error('Ocurrió algun error en el backend')
-    }
-  }
-
-  const postRegisterDiscountWarranty = async (body: object) => {
-    try {
-      const res = await api.post('/financials/discount_warranty/', body, {
-        responseType: 'arraybuffer'
-      })
-
-      const blob = new Blob([res.data], {
-        type: "application/pdf"
-      })
-      const pdfURL = window.URL.createObjectURL(blob)
-      printJS(pdfURL)
-      return true
-
-    } catch (error: any) {
-      if (error.response && error.response.status == 400) {
-        const message = error.response.data.error
-        Swal.fire('Error', message, 'error')
-      }
-      throw new Error('Ocurrió algun error en el backend')
-    }
-  }
-
   const postWarrantyReturn = async (body: object) => {
     try {
       const res = await api.post('/financials/warranty_returned/', body)
@@ -227,6 +141,7 @@ export const useRentalStore = () => {
       throw new Error('Ocurrió algun error en el backend')
     }
   }
+
   // Solicitud de devolución de garantía
   const getPrintWarrantyReturn = async (rental: number) => {
     try {
@@ -257,21 +172,6 @@ export const useRentalStore = () => {
       throw new Error('Ocurrió algun error')
     }
   }
-  const deleteLastRegisteredPayment = async (rental: number) => {
-    try {
-      const res = await api.delete(`/financials/register_payment/${rental}/`)
-      if (res.status == 200) {
-        Swal.fire('Registro eliminado', res.data.message, 'success')
-      }
-      getRegistersPayments(rental);
-    } catch (error: any) {
-      if (error.response && error.response.status == 400) {
-        const message = error.response.data.error
-        Swal.fire('Error', message, 'error')
-      }
-      throw new Error('Ocurrió algun error en el backend')
-    }
-  }
 
   // Impresión de acta de entrega
   const postPrintDeliveryForm = async (body: object) => {
@@ -279,11 +179,11 @@ export const useRentalStore = () => {
       const res = await api.post('/leases/deliveryform/', body, {
         responseType: 'arraybuffer'
       })
-      if(res.status != 200 && res.status != 404) {
+      if (res.status != 200 && res.status != 404) {
         return false
       }
       const contentType = res.headers['content-type']
-      if(contentType != 'application/pdf') {
+      if (contentType != 'application/pdf') {
         return false
       }
       const blob = new Blob([res.data], {
@@ -292,8 +192,8 @@ export const useRentalStore = () => {
       const pdfURL = window.URL.createObjectURL(blob)
       printJS(pdfURL)
       return true
-    } catch(error: any) {
-      if(error.response && error.response.status == 400) {
+    } catch (error: any) {
+      if (error.response && error.response.status == 400) {
         const message = error.response.data.error
         Swal.fire('Error', message, 'error')
       }
@@ -310,11 +210,11 @@ export const useRentalStore = () => {
         },
         responseType: 'arraybuffer'
       })
-      if(res.status != 200 && res.status != 404) {
+      if (res.status != 200 && res.status != 404) {
         return false
       }
       const contentType = res.headers['content-type']
-      if(contentType != 'application/pdf') {
+      if (contentType != 'application/pdf') {
         return false
       }
       const blob = new Blob([res.data], {
@@ -323,8 +223,8 @@ export const useRentalStore = () => {
       const pdfURL = window.URL.createObjectURL(blob)
       printJS(pdfURL)
       return true
-    } catch(error: any) {
-      if(error.response && error.response.status == 400) {
+    } catch (error: any) {
+      if (error.response && error.response.status == 400) {
         const message = error.response.data.error
         Swal.fire('Error', message, 'error')
       }
@@ -335,22 +235,15 @@ export const useRentalStore = () => {
   return {
     //* Propiedades
     rentals,
-    payments,
-    amountTotal,
     //* Métodos
     getRentals,
     getRentalRequirements,
     postSendRequirements,
-    postRegisterPayment,
-    getRegistersPayments,
-    postRegisterWarranty,
-    postRegisterDiscountWarranty,
     postWarrantyReturn,
     getRental,
     postCreateRental,
     getPrintWarrantyReturn,
-    deleteLastRegisteredPayment,
     postPrintDeliveryForm,
-    getPrintReturnWarrantyForm
+    getPrintReturnWarrantyForm,
   }
 }
