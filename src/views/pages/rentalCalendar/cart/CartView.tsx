@@ -24,7 +24,7 @@ export const CartView = (props: cartProps) => {
   const [shoppingCart, setShoppingCart] = useState<any[]>([]);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const { plans = [], getPlans } = usePlanStore();
-  const [planSelect, setPlanSelect] = useState<any>(0);
+  const [planSelect, setPlanSelect] = useState<number>(0);
   const { leakedProducts = [] } = useProductStore();
   const { postCreateRental } = useRentalStore();
 

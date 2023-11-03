@@ -25,7 +25,6 @@ export const SelectComponent = (props: selectProps) => {
     let objSelected: any = event.target.value;
     handleSelect(objSelected);
   }
-
   return (
     <FormControl sx={{ mr: 5, mb: .5, width: '100%', padding: '5px' }} size="small">
       <InputLabel id="select">{label}</InputLabel>
@@ -49,6 +48,11 @@ export const SelectComponent = (props: selectProps) => {
             </InputAdornment>
           )
         }
+        MenuProps={{
+          style: {
+            zIndex: 9999
+          }
+        }}
       >
         {
           options.map((value: any) => <MenuItem key={value.id} value={value.id}>{value.name}</MenuItem>)

@@ -13,7 +13,7 @@ const formFields: FormPayment = {
 interface elementsProps {
   handleClose: () => void;
   sendData: (data: object) => void;
-  amountRecomend: number;
+  amountRecomend?: number;
   disalbleMount?: boolean;
 }
 
@@ -24,19 +24,19 @@ export const ComponentPayment = (props: elementsProps) => {
     amountRecomend,
     disalbleMount = false,
   } = props;
-
+  console.log(`amountRecomend ${amountRecomend}`)
   const formValidations: FormPaymentValidations = {
-    amount: [(value: number) => value > 0 && value <= amountRecomend, 'Debe ingresar el monto del pago'],
+    amount: [(value: number) => value > 0 && value <= parseFloat(`${amountRecomend}`), `Debe ingresar el monto del pago`],
     voucherNumber: [(value: number) => value > 0, 'Debe ingresar el número de comprobante'],
   }
   const [formSubmitted, setFormSubmitted] = useState(false);
   const { amount, voucherNumber, paymentDetail,
     onInputChange, isFormValid, onValueChange,
-    amountValid, voucherNumberValid, paymentDetailValid,
+    amountValid, voucherNumberValid,
     onResetForm } = useForm(formFields, formValidations);
 
   useEffect(() => {
-    onValueChange('amount', amountRecomend)
+    if (amountRecomend) onValueChange('amount', amountRecomend)
   }, [])
 
   const sendSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -87,8 +87,6 @@ export const ComponentPayment = (props: elementsProps) => {
               name="paymentDetail"
               value={paymentDetail}
               onChange={onInputChange}
-              error={!!paymentDetailValid && formSubmitted}
-              helperText={formSubmitted ? paymentDetailValid : ''}
             />
           </Grid>
         </Grid>

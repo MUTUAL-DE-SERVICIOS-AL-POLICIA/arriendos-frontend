@@ -39,3 +39,15 @@ export * from './usePlanStore';
 export * from './useRentalStore';
 
 export * from './useLeasesStates';
+
+/* PAYMENT STORE */
+export * from './usePaymentsStore';
+
+/* WARRANTY STORE */
+export * from './useWarrantyStore';
+
+/* EXTRA HOUR STORE */
+export * from './useExtraHourStore';
+
+/* DAMAGE STORE */
+export * from './useDamageStore';

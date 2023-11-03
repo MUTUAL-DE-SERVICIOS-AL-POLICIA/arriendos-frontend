@@ -25,7 +25,7 @@ export const CardEvent = (props: cardProps) => {
   } = props;
   const { patchUpdateTime } = useLeasesStates();
   const { postPrintDeliveryForm } = useRentalStore()
-  const [ loading, setLoading ] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const handleUpdateTime = (start: Date, end: Date) => {
     patchUpdateTime(product.id, {
@@ -40,7 +40,7 @@ export const CardEvent = (props: cardProps) => {
       rental,
       product
     }
-    if(!await postPrintDeliveryForm(body))
+    if (!await postPrintDeliveryForm(body))
       Swal.fire("Error", "Hubo un error", "error")
     setLoading(false)
   }
@@ -81,7 +81,7 @@ export const CardEvent = (props: cardProps) => {
               <ComponentButton
                 onClick={() => printDeliveryForm(rental, product.id)}
                 text={'Imprimir Acta'}
-                sx={{height: "35px", width: "90%", margin: "2px 10px"}}
+                sx={{ height: "35px", width: "90%", margin: "2px 10px" }}
                 loading={loading}
                 startIcon={<Print />}
               />
