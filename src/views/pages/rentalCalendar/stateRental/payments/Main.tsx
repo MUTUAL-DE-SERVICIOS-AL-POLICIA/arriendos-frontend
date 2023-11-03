@@ -4,7 +4,7 @@ import { Tab, Tabs, Typography } from '@mui/material';
 import { Box, Stack } from "@mui/system"
 import { useEffect, useState } from "react"
 import { FormPayments, Reason } from "."
-import { useExtraHourStore, usePaymentsStore } from "@/hooks"
+import { useExtraHourStore, usePaymentsStore, useWarrantyStore } from "@/hooks"
 import { EventsCalendarModel, ProductRentalModel, RentalModel } from "@/models";
 import { format } from "date-fns";
 import esES from 'date-fns/locale/es';
@@ -25,6 +25,7 @@ export const Rented = (props: Props) => {
   const [tabValueRegister, setTabValueRegister] = useState(0)
   const { payments = [], amountTotal, getRegistersPayments } = usePaymentsStore();
   const { extraHours = [], getRegisterExtraHours, getExtraHour } = useExtraHourStore();
+  const { warrantys = [], getListWarranty } = useWarrantyStore()
   const [mountPayment, setMountPayment] = useState(0);
   const [mountExtraHour, setMountExtraHour] = useState(0);
   const [eventSelect, setEventSelect] = useState<any>('');
@@ -42,6 +43,7 @@ export const Rented = (props: Props) => {
   useEffect(() => {
     getRegistersPayments(selectedEvent.rental)
     getRegisterExtraHours(selectedEvent.rental)
+    getListWarranty(selectedEvent.rental)
   }, []);
 
 
@@ -79,7 +81,6 @@ export const Rented = (props: Props) => {
         <Tabs value={tabValueRegister} onChange={handleChangeRegister}>
           <Tab label="Registro de pagos" {...properties(0)} />
           <Tab label="Registro de garantía" {...properties(1)} />
-          <Tab label="Registro de daños" {...properties(3)} />
           <Tab label="Registro de horas extra" {...properties(2)} />
         </Tabs>
         {
@@ -118,6 +119,12 @@ export const Rented = (props: Props) => {
               sx={{ py: 1 }}
             >
               <Typography>El monto de la garantía es: {amountTotal} Bs</Typography>
+              <ComponentButton text={`Registro de daños`}
+                onClick={() => handleModal(true, Reason.damage)}
+                height="35px"
+                width="30%"
+                margin="1px"
+              />
               <ComponentButton
                 text={`Registro de garantia`}
                 onClick={() => handleModal(true, Reason.warranty)}
@@ -126,25 +133,14 @@ export const Rented = (props: Props) => {
                 margin="1px"
               />
             </Stack>
-            {/* <ComponentTableContent
-                headers={['N° Comprobante', 'Monto Cancelado', 'Monto a pagar', 'Acción']}
-                data={[]}
-              /> */}
+            <ComponentTableContent
+                headers={['N° comprobante', 'Entrada', 'Descuento', 'Devuelto', 'Balance', 'Detalle', 'Acción']}
+                data={warrantys}
+              />
           </>
         }
         {
           tabValueRegister === 2 &&
-          <>
-            <ComponentButton text={`Registro de daños`}
-              onClick={() => handleModal(true, Reason.damage)}
-              height="35px"
-              width="30%"
-              margin="1px"
-            />
-          </>
-        }
-        {
-          tabValueRegister === 3 &&
           <>
             <Stack
               direction="row"

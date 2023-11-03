@@ -16,6 +16,7 @@ import {
     typeCustomerSlice,
     userSlice,
     extraHourSlice,
+    warrantySlice,
 } from '.';
 
 export const store = configureStore({
@@ -38,6 +39,7 @@ export const store = configureStore({
         leaseStates: leaseStateSlice.reducer,
         payments: paymentSlice.reducer,
         extraHours: extraHourSlice.reducer,
+        warrantys: warrantySlice.reducer,
 
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({

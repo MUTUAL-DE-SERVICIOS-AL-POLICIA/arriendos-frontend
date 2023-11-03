@@ -15,6 +15,7 @@ export * from './rentals/rentalSlice';
 export * from './leaseStates/leaseStateSlice';
 export * from './payments/paymentSlice';
 export * from './extraHours/extraHourSlice';
+export * from './warrantys/warrantySlice';
 
 
 export * from './store';
