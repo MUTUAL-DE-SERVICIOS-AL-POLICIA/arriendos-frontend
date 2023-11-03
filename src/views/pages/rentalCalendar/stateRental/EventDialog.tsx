@@ -1,7 +1,7 @@
-import { Button, Card, Dialog, DialogTitle, Divider, IconButton, Step, StepButton, Stepper } from "@mui/material"
+import { Card, Dialog, DialogTitle, Divider, IconButton, Step, StepButton, Stepper } from "@mui/material"
 import { Box } from "@mui/system"
 import { useEffect, useState } from "react"
-import { Close } from "@mui/icons-material"
+import { ArrowCircleRight, Cancel, Clear, Close } from "@mui/icons-material"
 import { useLeasesStates } from "@/hooks/useLeasesStates"
 import { useRentalStore } from "@/hooks"
 import Swal from "sweetalert2"
@@ -10,6 +10,7 @@ import { InfoRental } from "./InfoRental"
 import { Reserver } from "./reserve/Main"
 import { Rented } from "./payments/Main"
 import { Concluded } from "./concluded/Main"
+import { ComponentButton } from "@/components"
 
 interface elementsProps {
   open: boolean;
@@ -39,6 +40,7 @@ export const EventDialog = (props: elementsProps) => {
 
   const [checked, setChecked] = useState<Array<any>>([])
   const [checkedOptional, setCheckedOptional] = useState<Array<any>>([])
+  const [ loading, setLoading ] = useState(false)
 
   useEffect(() => {
     (async () => {
@@ -63,6 +65,7 @@ export const EventDialog = (props: elementsProps) => {
   }
 
   const handleNext = async () => {
+    setLoading(true)
     setActiveStep(currentState.current_state.id)
     if (activeStep == 1) {
       nextStep()
@@ -87,12 +90,12 @@ export const EventDialog = (props: elementsProps) => {
       handleComplete()
       handleClose()
     }
+    setLoading(false)
   }
 
   const nextStep = async () => {
     const changeRentalState = {
       rental: selectedEvent.rental,
-      // state: currentState.current_state.id + 1 // esto esta mal
       state: nextAction
     }
     const successChange = await postChangeRentalState(changeRentalState)
@@ -248,19 +251,28 @@ export const EventDialog = (props: elementsProps) => {
                 }
               </>
             }
-            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2, pb: 1 }}>
               <Box sx={{ flex: '1 1 auto' }} />
               { currentState &&
                 currentState.next_states.length != 0 &&
                 activeStep < leaseStates.length &&
-                <Button onClick={stoppedAction} sx={{ mr: 1, color: 'red' }}>
-                  {stopAction !== null ? stopAction.name : 'sin nada'}
-                </Button>
+                <ComponentButton
+                  text={stopAction !== null ? stopAction.name : ''}
+                  onClick={stoppedAction}
+                  variant={'outlined'}
+                  endIcon={<Cancel />}
+                  sx={{mr: 1, color: 'red', borderColor: 'red', '&:hover': { backgroundColor: '#fadad9', borderColor: 'red'}}}
+                />
               }
               {
-                activeStep <= leaseStates.length && <Button onClick={handleNext} sx={{mr: 1}}>
-                    { activeStep == leaseStates.length ? 'Finalizar' : 'Siguiente'}
-                  </Button>
+                activeStep <= leaseStates.length &&
+                  <ComponentButton
+                    text={activeStep == leaseStates.length ? 'Finalizar' : 'Siguiente'}
+                    onClick={handleNext}
+                    loading={loading}
+                    variant={'outlined'}
+                    endIcon={activeStep == leaseStates.length ? <Cancel/> : <ArrowCircleRight />}
+                  />
               }
             </Box>
           </Card>

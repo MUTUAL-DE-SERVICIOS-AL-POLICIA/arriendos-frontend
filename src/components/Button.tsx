@@ -1,26 +1,37 @@
-import { Button } from '@mui/material'
+import LoadingButton from '@mui/lab/LoadingButton'
 import { memo } from 'react'
 
-export const ComponentButton = memo(({ type, text, onClick, width, startIcon, disable, margin, height }: { type?: any, text: string, onClick?: any, width?: any, startIcon?: any, margin?: any, height?: any, disable?: boolean }) => {
+export const ComponentButton = memo((
+    { type, text, onClick, width, startIcon, endIcon, disable, margin, height, loading = false, variant = "contained",
+    sx={fontWeight: 'bold',
+         display: 'flex',
+         margin: { margin },
+         height: { height }
+    }, color}
+    : { type?: any, text: string, onClick?: any, width?: any, startIcon?: any, margin?: any, height?: any, disable?: boolean, loading?: boolean, variant?: any, endIcon?: any, sx?: object, color?: any }) => {
     return (
-        <Button
+        <LoadingButton
+            loading={loading}
             type={type}
             className='mt-2'
-            variant="contained"
+            variant={variant}
             disableElevation
             disableRipple
             disabled={disable}
             startIcon={startIcon}
+            endIcon={endIcon}
             onClick={onClick}
-            sx={{
-                fontWeight: 'bold',
-                display: 'flex',
-                margin: { margin },
-                width: { width },
-                height: { height },
-            }}
+            color={color}
+            // sx={{
+            //     fontWeight: 'bold',
+            //     display: 'flex',
+            //     margin: { margin },
+            //     width: { width },
+            //     height: { height },
+            // }}
+            sx={sx}
         >
             {text}
-        </Button>
+        </LoadingButton>
     )
 });

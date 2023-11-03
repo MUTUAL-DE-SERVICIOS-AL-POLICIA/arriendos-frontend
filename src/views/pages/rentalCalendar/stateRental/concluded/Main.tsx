@@ -1,5 +1,7 @@
+import { ComponentButton } from "@/components";
 import { useRentalStore } from "@/hooks"
-import { Button, Divider, Grid, Typography } from "@mui/material"
+import { Print } from "@mui/icons-material";
+import { Divider, Grid, Typography } from "@mui/material"
 import { Box } from "@mui/system"
 import { useState } from "react";
 
@@ -19,19 +21,29 @@ export const Concluded = (props: Props) => {
     rental
   } = props
 
-  const { postWarrantyReturn, getPrintWarrantyReturn } = useRentalStore()
+  const { postWarrantyReturn, getPrintWarrantyReturn, getPrintReturnWarrantyForm } = useRentalStore()
   const [ disabled, setDisabled ] = useState(true)
+  const [ loadingPrint, setLoadingPrint ] = useState(false)
+  const [ loadingWarrantyReturn, setLoadingWarrantyReturn] = useState(false)
 
   const warrantyReturn = async () => {
+    setLoadingWarrantyReturn(true)
     const body = {
       rental: rental,
     }
     await postWarrantyReturn(body)
+    await getPrintReturnWarrantyForm(rental)
+    setLoadingWarrantyReturn(false)
   }
 
   const printWarrantyRequest = async () => {
+    setLoadingPrint(true)
     const res = await getPrintWarrantyReturn(rental)
-    if(res) setDisabled(!res)
+    if(res) {
+      setDisabled(res => res ? !res : res)
+      console.log(res)
+    }
+    setLoadingPrint(false)
   }
 
   return (
@@ -41,18 +53,25 @@ export const Concluded = (props: Props) => {
           <Typography>Imprimir formulario de solicitud de garantía:</Typography>
         </Grid>
         <Grid item xs={12} sm={5} sx={{marginBottom: 2}}>
-          <Button onClick={printWarrantyRequest} variant="contained">
-            IMPRIMIR
-          </Button>
+          <ComponentButton
+            onClick={printWarrantyRequest}
+            text="IMPRIMIR"
+            startIcon={<Print />}
+            loading={loadingPrint}
+          />
         </Grid>
         <Divider style={dividerStyle}/>
         <Grid item xs={12} sm={7}>
-          <Typography>Devolver garantía:</Typography>
+          <Typography>Imprimir conformidad:</Typography>
         </Grid>
         <Grid item xs={12} sm={5}>
-        <Button disabled={disabled} onClick={warrantyReturn} variant="contained">
-            IMPRIMIR
-          </Button>
+          <ComponentButton
+            onClick={warrantyReturn}
+            text="IMPRIMIR"
+            startIcon={<Print/>}
+            disable={disabled}
+            loading={loadingWarrantyReturn}
+          />
         </Grid>
       </Grid>
     </Box>
