@@ -70,12 +70,14 @@ export interface FormExtraHourModel {
     quantity: number;
     voucherNumber: number;
     detail: string;
+    eventSelect: string | number;
 }
 
 /*FORM EXTRA HOUR VALIDATIONS */
 export interface FormExtraHourValidations {
     quantity: [(value: number) => boolean, string];
     voucherNumber: [(value: number) => boolean, string];
+    eventSelect: [(value: string) => boolean, string];
 }
 
 
@@ -83,10 +85,12 @@ export interface FormExtraHourValidations {
 export interface FormDamageModel {
     detail: string;
     discount: number;
+    eventSelect: string | number;
 }
 
 /*FORM DAMAGE VALIDATIONS */
 export interface FormDamageValidations {
     detail: [(value: string) => boolean, string];
     discount: [(value: number) => boolean, string];
+    eventSelect: [(value: string) => boolean, string];
 }

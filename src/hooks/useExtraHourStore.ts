@@ -45,6 +45,7 @@ export const useExtraHourStore = () => {
           selected_product: selectedProduct
         }
       });
+      console.log(data)
       return data.price;
 
     } catch (error: any) {

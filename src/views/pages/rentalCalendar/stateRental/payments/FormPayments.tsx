@@ -11,7 +11,6 @@ export enum Reason {
 }
 
 interface elementsProps {
-  eventSelect: number;
   amountTotal: number;
   selectedEvent: EventsCalendarModel;
   rental: RentalModel;
@@ -23,7 +22,6 @@ interface elementsProps {
 
 export const FormPayments = (props: elementsProps) => {
   const {
-    eventSelect,
     amountTotal,
     selectedEvent,
     rental,
@@ -59,11 +57,11 @@ export const FormPayments = (props: elementsProps) => {
   }
   const registerExtraHour = async (data: any) => {
     const body = {
-      selected_product: eventSelect,
+      selected_product: data.eventSelect,
       number: parseInt(data.quantity),
       description: data.detail || null,
       voucher_number: parseFloat(data.voucherNumber),
-      price: amountTotal
+      price: parseFloat(data.amount)
     };
     await postRegisterExtraHour(selectedEvent.rental, body);
   }
@@ -112,6 +110,7 @@ export const FormPayments = (props: elementsProps) => {
         {
           tabReason == Reason.extraHour &&
           <ComponentExtraHour
+            rental={rental}
             handleClose={handleClose}
             amountRecomend={amountTotal}
             sendData={(data) => registerExtraHour(data)}
@@ -120,6 +119,7 @@ export const FormPayments = (props: elementsProps) => {
         {
           tabReason == Reason.damage &&
           <ComponentDamage
+            rental={rental}
             handleClose={handleClose}
             sendData={(data) => registerDamage(data)}
           />
