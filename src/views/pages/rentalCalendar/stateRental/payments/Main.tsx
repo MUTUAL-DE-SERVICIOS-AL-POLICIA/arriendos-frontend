@@ -1,14 +1,11 @@
-import { ComponentButton, SelectComponent } from "@/components"
+import { ComponentButton } from "@/components"
 import { ComponentTableContent } from "@/components/TableContent"
 import { Tab, Tabs, Typography } from '@mui/material';
 import { Box, Stack } from "@mui/system"
 import { useEffect, useState } from "react"
 import { FormPayments, Reason } from "."
 import { useExtraHourStore, usePaymentsStore, useWarrantyStore } from "@/hooks"
-import { EventsCalendarModel, ProductRentalModel, RentalModel } from "@/models";
-import { format } from "date-fns";
-import esES from 'date-fns/locale/es';
-import { formatDate } from "@/helpers";
+import { EventsCalendarModel, RentalModel } from "@/models";
 
 interface Props {
   selectedEvent: EventsCalendarModel;
@@ -24,11 +21,9 @@ export const Rented = (props: Props) => {
 
   const [tabValueRegister, setTabValueRegister] = useState(0)
   const { payments = [], amountTotal, getRegistersPayments } = usePaymentsStore();
-  const { extraHours = [], getRegisterExtraHours, getExtraHour } = useExtraHourStore();
+  const { extraHours = [], getRegisterExtraHours } = useExtraHourStore();
   const { warrantys = [], getListWarranty } = useWarrantyStore()
   const [mountPayment, setMountPayment] = useState(0);
-  const [mountExtraHour, setMountExtraHour] = useState(0);
-  const [eventSelect, setEventSelect] = useState<any>('');
   const properties = (index: number) => {
     return {
       id: `register-tab-${index}`,
@@ -60,21 +55,11 @@ export const Rented = (props: Props) => {
             setMountPayment(payments[payments.length - 1].payable_mount)
           }
           break;
-        case Reason.extraHour:
-          setMountPayment(mountExtraHour);
-          break;
       }
     }
     setModal(value);
   };
 
-  const handleEvent = async (value: any) => {
-    setMountExtraHour(0);
-    console.log(value)
-    const price = await getExtraHour(value);
-    setMountExtraHour(price);
-    setEventSelect(value)
-  }
   return (
     <>
       <Box>
@@ -134,9 +119,9 @@ export const Rented = (props: Props) => {
               />
             </Stack>
             <ComponentTableContent
-                headers={['N° comprobante', 'Entrada', 'Descuento', 'Devuelto', 'Balance', 'Detalle', 'Acción']}
-                data={warrantys}
-              />
+              headers={['N° comprobante', 'Entrada', 'Descuento', 'Devuelto', 'Balance', 'Detalle', 'Acción']}
+              data={warrantys}
+            />
           </>
         }
         {
@@ -147,17 +132,10 @@ export const Rented = (props: Props) => {
               justifyContent="space-between"
               sx={{ py: 1 }}
             >
-              <SelectComponent
-                handleSelect={handleEvent}
-                label={`Seleccionar Evento`}
-                options={[...rental.products.map((item: ProductRentalModel) => ({ id: item.id, name: `${item.id} ${format(formatDate(item.start_time), 'EEEE dd-MMMM HH:mm', { locale: esES })} ${item.event} ${item.property}-${item.room}` }))]}
-                value={eventSelect}
-              />
               <ComponentButton
                 text={`Registrar hora extra`}
                 onClick={() => handleModal(true, Reason.extraHour)}
                 margin="1px"
-                disable={mountExtraHour === 0}
               />
             </Stack>
             {
@@ -173,7 +151,6 @@ export const Rented = (props: Props) => {
       {
         modal &&
         <FormPayments
-          eventSelect={eventSelect}
           amountTotal={mountPayment}
           open={modal}
           handleClose={() => handleModal(false)}
