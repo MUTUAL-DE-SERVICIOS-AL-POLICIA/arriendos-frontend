@@ -44,13 +44,13 @@ export const useRentalStore = () => {
   }
 
   const getRental = async (rentalId: number) => {
-    console.log("OBTENIENDO LA INFORMACIÓN DE UN ALQUILER")
+    // console.log("OBTENIENDO LA INFORMACIÓN DE UN ALQUILER")
     const { data } = await api.get(`/leases/get_rental_information/`, {
       params: {
         rental: rentalId
       }
     });
-    console.log(data)
+    // console.log(data)
     return data;
   }
   const postCreateRental = async (body: object, setShoppingCart: Function, onClose: Function) => {
@@ -90,6 +90,7 @@ export const useRentalStore = () => {
           rental: rental
         }
       })
+      console.log(data.data)
       return data.data
     } catch (error: any) {
       if (error.message && error.response.status == 400) {

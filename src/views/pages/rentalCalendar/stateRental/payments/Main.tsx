@@ -4,12 +4,19 @@ import { Tab, Tabs, Typography } from '@mui/material';
 import { Box, Stack } from "@mui/system"
 import { useEffect, useState } from "react"
 import { FormPayments, Reason } from "."
-import { useExtraHourStore, usePaymentsStore, useWarrantyStore } from "@/hooks"
-import { EventsCalendarModel, RentalModel } from "@/models";
-
+import { useExtraHourStore, useForm, usePaymentsStore, useWarrantyStore } from "@/hooks"
+import { EventsCalendarModel, ProductRentalModel, RentalModel } from "@/models";
+import { format } from "date-fns";
+import esES from 'date-fns/locale/es';
+import { formatDate } from "@/helpers";
+import { FormWarrantyValidation, WarrantyModel } from "@/models/paymentModel"
 interface Props {
   selectedEvent: EventsCalendarModel;
   rental: RentalModel;
+}
+
+const formField: WarrantyModel = {
+  amountWarranty: 0,
 }
 
 export const Rented = (props: Props) => {
@@ -21,9 +28,12 @@ export const Rented = (props: Props) => {
 
   const [tabValueRegister, setTabValueRegister] = useState(0)
   const { payments = [], amountTotal, getRegistersPayments } = usePaymentsStore();
-  const { extraHours = [], getRegisterExtraHours } = useExtraHourStore();
+  const { extraHours = [], getRegisterExtraHours, getExtraHour } = useExtraHourStore();
   const { warrantys = [], getListWarranty } = useWarrantyStore()
   const [mountPayment, setMountPayment] = useState(0);
+  const [mountExtraHour, setMountExtraHour] = useState(0);
+  const [ mountWarranty, setMountWarranty ] = useState(0)
+  const [eventSelect, setEventSelect] = useState<any>('');
   const properties = (index: number) => {
     return {
       id: `register-tab-${index}`,
@@ -44,6 +54,13 @@ export const Rented = (props: Props) => {
 
   const [tabSelect, setTabSelect] = useState<Reason>(Reason.payment);
   const [modal, setModal] = useState(false);
+  const [ active, setActive ] = useState(true)
+
+  const formValidation: FormWarrantyValidation = {
+    amountWarranty: [(value: number) => value > 0 && value <= parseFloat(`${amountWarranty}`), `Debe ingresar el monto de la garantía`],
+  }
+  const { amountWarranty, onInputChange, amountWarrantyValid } = useForm(formField, formValidation)
+
   const handleModal = (value: boolean, reason?: Reason) => {
     if (reason) {
       setTabSelect(reason!);
@@ -55,11 +72,32 @@ export const Rented = (props: Props) => {
             setMountPayment(payments[payments.length - 1].payable_mount)
           }
           break;
+        case Reason.extraHour:
+          setMountPayment(mountExtraHour);
+          break;
+        case Reason.warranty:
+          setMountPayment(mountWarranty)
+          break
       }
     }
     setModal(value);
   };
 
+  const handleEvent = async (value: any) => {
+    setMountExtraHour(0);
+    console.log(value)
+    const price = await getExtraHour(value);
+    setMountExtraHour(price);
+    setEventSelect(value)
+  }
+
+  const changeWarranty = async () => {
+    alert(`${amountWarranty}`)
+  }
+  const activeChangeWarranty = () => {
+    setActive(!active)
+    console.log(active)
+  }
   return (
     <>
       <Box>
@@ -99,24 +137,57 @@ export const Rented = (props: Props) => {
           tabValueRegister === 1 &&
           <>
             <Stack
+              style={{ maxHeight: '30px' }}
               direction="row"
               justifyContent="space-between"
-              sx={{ py: 1 }}
+              sx={{ py: 2, }}
             >
-              <Typography>El monto de la garantía es: {amountTotal} Bs</Typography>
-              <ComponentButton text={`Registro de daños`}
-                onClick={() => handleModal(true, Reason.damage)}
-                height="35px"
-                width="30%"
-                margin="1px"
-              />
-              <ComponentButton
-                text={`Registro de garantia`}
-                onClick={() => handleModal(true, Reason.warranty)}
-                height="35px"
-                width="30%"
-                margin="1px"
-              />
+              <Stack
+                direction="row"
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'left',
+                }}
+              >
+                {/* <Typography sx={{pr: 1}} >El monto de la garantía es: </Typography>
+                <ComponentInput
+                  type="text"
+                  name="amountWarranty"
+                  label=""
+                  value={amountWarranty}
+                  size="small"
+                  width='25%'
+                  height='35px'
+                  disabled={active}
+                  onChange={onInputChange}
+                  error={!!amountWarrantyValid}
+                />
+                <IconButton color="success">
+                  <Edit
+                    onClick={activeChangeWarranty}
+                  />
+                </IconButton>
+                <IconButton color="warning">
+                  <SaveAs onClick={changeWarranty}/>
+                </IconButton> */}
+              </Stack>
+              <Stack spacing={1} direction="row">
+                <ComponentButton text={`Registro de daños`}
+                  onClick={() => handleModal(true, Reason.damage)}
+                  height="35px"
+                  width="30%"
+                  margin="1px"
+                />
+                <ComponentButton
+                  text={`Registro de garantia`}
+                  onClick={() => handleModal(true, Reason.warranty)}
+                  height="35px"
+                  width="30%"
+                  margin="1px"
+                />
+              </Stack>
             </Stack>
             <ComponentTableContent
               headers={['N° comprobante', 'Entrada', 'Descuento', 'Devuelto', 'Balance', 'Detalle', 'Acción']}

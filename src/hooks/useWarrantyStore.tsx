@@ -36,7 +36,7 @@ export const useWarrantyStore = () => {
       const warrantys = [...data.map((e: any, index: number) => ({
         voucher: e.voucher,
         income: e.income,
-        discount: e.disocunt,
+        discount: e.discount,
         returned: e.returned,
         balance: e.balance,
         detail: e.detail,
@@ -59,7 +59,19 @@ export const useWarrantyStore = () => {
   }
 
   const deleteLastRegisteredWarranty = async (rental: number) => {
-    alert("me eliminaste")
+    try {
+      const res = await api.delete(`/financials/register_warranty/${rental}/`)
+      if (res.status == 200) {
+        Swal.fire('Registro eliminado', res.data.message, 'success')
+      }
+      getListWarranty(rental);
+    } catch (error: any) {
+      if (error.response && error.response.status == 400) {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error')
+      }
+      throw new Error('Ocurrió algun error en el backend')
+    }
   }
 
   return {

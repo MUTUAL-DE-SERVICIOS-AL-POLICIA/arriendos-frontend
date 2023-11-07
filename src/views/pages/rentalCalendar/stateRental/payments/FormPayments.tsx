@@ -31,6 +31,7 @@ export const FormPayments = (props: elementsProps) => {
   } = props;
 
   const { getRegistersPayments, postRegisterPayment } = usePaymentsStore();
+  const { getListWarranty } = useWarrantyStore()
   const { postRegisterWarranty } = useWarrantyStore();
   const { postRegisterDiscountWarranty } = useDamageStore();
 
@@ -54,6 +55,7 @@ export const FormPayments = (props: elementsProps) => {
       detail: data.paymentDetail || null
     }
     await postRegisterWarranty(body)
+    await getListWarranty(selectedEvent.rental)
   }
   const registerExtraHour = async (data: any) => {
     const body = {
@@ -73,6 +75,7 @@ export const FormPayments = (props: elementsProps) => {
       product: rental.products.filter((product: ProductRentalModel) => product.id == selectedEvent.product_id)[0].id
     }
     await postRegisterDiscountWarranty(body)
+    await getListWarranty(selectedEvent.rental)
   }
   return (
     <Drawer
@@ -104,6 +107,7 @@ export const FormPayments = (props: elementsProps) => {
           tabReason == Reason.warranty &&
           <ComponentPayment
             handleClose={handleClose}
+            amountRecomend={amountTotal}
             sendData={(data) => registerWarranty(data)}
           />
         }
