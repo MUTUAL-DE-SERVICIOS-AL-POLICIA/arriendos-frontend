@@ -26,7 +26,19 @@ export const ComponentPayment = (props: elementsProps) => {
   } = props;
   console.log(`amountRecomend ${amountRecomend}`)
   const formValidations: FormPaymentValidations = {
-    amount: [(value: number) => value > 0 && value <= parseFloat(`${amountRecomend}`), `Debe ingresar el monto del pago`],
+    amount: [(value: number) =>
+      {
+        if(amountRecomend != 0 && value > 0 && value <= parseFloat(`${amountRecomend}`)){
+          console.log("algo aca")
+          return true
+        }
+        else if(amountRecomend == 0 && value > 0) {
+          console.log("algo no aca")
+          return true
+        }
+        return false
+      },
+      'Debe ingresar el monto del pago'],
     voucherNumber: [(value: number) => value > 0, 'Debe ingresar el número de comprobante'],
   }
   const [formSubmitted, setFormSubmitted] = useState(false);

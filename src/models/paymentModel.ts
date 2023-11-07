@@ -33,3 +33,10 @@ export interface FormPaymentValidations {
     amountWarranty: [(value: number) => boolean, string];
     voucherNumberWarranty: [(value: number) => boolean, string]
 }
+
+export interface FormWarrantyValidation {
+    amountWarranty: [(value: number) => boolean, string];
+}
+export interface WarrantyModel {
+    amountWarranty: number;
+}

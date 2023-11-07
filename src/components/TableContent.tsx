@@ -1,9 +1,16 @@
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material"
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material"
+import { styled } from "@mui/system";
 
 interface Props {
 	headers: Array<string>;
 	data: any;
 }
+
+const StyledTableRow = styled(TableRow)(({theme}) => ({
+	'&:nth-of-type(odd)': {
+		backgroundColor: theme.palette.action.hover,
+	},
+}))
 
 export const ComponentTableContent = (props: Props) => {
 	const {
@@ -13,12 +20,12 @@ export const ComponentTableContent = (props: Props) => {
 
 	const columns = data.length > 0 ? Object.keys(data[0]) : [];
 	return (
-		<TableContainer component={Paper} sx={{ borderRadius: 2, maxHeight: 350 }}>
-			<Table stickyHeader size="small" sx={{ border: '1px solid #ccc', borderCollapse: '0' }}>
+		<TableContainer sx={{ borderRadius: 2, maxHeight: 350 }}>
+			<Table stickyHeader size="small" sx={{ borderCollapse: 'collapse' }}>
 				<TableHead>
 					<TableRow>
 						{headers.map((elem, index) => (
-							<TableCell key={index} align="center" sx={{ fontWeight: 'bold', backgroundColor: '#AEEDE1' }}>
+							<TableCell key={index} align="center" sx={{ fontWeight: 'bold', backgroundColor: '#01DE87', }}>
 								{elem}
 							</TableCell>
 						))}
@@ -26,11 +33,11 @@ export const ComponentTableContent = (props: Props) => {
 				</TableHead>
 				<TableBody>
 					{data.map((row: any, index_body: number) => (
-						<TableRow key={index_body}>
+						<StyledTableRow key={index_body}>
 							{columns.map((columnName, index) => (
-								<TableCell key={index}>{row[columnName]}</TableCell>
+								<TableCell key={index} sx={{border: '.1px solid grey'}}>{row[columnName]}</TableCell>
 							))}
-						</TableRow>
+						</StyledTableRow>
 					))}
 				</TableBody>
 			</Table>

@@ -14,12 +14,20 @@ export const useLeasesStates = () => {
     dispatch(setLeaseState({ leaseStates: data }))
   }
   const getCurrentLeaseState = async (rental: number) => {
-    const { data } = await api.get(`/leases/get_state/`, {
-      params: {
-        rental: rental
+    try {
+      const { data } = await api.get(`/leases/get_state/`, {
+        params: {
+          rental: rental
+        }
+      })
+      return data;
+    } catch(error: any) {
+      if(error.response && error.response.status == 400) {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error')
       }
-    })
-    return data;
+      throw new Error('Ocurrió algun error')
+    }
   }
   const postChangeRentalState = async (body: object) => {
     try {
@@ -28,7 +36,11 @@ export const useLeasesStates = () => {
         return true
       } else return false
     } catch (error: any) {
-      throw Swal.fire('Oops ocurrio algo', error.response, 'error')
+      if(error.response && error.response.status == 400) {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error')
+      }
+      throw new Error('Ocurrió algun error')
     }
   }
 
@@ -40,7 +52,11 @@ export const useLeasesStates = () => {
       // dispatch(refreshCustomer());
       Swal.fire('Se edito correctamente la fecha', '', 'success');
     } catch (error: any) {
-      Swal.fire('Oops ocurrio algo', error.response, 'error');
+      if(error.response && error.response.status == 400) {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error')
+      }
+      throw new Error('Ocurrió algun error')
     }
   }
 

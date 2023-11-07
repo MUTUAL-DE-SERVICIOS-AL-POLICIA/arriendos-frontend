@@ -48,11 +48,9 @@ export const EventDialog = (props: elementsProps) => {
       setRental(rental)
       getLeaseState()
       const res = await getCurrentLeaseState(selectedEvent.rental)
-      if (res.current_state.id === 1) {
-        stepsExecuted(res.current_state.id + 1)
-      } else stepsExecuted(res.current_state.id)
-      setActiveStep(res.current_state.id)
-      setCurrentState(res)
+      stepsExecuted(res.current_state.id + 1) // pintar pasos ejecutados
+      setActiveStep(res.current_state.id + 1) // activar paso
+      setCurrentState(res) // panel
       getStoppedAction(res.next_states)
       getNextAction(res.next_states)
     })();
@@ -66,10 +64,7 @@ export const EventDialog = (props: elementsProps) => {
 
   const handleNext = async () => {
     setLoading(true)
-    setActiveStep(currentState.current_state.id)
-    if (activeStep == 1) {
-      nextStep()
-    } else if (activeStep == 2) {
+    if (activeStep == 2) {
       const aux = checked.concat(checkedOptional)
       const requirementsSelected = aux.reduce((result: any, e: any) => {
         if (e.state) result.push(e.id)
@@ -79,10 +74,12 @@ export const EventDialog = (props: elementsProps) => {
         rental: selectedEvent.rental,
         list_requirements: requirementsSelected
       }
-      const success = await postSendRequirements(requirementsToSend)
-      if (success) {
-        nextStep()
-      } else Swal.fire('Error', 'Hubo un error', 'error')
+      if(requirementsSelected.length != 0) {
+        const success = await postSendRequirements(requirementsToSend)
+        if (success) {
+          nextStep()
+        }
+      } else Swal.fire('Error', 'No existen requisitos entregados', 'error')
     } else if (activeStep == 3) {
       nextStep()
     } else if (activeStep == 4) {
@@ -103,7 +100,8 @@ export const EventDialog = (props: elementsProps) => {
       handleComplete()
       const stepCurrent = await getCurrentLeaseState(selectedEvent.rental)
       setCurrentState(stepCurrent)
-      setActiveStep(stepCurrent.current_state.id)
+      setActiveStep(stepCurrent.current_state.id + 1)
+      console.log("entra aca")
       getStoppedAction(stepCurrent.next_states)
       getNextAction(stepCurrent.next_states)
     }
@@ -120,7 +118,7 @@ export const EventDialog = (props: elementsProps) => {
 
   const handleComplete = () => {
     const newCompleted = completed
-    newCompleted[currentState.current_state.id - 1] = true
+    newCompleted[currentState.current_state.id] = true
     setCompleted(newCompleted)
   }
 
@@ -141,8 +139,8 @@ export const EventDialog = (props: elementsProps) => {
   const getNextAction = (nextStates: Array<object>) => {
     if (nextStates.length !== 0) {
       const foundItem: any = nextStates.filter((elem: any) => (elem.name.toLowerCase() !== 'anular' && elem.name.toLowerCase() !== 'anulado') && (elem.name.toLowerCase() !== 'cancelar' && elem.name.toLowerCase() !== 'cancelado'))
-      console.log("acción de siguiente")
-      console.log(foundItem)
+      // console.log("acción de siguiente")
+      // console.log(foundItem)
       if (foundItem.length !== 0) {
         setNextAction(foundItem[0].id)
       }
@@ -166,6 +164,8 @@ export const EventDialog = (props: elementsProps) => {
             rental: selectedEvent.rental,
             state: stopAction.id
           }
+          console.log(selectedEvent.rental)
+          console.log(stopAction.id)
           const successChange = await postChangeRentalState(changeRentalState)
           if (successChange) {
             Swal.fire(
@@ -216,7 +216,7 @@ export const EventDialog = (props: elementsProps) => {
             rental={rental}
           />}
           <Card sx={{ margin: '20px 0px', padding: '10px 10px 0px 10px', borderRadius: '10px' }} variant="outlined">
-            <Stepper nonLinear activeStep={currentState ? currentState.current_state.id - 1 : 0}>
+            <Stepper nonLinear activeStep={currentState ? currentState.current_state.id : 0}>
               {leaseStates.map((step: any, index: number) => (
                 <Step key={step.id} completed={completed[index]}>
                   <StepButton color="inherit">
