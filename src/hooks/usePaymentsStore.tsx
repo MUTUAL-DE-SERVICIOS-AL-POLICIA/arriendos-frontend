@@ -56,19 +56,32 @@ export const usePaymentsStore = () => {
   }
 
   const deleteLastRegisteredPayment = async (rental: number) => {
-    try {
-      const res = await api.delete(`/financials/register_payment/${rental}/`)
-      if (res.status == 200) {
-        Swal.fire('Registro eliminado', res.data.message, 'success')
+    Swal.fire({
+      title: '¿Está seguro de esta acción?',
+      text: `Esta acción no es reversible`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '¡Sí, estoy seguro!',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if(result.isConfirmed) {
+        try {
+          const res = await api.delete(`/financials/register_payment/${rental}/`)
+          if (res.status == 200) {
+            Swal.fire('Registro eliminado', res.data.message, 'success')
+          }
+          getRegistersPayments(rental);
+        } catch (error: any) {
+          if (error.response && error.response.status == 400) {
+            const message = error.response.data.error
+            Swal.fire('Error', message, 'error')
+          }
+          throw new Error('Ocurrió algun error en el backend')
+        }
       }
-      getRegistersPayments(rental);
-    } catch (error: any) {
-      if (error.response && error.response.status == 400) {
-        const message = error.response.data.error
-        Swal.fire('Error', message, 'error')
-      }
-      throw new Error('Ocurrió algun error en el backend')
-    }
+    })
   }
   return {
     //* Propiedades
