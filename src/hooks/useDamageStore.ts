@@ -22,11 +22,14 @@ export const useDamageStore = () => {
       return true
 
     } catch (error: any) {
-      if (error.response && error.response.status == 400) {
+      if(error.response.data instanceof ArrayBuffer) {
+        const errorMessage = new TextDecoder('utf-8').decode(error.response.data)
+        const message = JSON.parse(errorMessage).error
+        Swal.fire('Error', message, 'error')
+      } else if (error.message && error.response.status == 400) {
         const message = error.response.data.error
         Swal.fire('Error', message, 'error')
-      }
-      throw new Error('Ocurrió algun error en el backend')
+      } else throw new Error('Ocurrió algun error en el backend')
     }
   }
 

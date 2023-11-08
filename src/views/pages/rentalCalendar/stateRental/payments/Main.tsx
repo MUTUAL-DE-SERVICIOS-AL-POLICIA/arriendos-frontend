@@ -6,9 +6,6 @@ import { useEffect, useState } from "react"
 import { FormPayments, Reason } from "."
 import { useExtraHourStore, useForm, usePaymentsStore, useWarrantyStore } from "@/hooks"
 import { EventsCalendarModel, ProductRentalModel, RentalModel } from "@/models";
-import { format } from "date-fns";
-import esES from 'date-fns/locale/es';
-import { formatDate } from "@/helpers";
 import { FormWarrantyValidation, WarrantyModel } from "@/models/paymentModel"
 interface Props {
   selectedEvent: EventsCalendarModel;
@@ -54,7 +51,7 @@ export const Rented = (props: Props) => {
 
   const [tabSelect, setTabSelect] = useState<Reason>(Reason.payment);
   const [modal, setModal] = useState(false);
-  const [ active, setActive ] = useState(true)
+  // const [ active, setActive ] = useState(true)
 
   const formValidation: FormWarrantyValidation = {
     amountWarranty: [(value: number) => value > 0 && value <= parseFloat(`${amountWarranty}`), `Debe ingresar el monto de la garantía`],
@@ -91,13 +88,12 @@ export const Rented = (props: Props) => {
     setEventSelect(value)
   }
 
-  const changeWarranty = async () => {
-    alert(`${amountWarranty}`)
-  }
-  const activeChangeWarranty = () => {
-    setActive(!active)
-    console.log(active)
-  }
+  // const changeWarranty = async () => {
+  //   alert(`${amountWarranty}`)
+  // }
+  // const activeChangeWarranty = () => {
+  //   setActive(!active)
+  // }
   return (
     <>
       <Box>
@@ -212,7 +208,7 @@ export const Rented = (props: Props) => {
             {
               extraHours.length !== 0 &&
               <ComponentTableContent
-                headers={['Lugar', 'Evento', 'N° voucher', 'cantidad', 'total', 'Detalle']}
+                headers={['Lugar', 'Evento', 'N° voucher', 'Cantidad', 'Total', 'Detalle', 'Acción']}
                 data={extraHours}
               />
             }
