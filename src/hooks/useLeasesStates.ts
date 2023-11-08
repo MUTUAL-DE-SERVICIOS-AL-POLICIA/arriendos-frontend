@@ -37,6 +37,7 @@ export const useLeasesStates = () => {
       } else return false
     } catch (error: any) {
       if(error.response && error.response.status == 400) {
+        console.log(error.response)
         const message = error.response.data.error
         Swal.fire('Error', message, 'error')
       }
