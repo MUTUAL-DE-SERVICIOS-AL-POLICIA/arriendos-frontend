@@ -3,8 +3,6 @@ import { RoomModel } from "@/models"
 import { Edit, KeyboardArrowDownOutlined, KeyboardArrowUpOutlined } from "@mui/icons-material";
 import { Checkbox, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
 import React, { useState } from "react";
-import { SubEnviromentTable } from ".";
-// import { SubEnviromentTable } from ".";
 
 interface tableProps {
   rooms: Array<RoomModel>;

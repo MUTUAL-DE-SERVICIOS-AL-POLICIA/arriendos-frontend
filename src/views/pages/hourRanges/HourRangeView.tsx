@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { Stack, SvgIcon, Typography } from "@mui/material";
+import { Stack, SvgIcon } from "@mui/material";
 import { ComponentButton } from "@/components";
 import { Add } from "@mui/icons-material";
 import { HourRangeTable, CreateHourRange } from ".";
