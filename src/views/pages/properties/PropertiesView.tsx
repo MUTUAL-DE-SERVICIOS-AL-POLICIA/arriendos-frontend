@@ -1,6 +1,6 @@
 import { ComponentButton } from '@/components';
 import { Add } from '@mui/icons-material';
-import { Stack, SvgIcon, Typography, Box } from '@mui/material';
+import { Stack, SvgIcon, Box } from '@mui/material';
 import { useCallback, useState } from 'react';
 import { CreatePropertie, PropertieTable } from '.';
 import { PropertieModel } from '@/models';

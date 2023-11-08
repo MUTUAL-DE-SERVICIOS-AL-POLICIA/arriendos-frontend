@@ -5,7 +5,7 @@ import { Box, Stack } from "@mui/system"
 import { useEffect, useState } from "react"
 import { FormPayments, Reason } from "."
 import { useExtraHourStore, useForm, usePaymentsStore, useWarrantyStore } from "@/hooks"
-import { EventsCalendarModel, ProductRentalModel, RentalModel } from "@/models";
+import { EventsCalendarModel, RentalModel } from "@/models";
 import { FormWarrantyValidation, WarrantyModel } from "@/models/paymentModel"
 interface Props {
   selectedEvent: EventsCalendarModel;
@@ -29,7 +29,9 @@ export const Rented = (props: Props) => {
   const { warrantys = [], getListWarranty } = useWarrantyStore()
   const [mountPayment, setMountPayment] = useState(0);
   const [mountExtraHour, setMountExtraHour] = useState(0);
+  // @ts-expect-error
   const [ mountWarranty, setMountWarranty ] = useState(0)
+  // @ts-expect-error
   const [eventSelect, setEventSelect] = useState<any>('');
   const properties = (index: number) => {
     return {
@@ -56,6 +58,7 @@ export const Rented = (props: Props) => {
   const formValidation: FormWarrantyValidation = {
     amountWarranty: [(value: number) => value > 0 && value <= parseFloat(`${amountWarranty}`), `Debe ingresar el monto de la garantía`],
   }
+  // @ts-expect-error
   const { amountWarranty, onInputChange, amountWarrantyValid } = useForm(formField, formValidation)
 
   const handleModal = (value: boolean, reason?: Reason) => {
@@ -80,6 +83,7 @@ export const Rented = (props: Props) => {
     setModal(value);
   };
 
+  // @ts-expect-error
   const handleEvent = async (value: any) => {
     setMountExtraHour(0);
     console.log(value)
