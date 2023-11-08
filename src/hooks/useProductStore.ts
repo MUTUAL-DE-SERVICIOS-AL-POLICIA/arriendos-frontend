@@ -86,12 +86,15 @@ export const useProductStore = () => {
         try {
             console.log('OBTENIENDO PRODUCTOS FILTRADOS')
             console.log(body)
-            const { data } = await api.post('/product/Posible_product/', body)
+            const { data } = await api.post('/product/posible_product/', body)
             console.log(data)
             dispatch(setLeakedProducts({ products: [...data.products.filter((e: ProductModel) => e.day.includes(days.days[day.getDay()]))] }));
         } catch (error: any) {
-            console.log(error)
-            Swal.fire('Oops ocurrio algo', error.response, 'error')
+            if (error.response && error.response.status == 400) {
+                const message = error.response.data.error
+                Swal.fire('Error', message, 'error')
+            }
+            throw new Error('Ocurrió algun error en el backend')
         }
     }
 
