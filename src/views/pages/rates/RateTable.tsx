@@ -34,6 +34,7 @@ export const RateTable = (props: tableProps) => {
     <Stack sx={{ paddingRight: '10px' }}>
       <ComponentSearch
         title="Buscar Tarifa"
+        onSearch={() => { }}
       />
       <TableContainer>
         <Table sx={{ minWidth: 350 }} size="small">

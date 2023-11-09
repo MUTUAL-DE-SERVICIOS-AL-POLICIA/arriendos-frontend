@@ -3,10 +3,12 @@ import { ComponentInput } from "."
 
 interface searchProps {
     title: string;
+    onSearch: (value: string) => void;
 }
 export const ComponentSearch = (props: searchProps) => {
     const {
         title,
+        onSearch,
     } = props;
     /*BUSCADOR */
     const [query, setQuery] = useState<string>('');
@@ -23,6 +25,7 @@ export const ComponentSearch = (props: searchProps) => {
         const newTypingTimeout = setTimeout(() => {
             // Aquí podrías llamar a tu función de búsqueda con el valor actual de 'query'
             console.log('Realizar búsqueda con:', inputQuery);
+            onSearch(inputQuery);
         }, 1500);
 
         setTypingTimeout(newTypingTimeout);

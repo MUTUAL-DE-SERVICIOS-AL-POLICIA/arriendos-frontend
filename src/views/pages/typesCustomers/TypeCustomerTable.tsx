@@ -39,6 +39,7 @@ export const TypeCustomerTable = (props: tableProps) => {
     <Stack sx={{ paddingRight: '10px' }}>
       <ComponentSearch
         title="Buscar Tipo de cliente"
+        onSearch={() => { }}
       />
       <TableContainer>
         <Table sx={{ minWidth: 350 }} size="small">
