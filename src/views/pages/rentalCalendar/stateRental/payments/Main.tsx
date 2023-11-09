@@ -5,11 +5,10 @@ import { Box, Stack } from "@mui/system"
 import { useEffect, useState } from "react"
 import { FormPayments, Reason } from "."
 import { useExtraHourStore, useForm, usePaymentsStore, useWarrantyStore } from "@/hooks"
-import { EventsCalendarModel, RentalModel } from "@/models";
+import { EventsCalendarModel } from "@/models";
 import { FormWarrantyValidation, WarrantyModel } from "@/models/paymentModel"
 interface Props {
   selectedEvent: EventsCalendarModel;
-  rental: RentalModel;
 }
 
 const formField: WarrantyModel = {
@@ -20,7 +19,6 @@ export const Rented = (props: Props) => {
 
   const {
     selectedEvent,
-    rental,
   } = props
 
   const [tabValueRegister, setTabValueRegister] = useState(0)
@@ -30,7 +28,7 @@ export const Rented = (props: Props) => {
   const [mountPayment, setMountPayment] = useState(0);
   const [mountExtraHour, setMountExtraHour] = useState(0);
   // @ts-expect-error
-  const [ mountWarranty, setMountWarranty ] = useState(0)
+  const [mountWarranty, setMountWarranty] = useState(0)
   // @ts-expect-error
   const [eventSelect, setEventSelect] = useState<any>('');
   const properties = (index: number) => {
@@ -179,6 +177,7 @@ export const Rented = (props: Props) => {
                   height="35px"
                   width="30%"
                   margin="1px"
+                  disable={warrantys.length == 0}
                 />
                 <ComponentButton
                   text={`Registro de garantia`}
@@ -189,10 +188,10 @@ export const Rented = (props: Props) => {
                 />
               </Stack>
             </Stack>
-            <ComponentTableContent
-              headers={['N° comprobante', 'Entrada', 'Descuento', 'Devuelto', 'Balance', 'Detalle', 'Acción']}
+            {warrantys.length != 0 && <ComponentTableContent
+              headers={['N°', 'Tipo', 'N° comprobante', 'Entrada', 'Descuento', 'Devuelto', 'Saldo', 'Detalle', 'Acción']}
               data={warrantys}
-            />
+            />}
           </>
         }
         {
@@ -227,7 +226,6 @@ export const Rented = (props: Props) => {
           handleClose={() => handleModal(false)}
           tabReason={tabSelect}
           selectedEvent={selectedEvent}
-          rental={rental!}
         />
       }
     </>

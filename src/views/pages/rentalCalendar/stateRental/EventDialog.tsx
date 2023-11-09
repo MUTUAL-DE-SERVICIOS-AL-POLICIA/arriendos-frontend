@@ -5,7 +5,7 @@ import { ArrowCircleRight, Cancel, Close } from "@mui/icons-material"
 import { useLeasesStates } from "@/hooks/useLeasesStates"
 import { useRentalStore } from "@/hooks"
 import Swal from "sweetalert2"
-import { EventsCalendarModel, RentalModel } from "@/models"
+import { EventsCalendarModel } from "@/models"
 import { InfoRental } from "./InfoRental"
 import { Reserver } from "./reserve/Main"
 import { Rented } from "./payments/Main"
@@ -27,33 +27,21 @@ export const EventDialog = (props: elementsProps) => {
     selectedEvent,
     date,
   } = props
-  //INFORMACIÓN DEL ALQUILER
-  const [rental, setRental] = useState<RentalModel>();
-  const { getRental, postSendRequirements } = useRentalStore();
 
-  const [activeStep, setActiveStep] = useState(0)
-  const [completed, setCompleted] = useState<{ [k: number]: boolean }>({})
-  const [currentState, setCurrentState] = useState<any>(null)
-  const { leaseStates, getLeaseState, getCurrentLeaseState, postChangeRentalState } = useLeasesStates();
-  const [stopAction, setStopAction] = useState<any>(null)
-  const [nextAction, setNextAction] = useState<any>(null)
+  //INFORMACIÓN DEL ALQUILER
+  const { postSendRequirements } = useRentalStore();
+
+
+  const { states, rentalInformation, currentRentalState, getLeaseState, getRental, getCurrentLeaseState, postChangeRentalState } = useLeasesStates();
 
   const [checked, setChecked] = useState<Array<any>>([])
   const [checkedOptional, setCheckedOptional] = useState<Array<any>>([])
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    (async () => {
-      const rental = await getRental(selectedEvent.rental);
-      setRental(rental)
-      getLeaseState()
-      const res = await getCurrentLeaseState(selectedEvent.rental)
-      stepsExecuted(res.current_state.id + 1) // pintar pasos ejecutados
-      setActiveStep(res.current_state.id + 1) // activar paso
-      setCurrentState(res) // panel
-      getStoppedAction(res.next_states)
-      getNextAction(res.next_states)
-    })();
+    getRental(selectedEvent.rental);
+    getLeaseState()
+    getCurrentLeaseState(selectedEvent.rental)
   }, [])
 
 
@@ -64,7 +52,7 @@ export const EventDialog = (props: elementsProps) => {
 
   const handleNext = async () => {
     setLoading(true)
-    if (activeStep == 2) {
+    if (currentRentalState.current_state.id == 1) {
       const aux = checked.concat(checkedOptional)
       const requirementsSelected = aux.reduce((result: any, e: any) => {
         if (e.state) result.push(e.id)
@@ -74,117 +62,38 @@ export const EventDialog = (props: elementsProps) => {
         rental: selectedEvent.rental,
         list_requirements: requirementsSelected
       }
-      if(requirementsSelected.length != 0) {
+      if (requirementsSelected.length != 0) {
         const success = await postSendRequirements(requirementsToSend)
         if (success) {
           nextStep()
         }
       } else Swal.fire('Error', 'No existen requisitos entregados', 'error')
-    } else if (activeStep == 3) {
+    } else if (currentRentalState.current_state.id == 2) {
       nextStep()
-    } else if (activeStep == 4) {
+    } else if (currentRentalState.current_state.id == 3) {
       nextStep()
-      handleComplete()
       handleClose()
     }
     setLoading(false)
   }
 
   const nextStep = async () => {
+    let estadoSiguienteId = null;
+    let diferenciaMinima = Infinity;
+
+    currentRentalState.next_states.forEach((nextState: any) => {
+      const diferencia = Math.abs(currentRentalState.current_state.id - nextState.id);
+      if (diferencia < diferenciaMinima) {
+        diferenciaMinima = diferencia;
+        estadoSiguienteId = nextState.id;
+      }
+    });
     const changeRentalState = {
       rental: selectedEvent.rental,
-      state: nextAction
+      state: estadoSiguienteId
     }
-    const successChange = await postChangeRentalState(changeRentalState)
-    if (successChange) {
-      handleComplete()
-      const stepCurrent = await getCurrentLeaseState(selectedEvent.rental)
-      setCurrentState(stepCurrent)
-      setActiveStep(stepCurrent.current_state.id + 1)
-      console.log("entra aca")
-      getStoppedAction(stepCurrent.next_states)
-      getNextAction(stepCurrent.next_states)
-    }
+    await postChangeRentalState(changeRentalState)
   }
-
-  const stepsExecuted = (currentStep: number) => {
-    const startPosition = currentStep - 1
-    const newCompleted = completed
-    for (let i = startPosition - 1; i >= 0; i--) {
-      newCompleted[i] = true
-    }
-    setCompleted(newCompleted)
-  }
-
-  const handleComplete = () => {
-    const newCompleted = completed
-    newCompleted[currentState.current_state.id] = true
-    setCompleted(newCompleted)
-  }
-
-  const getStoppedAction = (nextStates: Array<object>) => {
-    if (nextStates.length !== 0) {
-      const foundItem: any = nextStates.filter((elem: any) => elem.name.toLowerCase() == 'anulado' || elem.name.toLowerCase() == 'cancelado')
-      console.log("acción de parar")
-      console.log(foundItem)
-      if (foundItem.length !== 0) {
-        if (foundItem[0].name.toLowerCase() === 'anulado') {
-          foundItem[0].name = 'ANULAR'
-        } else foundItem[0].name = 'CANCELAR'
-        setStopAction(foundItem[0])
-      }
-    }
-  }
-
-  const getNextAction = (nextStates: Array<object>) => {
-    if (nextStates.length !== 0) {
-      const foundItem: any = nextStates.filter((elem: any) => (elem.name.toLowerCase() !== 'anular' && elem.name.toLowerCase() !== 'anulado') && (elem.name.toLowerCase() !== 'cancelar' && elem.name.toLowerCase() !== 'cancelado'))
-      // console.log("acción de siguiente")
-      // console.log(foundItem)
-      if (foundItem.length !== 0) {
-        setNextAction(foundItem[0].id)
-      }
-    }
-  }
-
-  const stoppedAction = async () => {
-    Swal.fire({
-      title: '¿Está seguro de esta acción?',
-      text: `Esta acción no es reversible`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: '¡Sí, estoy seguro!',
-      cancelButtonText: 'Cancelar'
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          const changeRentalState = {
-            rental: selectedEvent.rental,
-            state: stopAction.id
-          }
-          console.log(selectedEvent.rental)
-          console.log(stopAction.id)
-          const successChange = await postChangeRentalState(changeRentalState)
-          if (successChange) {
-            Swal.fire(
-              `¡Listo!`,
-              'Acción realizada con exito',
-              'success'
-            )
-            handleClose()
-          }
-        } catch (error: any) {
-          throw Swal.fire('Oops ocurrio algo', error.response.data.detail, 'error');
-        }
-      }
-    })
-  }
-
-
-
-
 
   return (
     <>
@@ -194,6 +103,7 @@ export const EventDialog = (props: elementsProps) => {
         fullWidth={true}
         onClose={handleClose}
         sx={{ zIndex: 9998 }}
+        disableEnforceFocus
       >
         <Box sx={{ width: '95%', padding: '0px 20px', marginBottom: '0px', backgroundColor: '#f7f4f4', zIndex: 'tooltip' }}>
           <DialogTitle sx={{ marginBottom: '0px' }}>Estado del alquiler</DialogTitle>
@@ -209,16 +119,17 @@ export const EventDialog = (props: elementsProps) => {
           >
             <Close />
           </IconButton>
-          {rental && <InfoRental
-            selectedEvent={selectedEvent}
-            date={date}
-            productId={selectedEvent.product_id}
-            rental={rental}
-          />}
-          <Card sx={{ margin: '20px 0px', padding: '10px 10px 0px 10px', borderRadius: '10px' }} variant="outlined">
-            <Stepper nonLinear activeStep={currentState ? currentState.current_state.id : 0}>
-              {leaseStates.map((step: any, index: number) => (
-                <Step key={step.id} completed={completed[index]}>
+          {
+            rentalInformation && <InfoRental
+              selectedEvent={selectedEvent}
+              date={date}
+              productId={selectedEvent.product_id}
+            />
+          }
+          {currentRentalState && <Card sx={{ margin: '20px 0px', padding: '10px 10px 0px 10px', borderRadius: '10px' }} variant="outlined">
+            <Stepper nonLinear activeStep={currentRentalState.current_state.id} >
+              {states.map((step: any) => (
+                <Step key={step.id} completed={step.id - 1 < currentRentalState.current_state.id}>
                   <StepButton color="inherit">
                     {step.name}
                   </StepButton>
@@ -226,59 +137,43 @@ export const EventDialog = (props: elementsProps) => {
               ))}
             </Stepper>
             <Divider style={{ height: '1px', width: '95%', marginLeft: '20px', backgroundColor: 'green', marginTop: '10px', borderRadius: '10px' }} />
-            {
-              currentState &&
-              <>
-                {
-                  activeStep == 2 &&
-                  <Reserver
-                    rentalId={selectedEvent.rental}
-                    checkeds={mergeRequirements}
-                  />
-                }
-                {
-                  activeStep == 3 && rental &&
-                  <Rented
-                    selectedEvent={selectedEvent}
-                    rental={rental!}
-                  />
-                }
-                {
-                  activeStep == 4 &&
-                  <Concluded
-                    rental={selectedEvent.rental}
-                  />
-                }
-              </>
-            }
-            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2, pb: 1 }}>
-              <Box sx={{ flex: '1 1 auto' }} />
-              {currentState &&
-                currentState.next_states.length != 0 &&
-                activeStep < leaseStates.length &&
-                <ComponentButton
-                  text={stopAction !== null ? stopAction.name : ''}
-                  onClick={stoppedAction}
-                  variant={'outlined'}
-                  endIcon={<Cancel />}
-                  sx={{ mr: 1, color: 'red', borderColor: 'red', '&:hover': { backgroundColor: '#fadad9', borderColor: 'red' } }}
+            <>
+              {
+                currentRentalState.current_state.id == 1 &&
+                <Reserver
+                  rentalId={selectedEvent.rental}
+                  checkeds={mergeRequirements}
                 />
               }
               {
-                activeStep <= leaseStates.length &&
+                currentRentalState.current_state.id == 2 &&
+                <Rented
+                  selectedEvent={selectedEvent}
+                />
+              }
+              {
+                currentRentalState.current_state.id == 3 &&
+                <Concluded
+                  rental={selectedEvent.rental}
+                />
+              }
+            </>
+            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2, pb: 1 }}>
+              <Box sx={{ flex: '1 1 auto' }} />
+              {
+                (currentRentalState.current_state.id + 1) <= states.length &&
                 <ComponentButton
-                  text={activeStep == leaseStates.length ? 'Finalizar' : 'Siguiente'}
+                  text={(currentRentalState.current_state.id + 1) == states.length ? 'Finalizar' : 'Siguiente'}
                   onClick={handleNext}
                   loading={loading}
                   variant={'outlined'}
-                  endIcon={activeStep == leaseStates.length ? <Cancel /> : <ArrowCircleRight />}
+                  endIcon={(currentRentalState.current_state.id + 1) == states.length ? <Cancel /> : <ArrowCircleRight />}
                 />
               }
             </Box>
-          </Card>
+          </Card>}
         </Box>
-      </Dialog>
-
+      </Dialog >
     </>
   )
 }

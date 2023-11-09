@@ -1,7 +1,7 @@
 import { Drawer, Stack } from "@mui/material"
 import { ComponentDamage, ComponentExtraHour, ComponentPayment } from ".";
-import { useDamageStore, useExtraHourStore, usePaymentsStore, useWarrantyStore } from "@/hooks";
-import { EventsCalendarModel, ProductRentalModel, RentalModel } from "@/models";
+import { useDamageStore, useExtraHourStore, useLeasesStates, usePaymentsStore, useWarrantyStore } from "@/hooks";
+import { EventsCalendarModel, ProductRentalModel } from "@/models";
 
 export enum Reason {
   payment = 'payment',
@@ -13,7 +13,6 @@ export enum Reason {
 interface elementsProps {
   amountTotal: number;
   selectedEvent: EventsCalendarModel;
-  rental: RentalModel;
   open: boolean;
   handleClose: () => void;
   tabReason: Reason
@@ -24,7 +23,6 @@ export const FormPayments = (props: elementsProps) => {
   const {
     amountTotal,
     selectedEvent,
-    rental,
     open,
     handleClose,
     tabReason,
@@ -36,6 +34,8 @@ export const FormPayments = (props: elementsProps) => {
   const { postRegisterDiscountWarranty } = useDamageStore();
 
   const { postRegisterExtraHour } = useExtraHourStore();
+
+  const { rentalInformation } = useLeasesStates();
 
   const registerPayment = async (data: any) => {
     const body = {
@@ -72,7 +72,7 @@ export const FormPayments = (props: elementsProps) => {
       rental: selectedEvent.rental,
       detail: data.detail,
       discount: parseFloat(data.discount),
-      product: rental.products.filter((product: ProductRentalModel) => product.id == selectedEvent.product_id)[0].id
+      product: rentalInformation.products.filter((product: ProductRentalModel) => product.id == selectedEvent.product_id)[0].id
     }
     await postRegisterDiscountWarranty(body)
     await getListWarranty(selectedEvent.rental)
@@ -100,7 +100,7 @@ export const FormPayments = (props: elementsProps) => {
             handleClose={handleClose}
             sendData={(data) => registerPayment(data)}
             amountRecomend={amountTotal}
-            disalbleMount={rental.products.length == 1}
+            disalbleMount={rentalInformation.products.length == 1}
           />
         }
         {
@@ -114,7 +114,7 @@ export const FormPayments = (props: elementsProps) => {
         {
           tabReason == Reason.extraHour &&
           <ComponentExtraHour
-            rental={rental}
+            rental={rentalInformation}
             handleClose={handleClose}
             amountRecomend={amountTotal}
             sendData={(data) => registerExtraHour(data)}
@@ -123,7 +123,7 @@ export const FormPayments = (props: elementsProps) => {
         {
           tabReason == Reason.damage &&
           <ComponentDamage
-            rental={rental}
+            rental={rentalInformation}
             handleClose={handleClose}
             sendData={(data) => registerDamage(data)}
           />
