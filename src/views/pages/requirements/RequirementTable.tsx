@@ -39,6 +39,7 @@ export const RequirementTable = (props: tableProps) => {
     <Stack sx={{ paddingRight: '10px' }}>
       <ComponentSearch
         title="Buscar Requisito"
+        onSearch={() => { }}
       />
       <TableContainer>
         <Table sx={{ minWidth: 350 }} size="small">

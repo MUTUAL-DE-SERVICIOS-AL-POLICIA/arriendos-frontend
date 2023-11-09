@@ -31,15 +31,20 @@ export const CustomerTable = (props: tableProps) => {
   const [limit, setLimit] = useState(limitInit)
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-  useEffect(() => {//escucha si "page", "limit" o "flag" se modifico
-    getCustomers({ page, limit }).then((total) => setTotal(total))
+  useEffect(() => {//escucha si "page", "limit" o "flag" se modifico    213213
+    getCustomers(page, limit, '').then((total) => setTotal(total))
   }, [page, limit, flag]);
 
-
+  const handleSearch = async (search: string) => {
+    await setPage(0);
+    await setLimit(limitInit);
+    getCustomers(0, limitInit, search).then((total) => setTotal(total))
+  }
   return (
     <Stack sx={{ paddingRight: '10px' }}>
       <ComponentSearch
         title="Buscar Cliente"
+        onSearch={handleSearch}
       />
       <TableContainer>
         <Table sx={{ minWidth: 350 }} size="small">
@@ -55,10 +60,10 @@ export const CustomerTable = (props: tableProps) => {
           </TableHead>
           <TableBody>
             {
-              customers.map((customer: CustomerModel) => {
+              customers.map((customer: CustomerModel, index: number) => {
                 const isSelected = items?.includes(customer.id);
                 return (
-                  <React.Fragment key={customer.id} >
+                  <React.Fragment key={index} >
                     <TableRow>
                       {
                         stateSelect && <TableCell padding="checkbox">

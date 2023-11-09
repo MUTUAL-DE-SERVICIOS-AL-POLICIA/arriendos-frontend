@@ -11,9 +11,16 @@ export const useCustomerStore = () => {
     const { customers, flag } = useSelector((state: any) => state.customers);
     const dispatch = useDispatch();
 
-    const getCustomers = async ({ page, limit }: { page: number, limit: number }) => {
+    const getCustomers = async (page: number, limit: number, search: string) => {
         console.log('OBTENIENDO TODOS LOS CLIENTES')
-        const { data } = await api.get(`/customers/?page=${page}&limit=${limit}`);
+        const params: Record<string, number | string> = {
+            page: page,
+            limit: limit,
+        };
+        if (search !== '') params.search = search;
+        const { data } = await api.get(`/customers/`, {
+            params: params,
+        });
         console.log(data)
         dispatch(setCustomers({ customers: data.customers }));
         return data.total

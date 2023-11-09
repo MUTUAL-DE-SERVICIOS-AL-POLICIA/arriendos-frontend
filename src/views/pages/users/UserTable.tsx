@@ -28,6 +28,7 @@ export const UserTable = (props: tableProps) => {
     <>
       <ComponentSearch
         title="Buscar Usuario"
+        onSearch={() => { }}
       />
       <Stack sx={{ paddingRight: '10px' }}>
         <TableContainer>

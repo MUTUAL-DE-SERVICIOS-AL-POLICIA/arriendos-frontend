@@ -32,6 +32,7 @@ export const ProductTable = (props: tableProps) => {
     <Stack>
       <ComponentSearch
         title="Buscar Producto"
+        onSearch={() => { }}
       />
       <TableContainer>
         <Table sx={{ minWidth: 350 }} size="small">
