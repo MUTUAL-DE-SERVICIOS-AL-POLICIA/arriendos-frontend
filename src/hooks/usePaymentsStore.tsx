@@ -35,8 +35,10 @@ export const usePaymentsStore = () => {
       if (error.response && error.response.status == 400) {
         const message = error.response.data.error
         Swal.fire('Error', message, 'error')
-      }
-      throw new Error("Ocurrió algun error en el backend")
+      } else if (error.response && error.response.status == 403) {
+        const message = error.response.data.detail
+        Swal.fire('Acceso denegado', message, 'warning')
+      } else throw new Error('Ocurrió algun error en el backend')
     }
   }
 
@@ -50,8 +52,10 @@ export const usePaymentsStore = () => {
       if (error.response && error.response.status == 400) {
         const message = error.response.data.error
         Swal.fire('Error', message, 'error')
-      }
-      throw new Error("Ocurrió algun error en el backend")
+      } else if (error.response && error.response.status == 403) {
+        const message = error.response.data.detail
+        Swal.fire('Acceso denegado', message, 'warning')
+      } else throw new Error('Ocurrió algun error en el backend')
     }
   }
 
@@ -77,8 +81,10 @@ export const usePaymentsStore = () => {
           if (error.response && error.response.status == 400) {
             const message = error.response.data.error
             Swal.fire('Error', message, 'error')
-          }
-          throw new Error('Ocurrió algun error en el backend')
+          } else if (error.response && error.response.status == 403) {
+            const message = error.response.data.detail
+            Swal.fire('Acceso denegado', message, 'warning')
+          } else throw new Error('Ocurrió algun error en el backend')
         }
       }
     })

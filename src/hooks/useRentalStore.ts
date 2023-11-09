@@ -35,11 +35,13 @@ export const useRentalStore = () => {
       console.log(events)
       dispatch(setRentals({ rentals: events }));
     } catch (error: any) {
-      if (error.message && error.response.status == 400) {
+      if (error.response && error.response.status == 400) {
         const message = error.response.data.error
         Swal.fire('Error', message, 'error')
-      }
-      throw new Error('Ocurrió algun error en el backend')
+      } else if(error.response && error.response.status == 403) {
+        const message = error.response.data.detail
+        Swal.fire('Acceso denegado', message, 'warning')
+      } else throw new Error('Ocurrió algun error en el backend')
     }
   }
 
@@ -63,11 +65,13 @@ export const useRentalStore = () => {
           setShoppingCart([])
           onClose()
         } catch (error: any) {
-          if (error.message && error.response.status == 400) {
+          if (error.response && error.response.status == 400) {
             const message = error.response.data.error
             Swal.fire('Error', message, 'error')
-          }
-          throw new Error('Ocurrió algun error en el backend')
+          } else if(error.response && error.response.status == 403) {
+            const message = error.response.data.detail
+            Swal.fire('Acceso denegado', message, 'warning')
+          } else throw new Error('Ocurrió algun error en el backend')
         }
       }
     })
@@ -83,11 +87,13 @@ export const useRentalStore = () => {
       console.log(data.data)
       return data.data
     } catch (error: any) {
-      if (error.message && error.response.status == 400) {
+      if (error.response && error.response.status == 400) {
         const message = error.response.data.error
         Swal.fire('Error', message, 'error')
-      }
-      throw new Error('Ocurrió algun error en el backend')
+      } else if(error.response && error.response.status == 403) {
+        const message = error.response.data.detail
+        Swal.fire('Acceso denegado', message, 'warning')
+      } else throw new Error('Ocurrió algun error en el backend')
     }
   }
 
@@ -117,6 +123,9 @@ export const useRentalStore = () => {
       } else if (error.message && error.response.status == 400) {
         const message = error.response.data.error
         Swal.fire('Error', message, 'error')
+      } else if (error.response.status == 400) {
+        const message = error.response.data.detail
+        Swal.fire('Acceso denegado', message, 'warning')
       } else throw new Error('Ocurrió algun error en el backend')
     }
   }
@@ -131,8 +140,10 @@ export const useRentalStore = () => {
       if (error.response && error.response.status == 400) {
         const message = error.response.data.error
         Swal.fire('Error', message, 'error')
-      }
-      throw new Error('Ocurrió algun error en el backend')
+      } else if(error.response && error.response.status == 403) {
+        const message = error.response.data.detail
+        Swal.fire('Acceso denegado', message, 'warning')
+      } else throw new Error('Ocurrió algun error en el backend')
     }
   }
 
@@ -166,6 +177,9 @@ export const useRentalStore = () => {
       } else if (error.message && error.response.status == 400) {
         const message = error.response.data.error
         Swal.fire('Error', message, 'error')
+      } else if (error.response.status == 403) {
+        const message = error.response.data.detail
+        Swal.fire('Acceso denegado', message, 'warning')
       } else throw new Error('Ocurrió algun error en el backend')
     }
   }
@@ -197,6 +211,9 @@ export const useRentalStore = () => {
       } else if (error.message && error.response.status == 400) {
         const message = error.response.data.error
         Swal.fire('Error', message, 'error')
+      } else if (error.response.status == 403) {
+        const message = error.response.data.detail
+        Swal.fire('Acceso denegado', message, 'warning')
       } else throw new Error('Ocurrió algun error en el backend')
     }
   }
@@ -231,6 +248,9 @@ export const useRentalStore = () => {
       } else if (error.message && error.response.status == 400) {
         const message = error.response.data.error
         Swal.fire('Error', message, 'error')
+      } else if (error.response.status == 403) {
+        const message = error.response.data.detail
+        Swal.fire('Acceso denegado', message, 'warning')
       } else throw new Error('Ocurrió algun error en el backend')
     }
   }

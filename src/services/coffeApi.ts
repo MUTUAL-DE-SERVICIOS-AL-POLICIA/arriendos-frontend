@@ -5,8 +5,12 @@ const { VITE_HOST_LEANDRO, VITE_HOST_KEVIN } = getEnvVariables();
 
 // Creamos una función que devuelve la instancia de axios con el host deseado
 const createAxiosInstance = (baseURL: string) => {
+    const token = localStorage.getItem('token')
     const instance = axios.create({
-        baseURL: `${baseURL}api`
+        baseURL: `${baseURL}api`,
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
     });
 
     instance.interceptors.request.use((request) => {
