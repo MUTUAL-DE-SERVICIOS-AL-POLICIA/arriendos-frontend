@@ -43,16 +43,6 @@ export const useRentalStore = () => {
     }
   }
 
-  const getRental = async (rentalId: number) => {
-    // console.log("OBTENIENDO LA INFORMACIÓN DE UN ALQUILER")
-    const { data } = await api.get(`/leases/get_rental_information/`, {
-      params: {
-        rental: rentalId
-      }
-    });
-    // console.log(data)
-    return data;
-  }
   const postCreateRental = async (body: object, setShoppingCart: Function, onClose: Function) => {
     Swal.fire({
       title: '¿Estás seguro?',
@@ -120,7 +110,7 @@ export const useRentalStore = () => {
       printJS(pdfURL)
       return true
     } catch (error: any) {
-      if(error.response.data instanceof ArrayBuffer) {
+      if (error.response.data instanceof ArrayBuffer) {
         const errorMessage = new TextDecoder('utf-8').decode(error.response.data)
         const message = JSON.parse(errorMessage).error
         Swal.fire('Error', message, 'error')
@@ -169,7 +159,7 @@ export const useRentalStore = () => {
       printJS(pdfURL)
       return true
     } catch (error: any) {
-      if(error.response.data instanceof ArrayBuffer) {
+      if (error.response.data instanceof ArrayBuffer) {
         const errorMessage = new TextDecoder('utf-8').decode(error.response.data)
         const message = JSON.parse(errorMessage).error
         Swal.fire('Error', message, 'error')
@@ -200,7 +190,7 @@ export const useRentalStore = () => {
       printJS(pdfURL)
       return true
     } catch (error: any) {
-      if(error.response.data instanceof ArrayBuffer) {
+      if (error.response.data instanceof ArrayBuffer) {
         const errorMessage = new TextDecoder('utf-8').decode(error.response.data)
         const message = JSON.parse(errorMessage).error
         Swal.fire('Error', message, 'error')
@@ -234,7 +224,7 @@ export const useRentalStore = () => {
       printJS(pdfURL)
       return true
     } catch (error: any) {
-      if(error.response.data instanceof ArrayBuffer) {
+      if (error.response.data instanceof ArrayBuffer) {
         const errorMessage = new TextDecoder('utf-8').decode(error.response.data)
         const message = JSON.parse(errorMessage).error
         Swal.fire('Error', message, 'error')
@@ -253,7 +243,6 @@ export const useRentalStore = () => {
     getRentalRequirements,
     postSendRequirements,
     postWarrantyReturn,
-    getRental,
     postCreateRental,
     getPrintWarrantyReturn,
     postPrintDeliveryForm,

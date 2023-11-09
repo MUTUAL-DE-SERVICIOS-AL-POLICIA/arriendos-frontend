@@ -51,9 +51,14 @@ export const ComponentDate = (props: dateProps) => {
                 shouldDisableDate={(dateParam) => {
                   return dateParam.toDate().getDay() !== date.getDay();
                 }}
+                shouldDisableYear={(dateParam) => {
+                  return dateParam.toDate().getFullYear() !== date.getFullYear();
+                }}
                 slotProps={{
-                  inputAdornment: {
-                    position: "start",
+                  popper: {
+                    sx: {
+                      zIndex: 9999
+                    }
                   },
                 }}
                 sx={{
@@ -93,7 +98,7 @@ export const ComponentDate = (props: dateProps) => {
           <ComponentButton
             text={`Cambiar fecha`}
             onClick={() => setNewDate(date)}
-            sx={{height: "35px", width: "90%", margin: "7px 10px"}}
+            sx={{ height: "35px", width: "90%", margin: "7px 10px" }}
             startIcon={<EditCalendar />}
           />
       }

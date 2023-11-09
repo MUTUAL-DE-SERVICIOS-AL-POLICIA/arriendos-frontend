@@ -8,7 +8,7 @@ import { DeleteForever } from "@mui/icons-material";
 const api = coffeApiKevin;
 export const useWarrantyStore = () => {
 
-  const { warrantys } = useSelector((state:any) => state.warrantys)
+  const { warrantys } = useSelector((state: any) => state.warrantys)
   const dispatch = useDispatch();
   const postRegisterWarranty = async (body: object) => {
     try {
@@ -34,6 +34,8 @@ export const useWarrantyStore = () => {
         }
       });
       const warrantys = [...data.map((e: any, index: number) => ({
+        id: e.correlative,
+        type: e.type,
         voucher: e.voucher,
         income: e.income,
         discount: e.discount,
@@ -44,7 +46,7 @@ export const useWarrantyStore = () => {
           <DeleteForever
             onClick={() => deleteLastRegisteredWarranty(rental)}
             color="error"
-            sx={{ cursor: 'pointer'}}
+            sx={{ cursor: 'pointer' }}
           /> : ''
       }))];
       console.log(warrantys)
