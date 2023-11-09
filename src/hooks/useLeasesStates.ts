@@ -10,22 +10,42 @@ export const useLeasesStates = () => {
   const dispatch = useDispatch()
 
   const getLeaseState = async () => {
-    console.log('OBTENIENDO LA LISTA DE ESTADOS');
-    const { data } = await api.get(`/leases/list_state/`)
-    console.log(data)
-    dispatch(setStates({ states: data }))
+    try {
+      console.log('OBTENIENDO LA LISTA DE ESTADOS');
+      const { data } = await api.get(`/leases/list_state/`)
+      console.log(data)
+      dispatch(setStates({ states: data }))
+    } catch(error: any) {
+      if (error.response && error.response.status == 400) {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error')
+      } else if (error.response && error.response.status == 403) {
+        const message = error.response.data.detail
+        Swal.fire('Acceso denegado', message, 'warning')
+      } else throw new Error('Ocurrió algun error en el backend')
+    }
   }
 
   const getRental = async (rentalId: number) => {
-    dispatch(setRentalInformation({ rentalInformation: null }))
-    console.log("OBTENIENDO LA INFORMACIÓN DEL ALQUILER")
-    const { data } = await api.get(`/leases/get_rental_information/`, {
-      params: {
-        rental: rentalId
-      }
-    });
-    console.log(data)
-    dispatch(setRentalInformation({ rentalInformation: data }))
+    try {
+      dispatch(setRentalInformation({ rentalInformation: null }))
+      console.log("OBTENIENDO LA INFORMACIÓN DEL ALQUILER")
+      const { data } = await api.get(`/leases/get_rental_information/`, {
+        params: {
+          rental: rentalId
+        }
+      });
+      console.log(data)
+      dispatch(setRentalInformation({ rentalInformation: data }))
+    } catch(error: any) {
+      if (error.response && error.response.status == 400) {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error')
+      } else if (error.response && error.response.status == 403) {
+        const message = error.response.data.detail
+        Swal.fire('Acceso denegado', message, 'warning')
+      } else throw new Error('Ocurrió algun error en el backend')
+    }
   }
 
   const getCurrentLeaseState = async (rental: number) => {
@@ -43,8 +63,10 @@ export const useLeasesStates = () => {
       if (error.response && error.response.status == 400) {
         const message = error.response.data.error
         Swal.fire('Error', message, 'error')
-      }
-      throw new Error('Ocurrió algun error')
+      } else if (error.response && error.response.status == 403) {
+        const message = error.response.data.detail
+        Swal.fire('Acceso denegado', message, 'warning')
+      } else throw new Error('Ocurrió algun error en el backend')
     }
   }
   const postChangeRentalState = async (body: any) => {
@@ -55,11 +77,12 @@ export const useLeasesStates = () => {
       getCurrentLeaseState(body.rental)
     } catch (error: any) {
       if (error.response && error.response.status == 400) {
-        console.log(error.response)
         const message = error.response.data.error
         Swal.fire('Error', message, 'error')
-      }
-      throw new Error('Ocurrió algun error')
+      } else if (error.response && error.response.status == 403) {
+        const message = error.response.data.detail
+        Swal.fire('Acceso denegado', message, 'warning')
+      } else throw new Error('Ocurrió algun error en el backend')
     }
   }
 
@@ -74,8 +97,10 @@ export const useLeasesStates = () => {
       if (error.response && error.response.status == 400) {
         const message = error.response.data.error
         Swal.fire('Error', message, 'error')
-      }
-      throw new Error('Ocurrió algun error')
+      } else if (error.response && error.response.status == 403) {
+        const message = error.response.data.detail
+        Swal.fire('Acceso denegado', message, 'warning')
+      } else throw new Error('Ocurrió algun error en el backend')
     }
   }
 

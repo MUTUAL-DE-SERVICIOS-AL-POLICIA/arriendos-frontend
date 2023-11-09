@@ -14,7 +14,7 @@ export const useExtraHourStore = () => {
 
   const getRegisterExtraHours = async (rental: number) => {
     try {
-      console.log(`OBTENIENDO LA INFORMACIÓN DE LAS HORAS EXTRAS PAGADAS ${rental}`)
+      // console.log(`OBTENIENDO LA INFORMACIÓN DE LAS HORAS EXTRAS PAGADAS ${rental}`)
       const { data } = await api.get('/leases/list_additional_hour_applied/', {
         params: {
           rental: rental
@@ -34,40 +34,43 @@ export const useExtraHourStore = () => {
             sx={{ cursor: 'pointer' }}
           /> : ''
       }))];
-      console.log(extraHours)
+      // console.log(extraHours)
       dispatch(setExtraHours({ extraHours: extraHours }));
     } catch (error: any) {
       if (error.response && error.response.status == 400) {
         const message = error.response.data.error
         Swal.fire('Error', message, 'error')
-      }
-      throw new Error("Ocurrió algun error en el backend")
+      } else if (error.response && error.response.status == 403) {
+        const message = error.response.data.detail
+        Swal.fire('Acceso denegado', message, 'warning')
+      } else throw new Error('Ocurrió algun error en el backend')
     }
   }
   const getExtraHour = async (selectedProduct: number) => {
     try {
-      console.log(`OBTENIENDO EL MONTO A PAGAR ṔOR LA HORA EXTRA`);
+      // console.log(`OBTENIENDO EL MONTO A PAGAR ṔOR LA HORA EXTRA`);
       const { data } = await api.get('/product/get_price_additional_hour/', {
         params: {
           selected_product: selectedProduct
         }
       });
-      console.log(data)
+      // console.log(data)
       return data.price;
-
     } catch (error: any) {
-      if (error.message && error.response.status == 400) {
+      if (error.response && error.response.status == 400) {
         const message = error.response.data.error
         Swal.fire('Error', message, 'error')
-      }
-      throw new Error('Ocurrió algun error en el backend')
+      } else if (error.response && error.response.status == 403) {
+        const message = error.response.data.detail
+        Swal.fire('Acceso denegado', message, 'warning')
+      } else throw new Error('Ocurrió algun error en el backend')
     }
   }
 
   const postRegisterExtraHour = async (rental: number, body: any) => {
     try {
-      console.log(`REGISTRANDO UNA HORA EXTRA`);
-      console.log(body);
+      // console.log(`REGISTRANDO UNA HORA EXTRA`);
+      // console.log(body);
       const { data } = await api.post('/leases/register_additional_hour_applied/', body, {
         responseType: 'arraybuffer'
       });
@@ -86,6 +89,9 @@ export const useExtraHourStore = () => {
       } else if (error.message && error.response.status == 400) {
         const message = error.response.data.error
         Swal.fire('Error', message, 'error')
+      } else if(error.response.status == 403) {
+        const message = error.response.data.detail
+        Swal.fire('Acceso denegado', message, 'warning')
       } else throw new Error('Ocurrió algun error en el backend')
     }
   }
@@ -102,7 +108,7 @@ export const useExtraHourStore = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          console.log(selectedProduct, rental)
+          // consolelog(selectedProduct, rental)
           // return true
           const res = await api.delete(`/leases/register_additional_hour_applied/${selectedProduct}/`)
           if (res.status == 200) {
@@ -113,8 +119,10 @@ export const useExtraHourStore = () => {
           if (error.response && error.response.status == 400) {
             const message = error.response.data.error
             Swal.fire('Error', message, 'error')
-          }
-          throw new Error('Ocurrió algun error en el backend')
+          } else if (error.response && error.response.status == 403) {
+            const message = error.response.data.detail
+            Swal.fire('Acceso denegado', message, 'warning')
+          } else throw new Error('Ocurrió algun error en el backend')
         }
       }
     })
