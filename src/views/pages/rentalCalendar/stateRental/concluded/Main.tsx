@@ -25,6 +25,7 @@ export const Concluded = (props: Props) => {
   const [ disabled, setDisabled ] = useState(true)
   const [ loadingPrint, setLoadingPrint ] = useState(false)
   const [ loadingWarrantyReturn, setLoadingWarrantyReturn] = useState(false)
+  const [ loadingPrintReturn, setLoadingPrintReturn ] = useState(false)
 
   const warrantyReturn = async () => {
     setLoadingWarrantyReturn(true)
@@ -32,7 +33,6 @@ export const Concluded = (props: Props) => {
       rental: rental,
     }
     await postWarrantyReturn(body)
-    await getPrintReturnWarrantyForm(rental)
     setLoadingWarrantyReturn(false)
   }
 
@@ -44,6 +44,12 @@ export const Concluded = (props: Props) => {
       console.log(res)
     }
     setLoadingPrint(false)
+  }
+
+  const printWarrantyReturn = async () => {
+    setLoadingPrintReturn(true)
+    await getPrintReturnWarrantyForm(rental)
+    setLoadingPrintReturn(false)
   }
 
   return (
@@ -64,10 +70,23 @@ export const Concluded = (props: Props) => {
         <Grid item xs={12} sm={7}>
           <Typography>Imprimir conformidad:</Typography>
         </Grid>
+        <Grid item xs={12} sm={5} sx={{marginBottom: 2}}>
+          <ComponentButton
+            onClick={printWarrantyReturn}
+            text="IMPRIMIR"
+            startIcon={<Print/>}
+            disable={disabled}
+            loading={loadingPrintReturn}
+          />
+        </Grid>
+        <Divider style={dividerStyle}/>
+        <Grid item xs={12} sm={7}>
+          <Typography>Devolver garantía:</Typography>
+        </Grid>
         <Grid item xs={12} sm={5}>
           <ComponentButton
             onClick={warrantyReturn}
-            text="IMPRIMIR"
+            text="DEVOLVER"
             startIcon={<Print/>}
             disable={disabled}
             loading={loadingWarrantyReturn}
