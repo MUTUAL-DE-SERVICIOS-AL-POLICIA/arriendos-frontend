@@ -1,15 +1,25 @@
 # Arriendos - frontend
 
 Leasing system for the MUSERPOL
-This project uses React + vite with TypeScript language
+This project uses React + vite with TypeScript
 
-## Required
+## Required in local
 
 - Node v18.12.1
 
-## Steps
+## Steps with docker
 
-- 1st Create ".env" file for host backend
-- 2nd Change variables in development or production mode
-- 3rd Get the dependencies "yarn"
-- 4th Run "yarn dev"
+### Container construction
+
+- Build the image
+
+```sh
+docker build -t alquileres:v1 -
+```
+
+- Run the container
+
+```sh
+docker run -d -p 83:80 alquileres:v1
+```
+

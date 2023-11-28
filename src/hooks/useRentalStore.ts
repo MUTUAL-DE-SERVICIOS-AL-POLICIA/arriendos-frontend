@@ -1,11 +1,11 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { coffeApiKevin } from '@/services';
+import { coffeApi } from '@/services';
 import Swal from 'sweetalert2';
 import { setRentals } from '@/store';
 import printJS from 'print-js';
 import { formatDate } from '@/helpers';
 
-const api = coffeApiKevin;
+const api = coffeApi;
 
 export const useRentalStore = () => {
   const { rentals = [] } = useSelector((state: any) => state.rentals);

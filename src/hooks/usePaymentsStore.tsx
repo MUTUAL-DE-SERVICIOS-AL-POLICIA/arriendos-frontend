@@ -1,10 +1,10 @@
-import { coffeApiKevin } from "@/services";
+import { coffeApi } from "@/services";
 import { setPayments } from "@/store";
 import { DeleteForever } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 
-const api = coffeApiKevin;
+const api = coffeApi;
 
 export const usePaymentsStore = () => {
   const { payments = [], amountTotal } = useSelector((state: any) => state.payments);

@@ -1,9 +1,9 @@
 import { RateModel } from "@/models";
-import { coffeApiKevin } from "@/services";
+import { coffeApi } from "@/services";
 import { refreshRate, setRates } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
-const api = coffeApiKevin;
+const api = coffeApi;
 
 export const useRateStore = () => {
   const { rates, flag } = useSelector((state: any) => state.rates);

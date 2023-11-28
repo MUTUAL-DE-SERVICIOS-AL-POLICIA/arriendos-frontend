@@ -1,10 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { coffeApiKevin } from '@/services';
+import { coffeApi } from '@/services';
 import { refreshTypesCustomers, setTypesCustomers } from '@/store';
 import Swal from 'sweetalert2';
 import { TypeCustomerModel } from '@/models';
 
-const api = coffeApiKevin;
+const api = coffeApi;
 
 export const useTypeCustomerStore = () => {
   const { typesCustomers, flag } = useSelector((state: any) => state.typesCustomers);
