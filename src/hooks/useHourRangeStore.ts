@@ -1,10 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { coffeApiKevin } from '@/services';
+import { coffeApi } from '@/services';
 import { addHourRanges, removeHourRange, setHourRanges, updateHourRanges } from '@/store';
 import Swal from 'sweetalert2';
 import { HourRangeModel } from '@/models';
 
-const api = coffeApiKevin;
+const api = coffeApi;
 
 export const useHourRangeStore = () => {
   const { hourRanges } = useSelector((state: any) => state.hourRanges);

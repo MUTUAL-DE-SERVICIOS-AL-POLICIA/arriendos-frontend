@@ -1,10 +1,10 @@
-import { coffeApiKevin } from "@/services";
+import { coffeApi } from "@/services";
 import { useDispatch, useSelector } from "react-redux"
 import { setEvents } from '@/store';
 import Swal from "sweetalert2";
 
 
-const api = coffeApiKevin
+const api = coffeApi
 
 export const useEventStore = () => {
   const { events } = useSelector((state: any) => state.events);

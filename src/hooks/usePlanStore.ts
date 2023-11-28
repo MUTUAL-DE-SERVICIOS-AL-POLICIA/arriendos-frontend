@@ -1,8 +1,8 @@
-import { coffeApiKevin } from "@/services";
+import { coffeApi } from "@/services";
 import { setPlans } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
-const api = coffeApiKevin;
+const api = coffeApi;
 
 export const usePlanStore = () => {
   const { plans, flag } = useSelector((state: any) => state.plans);

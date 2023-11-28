@@ -1,11 +1,11 @@
-import { coffeApiKevin } from "@/services";
+import { coffeApi } from "@/services";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import { setWarrantys } from "@/store";
 import { DeleteForever } from "@mui/icons-material";
 
 
-const api = coffeApiKevin;
+const api = coffeApi;
 export const useWarrantyStore = () => {
 
   const { warrantys } = useSelector((state: any) => state.warrantys)

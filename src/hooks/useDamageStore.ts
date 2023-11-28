@@ -1,9 +1,9 @@
 
-import { coffeApiKevin } from '@/services';
+import { coffeApi } from '@/services';
 import printJS from 'print-js';
 import Swal from 'sweetalert2';
 
-const api = coffeApiKevin;
+const api = coffeApi;
 
 export const useDamageStore = () => {
   const postRegisterDiscountWarranty = async (body: object) => {

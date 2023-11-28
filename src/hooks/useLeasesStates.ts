@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from "react-redux"
-import { coffeApiKevin } from "@/services";
+import { coffeApi } from "@/services";
 import { setCurrentRentalState, setRentalInformation, setStates } from '@/store';
 import Swal from "sweetalert2";
 
-const api = coffeApiKevin;
+const api = coffeApi;
 
 export const useLeasesStates = () => {
   const { states, rentalInformation, currentRentalState } = useSelector((state: any) => state.rentals);

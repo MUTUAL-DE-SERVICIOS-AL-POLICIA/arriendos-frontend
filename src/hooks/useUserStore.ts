@@ -1,10 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { coffeApiKevin } from '@/services';
+import { coffeApi } from '@/services';
 import { setUsers, refreshUsers, setUsersLdap } from '@/store';
 import Swal from 'sweetalert2';
 import { UserModel } from '@/models';
 
-const api = coffeApiKevin;
+const api = coffeApi;
 
 export const useUserStore = () => {
   const { usersLDAP, users, flag } = useSelector((state: any) => state.users);
