@@ -13,12 +13,12 @@ export const useCustomerStore = () => {
   const getCustomers = async (page: number, limit: number, search: string) => {
     console.log('OBTENIENDO TODOS LOS CLIENTES')
     const params: Record<string, number | string> = {
-        page: page,
-        limit: limit,
+      page: page,
+      limit: limit,
     };
     if (search !== '') params.search = search;
     const { data } = await api.get(`/customers/`, {
-        params: params,
+      params: params,
     });
     console.log(data)
     dispatch(setCustomers({ customers: data.customers }));
@@ -98,6 +98,26 @@ export const useCustomerStore = () => {
     })
   }
 
+  const searchAffiliate = async (ciAffiliate: String) => {
+    try {
+      console.log('BUSCANDO AFILIADO');
+      const { data } = await api.get(`/customers/identify_police/${ciAffiliate}/`);
+      console.log(data)
+      return data.data[0]
+      // dispatch(refreshCustomer());
+      // Swal.fire('Cliente editado correctamente', '', 'success');
+    } catch (error: any) {
+      return;
+      // if (error.response && error.response.status == 400) {
+      //   const message = error.response.data.error
+      //   Swal.fire('Error', message, 'error')
+      // } else if (error.response && error.response.status == 403) {
+      //   const message = error.response.data.detail
+      //   Swal.fire('Acceso denegado', message, 'warning')
+      // } else throw new Error('Ocurrió algun error en el backend')
+    }
+  }
+
   return {
     //* Propiedades
     customers,
@@ -108,5 +128,6 @@ export const useCustomerStore = () => {
     postCreateCustomer,
     patchUpdateCustomer,
     deleteRemoveCustomer,
+    searchAffiliate
   }
 }

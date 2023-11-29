@@ -5,6 +5,8 @@ export interface PropertieModel {
     id: number;
     name: string;
     photo: string;
+    address: string;
+    department: string;
     rooms: Array<RoomModel>;
 }
 

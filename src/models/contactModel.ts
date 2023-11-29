@@ -13,6 +13,7 @@ export interface FormContactModel {
     name: string;
     ci_nit: string;
     phones: string[];
+    nup: number | null;
 }
 
 /*FORM CUSTOMER MODEL VALIDATIONS */

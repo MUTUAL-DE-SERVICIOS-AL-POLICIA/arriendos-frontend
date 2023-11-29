@@ -11,6 +11,7 @@ const formContactFields: FormContactModel = {
     name: '',
     ci_nit: '',
     phones: [''],
+    nup: null
 }
 const formValidations: FormContactValidations = {
     name: [(value: string) => value.length >= 1, 'Debe ingresar un nombre'],
@@ -42,8 +43,6 @@ export const CardContact = (props: contendProps) => {
         nameValid, ci_nitValid, phonesValid } = useForm(item ?? formContactFields, formValidations);
 
     useEffect(() => {
-        console.log(`formState ${formState}`)
-        console.log(`isFormValid ${isFormValid}`)
         onFormStateChange(formState, isFormValid)
     }, [isFormValid, degree, name, ci_nit, phones])
 
