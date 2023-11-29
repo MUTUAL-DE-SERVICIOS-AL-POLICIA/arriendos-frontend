@@ -5,7 +5,15 @@ This project uses React + vite with TypeScript
 
 ## Required in local
 
-- Node v18.12.1
+- use nvm 18.12.1
+- yarn 1.22.19
+
+## Steps development
+
+- 1st Create ".env" file
+- 2nd Change variables in development or production mode
+- 3rd Run "yarn"
+- 4th Run "yarn dev"
 
 ## Steps with docker
 

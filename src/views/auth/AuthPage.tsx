@@ -3,6 +3,7 @@ import { Grid, IconButton, Typography } from "@mui/material"
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useAuthStore, useForm } from '@/hooks';
 import { ComponentButton, ComponentInput } from '@/components';
+import logo from '@/assets/images/muserpol-logo-without-text.png';
 
 const loginFormFields = {
     username: '',
@@ -17,15 +18,18 @@ export const AuthPage = () => {
     const { startLogin } = useAuthStore();
 
     const [formSubmitted, setFormSubmitted] = useState(false);
+    const [loading, setLoading] = useState(false);
     const { username, password, onInputChange, isFormValid, usernameValid, passwordValid, } = useForm(loginFormFields, formValidations);
 
 
 
-    const loginSubmit = (event: any) => {
+    const loginSubmit = async (event: any) => {
         event.preventDefault();
         setFormSubmitted(true);
         if (!isFormValid) return;
-        startLogin({ username: username, password: password });
+        setLoading(true);
+        await startLogin({ username: username, password: password });
+        setLoading(false);
     }
 
     const [showPassword, setShowPassword] = useState(false);
@@ -36,10 +40,10 @@ export const AuthPage = () => {
     return (
         <Grid container justifyContent="center" alignItems="center" style={{ height: '100vh' }}>
             <Grid item xs={12} sm={6} container justifyContent="center" alignItems="center">
-                {/* <img src={imagelogo} alt="Descripción de la imagen" style={{ maxHeight: '80%', maxWidth: '80%' }} /> */}
+                <img src={logo} alt="Descripción de la imagen" style={{ maxHeight: '30vw' }} />
             </Grid>
             <Grid item xs={12} sm={6} container justifyContent="center" alignItems="center" style={{ display: 'flex', flexDirection: 'column' }}>
-                <Typography>ARRIENDOS</Typography>
+                <Typography style={{ fontWeight: 700, fontSize: 17 }} >SISTEMA DE ALQUILERES DE EVENTOS</Typography>
                 <form onSubmit={loginSubmit}>
                     <ComponentInput
                         type="text"
@@ -50,6 +54,7 @@ export const AuthPage = () => {
                         error={!!usernameValid && formSubmitted}
                         helperText={formSubmitted ? usernameValid : ''}
                     />
+                    <div style={{ height: 10 }} />
                     <ComponentInput
                         type={showPassword ? 'text' : 'password'}
                         label="Contraseña"
@@ -64,7 +69,8 @@ export const AuthPage = () => {
                         error={!!passwordValid && formSubmitted}
                         helperText={formSubmitted ? passwordValid : ''}
                     />
-                    <ComponentButton type="submit" text="INGRESAR" width="100%" />
+                    <div style={{ height: 10 }} />
+                    <ComponentButton type="submit" text="INGRESAR" width="100%" loading={loading} />
                 </form>
             </Grid>
         </Grid >

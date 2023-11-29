@@ -1,5 +1,5 @@
 /* Sub Eviroment MODEL */
-export interface SubEnvironments {
+export interface SubRooms {
     name: string;
     state: string;
     quantity: number;
@@ -13,7 +13,7 @@ export interface RoomModel {
     capacity: number;
     warranty: number;
     property: number;
-    sub_environments: SubEnvironments[];
+    sub_rooms: SubRooms[];
 }
 
 

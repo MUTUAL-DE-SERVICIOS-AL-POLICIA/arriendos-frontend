@@ -1,17 +1,17 @@
 import { SeverityPill } from "@/components";
-import { SubEnvironments } from "@/models";
+import { SubRooms } from "@/models";
 import { Edit } from "@mui/icons-material";
 import { Collapse, IconButton, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material"
 
 interface tableProps {
   open: boolean;
-  subEnvironments: SubEnvironments[];
+  SubRooms: SubRooms[];
 }
 
 export const SubEnviromentTable = (props: tableProps) => {
   const {
     open,
-    subEnvironments,
+    SubRooms,
   } = props;
 
   return (
@@ -30,13 +30,13 @@ export const SubEnviromentTable = (props: tableProps) => {
             </TableHead>
             <TableBody>
               {
-                subEnvironments.map((subEnvironment, index) => (
+                SubRooms.map((SubRooms, index) => (
                   <TableRow key={index}>
-                    <TableCell>{subEnvironment.name}</TableCell>
-                    <TableCell>{subEnvironment.quantity}</TableCell>
+                    <TableCell>{SubRooms.name}</TableCell>
+                    <TableCell>{SubRooms.quantity}</TableCell>
                     <TableCell>
                       <SeverityPill color={'success'}>
-                        {subEnvironment.state}
+                        {SubRooms.state}
                       </SeverityPill>
                     </TableCell>
                     <TableCell>

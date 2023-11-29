@@ -45,6 +45,8 @@ export const PropertieTable = (props: tableProps) => {
             <Grid container>
               <Grid item xs={12} sm={3} sx={{ padding: '5px', textAlign: 'center' }}>
                 <Typography sx={{ fontWeight: 'bold' }}>{propertie.name}</Typography>
+                <Typography sx={{ fontWeight: 'bold' }}>{propertie.address}</Typography>
+                <Typography sx={{ fontWeight: 'bold' }}>{propertie.department}</Typography>
                 <img
                   src={propertie.photo}
                   alt="Descripción de la imagen"
