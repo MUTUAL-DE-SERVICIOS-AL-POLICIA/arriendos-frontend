@@ -18,10 +18,8 @@ export const useAuthStore = () => {
             dispatch(onLogin(user));
         } catch (error: any) {
             dispatch(onLogout());
-            if (error.response && error.response.status == 400) {
-                const message = error.response.data.error
-                Swal.fire('Error', message, 'error')
-            } else throw new Error('Ocurrió algun error en el backend')
+            const message = error.response.data.detail
+            Swal.fire('Error', message, 'error')
         }
     }
 

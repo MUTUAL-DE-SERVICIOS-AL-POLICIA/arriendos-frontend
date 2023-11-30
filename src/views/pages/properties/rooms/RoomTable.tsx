@@ -3,6 +3,7 @@ import { RoomModel } from "@/models"
 import { Edit, KeyboardArrowDownOutlined, KeyboardArrowUpOutlined } from "@mui/icons-material";
 import { Checkbox, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
 import React, { useState } from "react";
+import { SubEnviromentTable } from ".";
 
 interface tableProps {
   rooms: Array<RoomModel>;
@@ -88,10 +89,10 @@ export const RoomTable = (props: tableProps) => {
                         </TableCell>
                       }
                     </TableRow>
-                    {/* <SubEnviromentTable
+                    <SubEnviromentTable
                       open={openIndex == room.id}
-                      subEnvironments={room.sub_environments}
-                    /> */}
+                      SubRooms={room.sub_rooms}
+                    />
                   </React.Fragment>
                 )
               })}

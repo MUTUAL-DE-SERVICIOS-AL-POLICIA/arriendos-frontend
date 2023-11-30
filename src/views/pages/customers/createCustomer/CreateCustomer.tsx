@@ -1,6 +1,6 @@
-import { ComponentButton, ComponentInput, ComponentInputSelect, ModalSelectComponent } from "@/components"
+import { ComponentButton, ComponentInput, ComponentInputSelect, ComponentSearch, ModalSelectComponent } from "@/components"
 import { useCustomerStore, useForm } from "@/hooks";
-import { Button, Collapse, Dialog, DialogActions, DialogContent, DialogTitle, Grid, ListItem, Typography } from "@mui/material"
+import { Button, Collapse, Dialog, DialogActions, DialogContent, DialogTitle, Grid, ListItem, Stack, Typography } from "@mui/material"
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { TypeCustomerTable } from "../../typesCustomers";
 import { CustomerModel, FormContactModel, FormCustomerModel, FormCustomerValidations, TypeCustomerModel } from "@/models";
@@ -34,7 +34,7 @@ export const CreateCustomer = (props: createProps) => {
     item,
   } = props;
 
-  const { postCreateCustomer, patchUpdateCustomer } = useCustomerStore();
+  const { postCreateCustomer, patchUpdateCustomer, searchAffiliate } = useCustomerStore();
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [modal, setModal] = useState(false);
   const [listContacts, setListContacts] = useState<any[]>(item == null ? [{ state: false }] : [...item.contacts.map((e: any) => ({ ...e, state: true, phones: e.phone.split(',') }))]);
@@ -101,6 +101,27 @@ export const CreateCustomer = (props: createProps) => {
     return () => window.removeEventListener('resize', handleResize);
   }, [window.innerHeight]);
 
+  const handleSearch = async (search: string) => {
+    const res = await searchAffiliate(search);
+    if (res) {
+
+      const newContact = {
+        degree: `${res.degree == null ? '' : res.degree}`,
+        name: `${res.name}`,
+        ci_nit: `${res.ci}`,
+        phones: [''],
+        nup: null,//corregir
+        state: false
+      };
+
+      const updatedList = customer_type.is_institution
+        ? [newContact, ...listContacts]
+        : [newContact];
+
+      setListContacts(updatedList);
+    }
+  };
+
 
   return (
     <>
@@ -166,7 +187,17 @@ export const CreateCustomer = (props: createProps) => {
                       </Grid>
                     }
                     <Grid item xs={12} sm={customer_type.is_institution ? 6 : 12} sx={{ padding: '5px' }}>
-                      <Typography>Datos del contacto:</Typography>
+                      <Stack
+                        direction="row"
+                        justifyContent="space-between"
+                      >
+                        <Typography >Datos del contacto:</Typography>
+                        <ComponentSearch
+                          title="Buscar Afiliado"
+                          onSearch={handleSearch}
+                          width={300}
+                        />
+                      </Stack>
                       <div style={{ maxHeight: `${screenHeight - 350}px`, overflowY: 'auto' }}>
                         <TransitionGroup>
                           {listContacts.map((element, index) => (
