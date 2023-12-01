@@ -10,7 +10,11 @@ interface createProps {
   item: TypeCustomerModel | null;
 }
 
-const formFields: FormTypeCustomerModel = { name: '', is_institution: false }
+const formFields: FormTypeCustomerModel = {
+  name: '',
+  is_institution: false,
+  is_police: false,
+}
 
 const formValidations: FormTypeCustomerValidations = {
   name: [(value: string) => value.length >= 1, 'Debe ingresar el nombre'],
@@ -25,7 +29,11 @@ export const CreateTypeCustomer = (props: createProps) => {
   const { postCreateTypeCustomer, patchEditTypeCustomer } = useTypeCustomerStore();
 
   const [formSubmitted, setFormSubmitted] = useState(false);
-  const { name, is_institution, onInputChange, onSwitchChange, isFormValid, nameValid, onResetForm } = useForm(item ?? formFields, formValidations);
+  const {
+    name, is_institution, is_police,
+    onInputChange, onSwitchChange, isFormValid,
+    nameValid, onResetForm
+  } = useForm(item ?? formFields, formValidations);
 
   const sendSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -35,10 +43,11 @@ export const CreateTypeCustomer = (props: createProps) => {
       postCreateTypeCustomer(
         {
           name: name.trim(),
-          is_institution
+          is_institution,
+          is_police
         });
     } else {
-      patchEditTypeCustomer(item.id, { name, is_institution });
+      patchEditTypeCustomer(item.id, { name, is_institution, is_police });
     }
     handleClose();
     onResetForm();
@@ -51,7 +60,7 @@ export const CreateTypeCustomer = (props: createProps) => {
         <form onSubmit={sendSubmit}>
           <DialogContent sx={{ display: 'flex' }}>
             <Grid container>
-              <Grid item xs={12} sm={6} sx={{ padding: '5px' }}>
+              <Grid item xs={12} sm={12} sx={{ padding: '5px' }}>
                 <ComponentInput
                   type="text"
                   label="Nombre"
@@ -63,7 +72,6 @@ export const CreateTypeCustomer = (props: createProps) => {
                 />
               </Grid>
               <Grid item xs={12} sm={6} sx={{ padding: '5px' }}>
-                {/* onChange={(event) => setStatePlan(event.target.checked)} */}
                 <FormControlLabel
                   control={
                     <Switch
@@ -72,6 +80,17 @@ export const CreateTypeCustomer = (props: createProps) => {
                       name="institución" />
                   }
                   label="¿Pedir ingresar el nombre de la institución?"
+                />
+              </Grid>
+              <Grid item xs={12} sm={6} sx={{ padding: '5px' }}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={is_police}
+                      onChange={(event) => onSwitchChange("is_police", event.target.checked)}
+                      name="institución" />
+                  }
+                  label="¿Pedir ingresar afiliado?"
                 />
               </Grid>
             </Grid>

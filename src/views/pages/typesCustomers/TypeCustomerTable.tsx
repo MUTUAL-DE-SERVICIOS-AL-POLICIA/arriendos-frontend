@@ -45,6 +45,7 @@ export const TypeCustomerTable = (props: tableProps) => {
         <Table sx={{ minWidth: 350 }} size="small">
           <TableHead>
             <TableRow sx={{ backgroundColor: '#E2F6F0' }}>
+              {stateSelect && <TableCell />}
               <TableCell sx={{ fontWeight: 'bold' }}>Nombre</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>Institución</TableCell>
               {!stateSelect && <TableCell sx={{ fontWeight: 'bold' }}>Acciones</TableCell>}

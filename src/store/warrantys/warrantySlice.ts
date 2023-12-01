@@ -9,10 +9,14 @@ export const warrantySlice = createSlice({
     setWarrantys: (state, action) => {
       state.warrantys = action.payload.warrantys
     },
+    clearWarrantys: (state,/* action*/) => {
+      state.warrantys = []
+    }
   }
 })
 
 export const {
-  setWarrantys
+  setWarrantys,
+  clearWarrantys,
 } = warrantySlice.actions
 

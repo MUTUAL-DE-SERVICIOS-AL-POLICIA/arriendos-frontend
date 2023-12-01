@@ -2,11 +2,11 @@ import { Bento, CalendarMonth, Group, Home, Receipt } from "@mui/icons-material"
 
 export const menu = () => {
     return [
-        {
-            path: "/dashboardView",
-            title: "Inicio",
-            icon: <Home />
-        },
+        // {
+        //     path: "/dashboardView",
+        //     title: "Inicio",
+        //     icon: <Home />
+        // },
         {
             title: "Gestión de Alquileres",
             permission: "show-rent",

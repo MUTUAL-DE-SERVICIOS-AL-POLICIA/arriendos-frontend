@@ -1,21 +1,24 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 export const rateSlice = createSlice({
-    name: 'rate',
-    initialState: {
-        rates: [],
-        flag: false
+  name: 'rate',
+  initialState: {
+    rates: [],
+    flag: false
+  },
+  reducers: {
+    setRates: (state, action) => {
+      state.rates = action.payload.rates;
     },
-    reducers: {
-        setRates: (state, action) => {
-            state.rates = action.payload.rates;
-        },
-        refreshRate: (state, /* action */) => {
-            state.flag = !state.flag
-        },
+    refreshRate: (state, /* action */) => {
+      state.flag = !state.flag
+    },
+    clearRates: (state, /* action */) => {
+      state.rates = [];
     }
+  }
 });
 
 
 // Action creators are generated for each case reducer function
-export const { setRates, refreshRate } = rateSlice.actions;
+export const { setRates, refreshRate, clearRates } = rateSlice.actions;

@@ -7,6 +7,7 @@ interface phoneProps {
   onUpdate: (value: string[]) => void;
   error?: boolean;
   helperText?: string;
+  disabled?: boolean;
 }
 
 export const Phone = (props: phoneProps) => {
@@ -15,6 +16,7 @@ export const Phone = (props: phoneProps) => {
     onUpdate,
     error,
     helperText,
+    disabled = false,
   } = props;
 
 
@@ -35,6 +37,7 @@ export const Phone = (props: phoneProps) => {
                   const item = regex.test(phone) ? phone : value;
                   onUpdate([...phones.map((e, i) => i === index ? item : e)])
                 }}
+                disabled={disabled}
               />
               {
                 index === 0 ?

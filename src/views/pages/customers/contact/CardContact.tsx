@@ -25,6 +25,7 @@ interface contendProps {
     onFormStateChange: (value: any, state: boolean) => void;
     removeItem?: () => void;
     item: ContactModel | null;
+    disabled?: boolean;
 }
 
 
@@ -35,6 +36,7 @@ export const CardContact = (props: contendProps) => {
         onFormStateChange,
         removeItem,
         item = null,
+        disabled = false,
     } = props;
 
     const {
@@ -56,6 +58,7 @@ export const CardContact = (props: contendProps) => {
                         name="degree"
                         value={degree}
                         onChange={onInputChange}
+                        disabled={disabled}
                     />
                 </Grid>
                 <Grid item xs={12} sm={8} sx={{ padding: '2px' }}>
@@ -67,6 +70,7 @@ export const CardContact = (props: contendProps) => {
                         onChange={onInputChange}
                         error={!!nameValid && formSubmitted}
                         helperText={formSubmitted ? nameValid : ''}
+                        disabled={disabled}
                     />
                 </Grid>
                 <Grid item xs={12} sm={6} sx={{ padding: '2px' }}>
@@ -78,6 +82,7 @@ export const CardContact = (props: contendProps) => {
                         onChange={(V: any) => onInputChange(V, false, true)}
                         error={!!ci_nitValid && formSubmitted}
                         helperText={formSubmitted ? ci_nitValid : ''}
+                        disabled={disabled}
                     />
                 </Grid>
                 <Grid item xs={12} sm={6} sx={{ padding: '2px' }}>
@@ -86,6 +91,7 @@ export const CardContact = (props: contendProps) => {
                         onUpdate={(value) => onValueChange('phones', value)}
                         error={!!phonesValid && formSubmitted}
                         helperText={formSubmitted ? phonesValid : ''}
+                        disabled={disabled}
                     />
                 </Grid>
             </Grid>
