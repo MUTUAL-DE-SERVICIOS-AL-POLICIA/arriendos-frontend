@@ -86,50 +86,38 @@ export const SideNav = (props: navProps) => {
         menu().map((item, index) => (
           <React.Fragment key={index}>
             {
-              item.path ?
-                <SideNavItem
-                  active={item.path ? (pathname === item.path) : false}
-                  leave={leave || open}
-                  icon={item.icon}
-                  path={item.path}
-                  title={item.title}
-                  onPress={(title) => {
-                    setLeave(false);
-                    onPress(title);
+              <>
+                <Typography
+                  color="inherit"
+                  variant="subtitle1"
+                  sx={{
+                    opacity: leave || open ? 1 : 0,
+                    fontWeight: 600,
+                    pl: 1
                   }}
-                /> :
-                <>
-                  <Typography
-                    color="inherit"
-                    variant="subtitle1"
-                    sx={{
-                      opacity: leave || open ? 1 : 0,
-                      fontWeight: 600,
-                      pl: 1
-                    }}
-                  >
-                    {item.title}
-                  </Typography>
-                  {
-                    item.group!.map((e) => {
-                      const active = e.path ? (pathname === e.path) : false;
-                      return (
-                        <SideNavItem
-                          key={e.title}
-                          active={active}
-                          leave={leave || open}
-                          icon={e.icon}
-                          path={e.path}
-                          title={e.title}
-                          onPress={(title) => {
-                            setLeave(false);
-                            onPress(title);
-                          }}
-                        />
-                      )
-                    })
-                  }
-                </>
+                >
+                  {item.title}
+                </Typography>
+                {
+                  item.group!.map((e) => {
+                    const active = e.path ? (pathname === e.path) : false;
+                    return (
+                      <SideNavItem
+                        key={e.title}
+                        active={active}
+                        leave={leave || open}
+                        icon={e.icon}
+                        path={e.path}
+                        title={e.title}
+                        onPress={(title) => {
+                          setLeave(false);
+                          onPress(title);
+                        }}
+                      />
+                    )
+                  })
+                }
+              </>
             }
           </React.Fragment>
         ))
