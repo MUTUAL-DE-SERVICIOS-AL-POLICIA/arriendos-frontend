@@ -20,10 +20,14 @@ export const rentalSlice = createSlice({
     },
     setCurrentRentalState: (state, action) => {
       state.currentRentalState = action.payload.currentRentalState;
+    },
+    clearRentals: (state,/* action*/) => {
+      state.rentals = []
+      state.states = []
     }
   }
 });
 
 
 // Action creators are generated for each case reducer function
-export const { setRentals, setStates, setRentalInformation, setCurrentRentalState } = rentalSlice.actions;
+export const { setRentals, setStates, setRentalInformation, setCurrentRentalState, clearRentals } = rentalSlice.actions;

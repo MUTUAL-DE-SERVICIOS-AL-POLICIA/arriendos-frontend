@@ -192,11 +192,12 @@ export const CreateCustomer = (props: createProps) => {
                         justifyContent="space-between"
                       >
                         <Typography >Datos del contacto:</Typography>
-                        <ComponentSearch
+
+                        {customer_type.is_police && <ComponentSearch
                           title="Buscar Afiliado"
                           onSearch={handleSearch}
                           width={300}
-                        />
+                        />}
                       </Stack>
                       <div style={{ maxHeight: `${screenHeight - 350}px`, overflowY: 'auto' }}>
                         <TransitionGroup>
@@ -209,6 +210,7 @@ export const CreateCustomer = (props: createProps) => {
                                   removeItem={() => handleRemoveContact(index)}
                                   onFormStateChange={(v, s) => changeValues(v, s, index)}
                                   item={Object.keys(element).length === 1 && Object.keys(element)[0] === "state" ? null : element}
+                                  disabled={index == 0 ? customer_type.is_police : false}
                                 />
                               </ListItem>
                             </Collapse>

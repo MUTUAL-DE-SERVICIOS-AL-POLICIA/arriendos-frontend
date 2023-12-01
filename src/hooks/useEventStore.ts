@@ -15,7 +15,7 @@ export const useEventStore = () => {
       // console.log('OBTIENDO TODOS LOS EVENTOS')
       const { data } = await api.get('/leases/event/')
       // console.log(data)
-      dispatch(setEvents({ events: data }))
+      dispatch(setEvents({ events: data }));
       return data
     } catch (error: any) {
       if (error.response && error.response.status == 400) {

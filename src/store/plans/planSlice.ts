@@ -9,9 +9,12 @@ export const planSlice = createSlice({
     setPlans: (state, action) => {
       state.plans = action.payload.plans
     },
+    clearPlans: (state,/* action*/) => {
+      state.plans = []
+    }
   }
 });
 
 
 // Action creators are generated for each case reducer function
-export const { setPlans } = planSlice.actions;
+export const { setPlans, clearPlans } = planSlice.actions;

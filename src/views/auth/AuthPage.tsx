@@ -43,8 +43,9 @@ export const AuthPage = () => {
                 <img src={logo} alt="Descripción de la imagen" style={{ maxHeight: '30vw' }} />
             </Grid>
             <Grid item xs={12} sm={6} container justifyContent="center" alignItems="center" style={{ display: 'flex', flexDirection: 'column' }}>
-                <Typography style={{ fontWeight: 700, fontSize: 17 }} >SISTEMA DE ALQUILERES DE EVENTOS</Typography>
+                <Typography style={{ fontWeight: 700, fontSize: 17 }} >SOFTWARE ALQUILERES DE EVENTOS</Typography>
                 <form onSubmit={loginSubmit}>
+                    <div style={{ height: 10 }} />
                     <ComponentInput
                         type="text"
                         label="Cuenta"

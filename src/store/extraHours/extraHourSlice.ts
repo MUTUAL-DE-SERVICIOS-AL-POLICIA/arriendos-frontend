@@ -9,9 +9,12 @@ export const extraHourSlice = createSlice({
     setExtraHours: (state, action) => {
       state.extraHours = action.payload.extraHours
     },
+    clearExtraHours: (state,/* action*/) => {
+      state.extraHours = []
+    }
   }
 });
 
 
 // Action creators are generated for each case reducer function
-export const { setExtraHours } = extraHourSlice.actions;
+export const { setExtraHours, clearExtraHours } = extraHourSlice.actions;
