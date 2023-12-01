@@ -8,7 +8,7 @@ export const menu = () => {
         //     icon: <Home />
         // },
         {
-            title: "Gestión de Alquileres",
+            title: "Gestión de Ambientes",
             permission: "show-rent",
             group: [
                 {
