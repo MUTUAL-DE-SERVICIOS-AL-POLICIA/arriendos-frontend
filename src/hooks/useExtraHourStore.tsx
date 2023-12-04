@@ -14,7 +14,6 @@ export const useExtraHourStore = () => {
 
   const getRegisterExtraHours = async (rental: number) => {
     try {
-      // console.log(`OBTENIENDO LA INFORMACIÓN DE LAS HORAS EXTRAS PAGADAS ${rental}`)
       const { data } = await api.get('/leases/list_additional_hour_applied/', {
         params: {
           rental: rental
@@ -34,7 +33,6 @@ export const useExtraHourStore = () => {
             sx={{ cursor: 'pointer' }}
           /> : ''
       }))];
-      // console.log(extraHours)
       dispatch(setExtraHours({ extraHours: extraHours }));
     } catch (error: any) {
       if (error.response && error.response.status == 400) {
@@ -48,13 +46,11 @@ export const useExtraHourStore = () => {
   }
   const getExtraHour = async (selectedProduct: number) => {
     try {
-      // console.log(`OBTENIENDO EL MONTO A PAGAR ṔOR LA HORA EXTRA`);
       const { data } = await api.get('/product/get_price_additional_hour/', {
         params: {
           selected_product: selectedProduct
         }
       });
-      // console.log(data)
       return data.price;
     } catch (error: any) {
       if (error.response && error.response.status == 400) {
@@ -69,8 +65,6 @@ export const useExtraHourStore = () => {
 
   const postRegisterExtraHour = async (rental: number, body: any) => {
     try {
-      // console.log(`REGISTRANDO UNA HORA EXTRA`);
-      // console.log(body);
       const { data } = await api.post('/leases/register_additional_hour_applied/', body, {
         responseType: 'arraybuffer'
       });
@@ -108,8 +102,6 @@ export const useExtraHourStore = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          // consolelog(selectedProduct, rental)
-          // return true
           const res = await api.delete(`/leases/register_additional_hour_applied/${selectedProduct}/`)
           if (res.status == 200) {
             Swal.fire('Registro eliminado', res.data.message, 'success')

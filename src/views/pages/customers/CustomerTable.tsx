@@ -51,8 +51,8 @@ export const CustomerTable = (props: tableProps) => {
           <TableHead>
             <TableRow sx={{ backgroundColor: '#E2F6F0' }}>
               {stateSelect && <TableCell />}
-              <TableCell sx={{ fontWeight: 'bold' }} >Nit</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }} >Nombre</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }} >Nit/CI</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }} >Nombre/Institución</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }} >Tipo de Cliente</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }} >Contactos</TableCell>
               {!stateSelect && <TableCell sx={{ fontWeight: 'bold' }} >Acciones</TableCell>}

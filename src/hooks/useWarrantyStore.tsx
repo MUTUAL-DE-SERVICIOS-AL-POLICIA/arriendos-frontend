@@ -29,7 +29,6 @@ export const useWarrantyStore = () => {
 
   const getListWarranty = async (rental: number) => {
     try {
-      console.log(`OBTENIENDO LA INFORMACIÓN DE LAS GARANTÍAS ${rental}`)
       const { data } = await api.get('/financials/register_warranty/', {
         params: {
           rental: rental
@@ -51,7 +50,6 @@ export const useWarrantyStore = () => {
             sx={{ cursor: 'pointer' }}
           /> : ''
       }))];
-      console.log(warrantys)
       dispatch(setWarrantys({ warrantys: warrantys }));
     } catch (error: any) {
       if (error.response && error.response.status == 400) {

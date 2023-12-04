@@ -27,7 +27,6 @@ export const useAuthStore = () => {
   const startLogin = async ({ username, password }: { username: string, password: string }) => {
     try {
       const { data } = await coffeApi.post('/login/auth/', { username, password });
-      console.log(data)
       localStorage.setItem('token', data.access);
       localStorage.setItem('refresh', data.refresh);
       const user = `${data.first_name} ${data.last_name}`;
@@ -45,7 +44,6 @@ export const useAuthStore = () => {
 
     if (token) {
       const user = localStorage.getItem('user')
-      console.log(user)
       return dispatch(onLogin(user));
     } else {
       localStorage.clear();

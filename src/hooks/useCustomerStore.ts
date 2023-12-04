@@ -11,7 +11,6 @@ export const useCustomerStore = () => {
   const dispatch = useDispatch();
 
   const getCustomers = async (page: number, limit: number, search: string) => {
-    console.log('OBTENIENDO TODOS LOS CLIENTES')
     const params: Record<string, number | string> = {
       page: page,
       limit: limit,
@@ -20,17 +19,13 @@ export const useCustomerStore = () => {
     const { data } = await api.get(`/customers/`, {
       params: params,
     });
-    console.log(data)
     dispatch(setCustomers({ customers: data.customers }));
     return data.total
   }
 
   const postCreateCustomer = async (body: object) => {
     try {
-      console.log('CREANDO UN NUEVO CLIENTE');
-      console.log(body)
-      const { data } = await api.post(`/customers/`, body);
-      console.log(data)
+      await api.post(`/customers/`, body);
       dispatch(refreshCustomer());
       Swal.fire('Cliente creado correctamente', '', 'success');
     } catch (error: any) {
@@ -46,9 +41,7 @@ export const useCustomerStore = () => {
 
   const patchUpdateCustomer = async (id: number, body: object) => {
     try {
-      console.log('EDITANDO UN CLIENTE');
-      const { data } = await api.patch(`/customers/${id}`, body);
-      console.log(data)
+      await api.patch(`/customers/${id}`, body);
       dispatch(refreshCustomer());
       Swal.fire('Cliente editado correctamente', '', 'success');
     } catch (error: any) {
@@ -76,9 +69,7 @@ export const useCustomerStore = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          console.log('ELIMINANDO A UN CLIENTE')
-          const { data } = await api.delete(`/customers/${customer.id}`)
-          console.log(data)
+          await api.delete(`/customers/${customer.id}`)
           dispatch(refreshCustomer());
           Swal.fire(
             `¡Listo!`,
@@ -100,21 +91,10 @@ export const useCustomerStore = () => {
 
   const searchAffiliate = async (ciAffiliate: String) => {
     try {
-      console.log('BUSCANDO AFILIADO');
       const { data } = await api.get(`/customers/identify_police/${ciAffiliate}/`);
-      console.log(data)
       return data.data[0]
-      // dispatch(refreshCustomer());
-      // Swal.fire('Cliente editado correctamente', '', 'success');
     } catch (error: any) {
       return;
-      // if (error.response && error.response.status == 400) {
-      //   const message = error.response.data.error
-      //   Swal.fire('Error', message, 'error')
-      // } else if (error.response && error.response.status == 403) {
-      //   const message = error.response.data.detail
-      //   Swal.fire('Acceso denegado', message, 'warning')
-      // } else throw new Error('Ocurrió algun error en el backend')
     }
   }
 

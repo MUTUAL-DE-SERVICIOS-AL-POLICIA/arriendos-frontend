@@ -10,9 +10,7 @@ export const usePlanStore = () => {
 
   const getPlans = async () => {
     try {
-      console.log('OBTENIENDO TODOS LOS PLANES')
       const { data } = await api.get(`/plans/`);
-      console.log(data)
       dispatch(setPlans({ plans: data }));
       return data.total;
     } catch (error: any) {

@@ -17,14 +17,14 @@ export const ComponentImage = (props: any) => {
         height: 200,
         width: 200,
         borderRadius: '10%',
-        borderColor: error ? 'red' : 'initial', // Aplica el borde rojo si hay un error
+        borderColor: error ? 'red' : 'initial',
     };
 
     const iconStyle: React.CSSProperties = {
         position: 'absolute',
         bottom: 5,
         right: 5,
-        color: error ? 'red' : 'gray', // Cambia el color a rojo si hay un error
+        color: error ? 'red' : 'gray',
     };
 
     const onFileInputChange = async ({ target }: { target: any }) => {

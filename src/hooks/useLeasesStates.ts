@@ -11,9 +11,7 @@ export const useLeasesStates = () => {
 
   const getLeaseState = async () => {
     try {
-      console.log('OBTENIENDO LA LISTA DE ESTADOS');
       const { data } = await api.get(`/leases/list_state/`)
-      console.log(data)
       dispatch(setStates({ states: data }))
     } catch(error: any) {
       if (error.response && error.response.status == 400) {
@@ -29,13 +27,11 @@ export const useLeasesStates = () => {
   const getRental = async (rentalId: number) => {
     try {
       dispatch(setRentalInformation({ rentalInformation: null }))
-      console.log("OBTENIENDO LA INFORMACIÓN DEL ALQUILER")
       const { data } = await api.get(`/leases/get_rental_information/`, {
         params: {
           rental: rentalId
         }
       });
-      console.log(data)
       dispatch(setRentalInformation({ rentalInformation: data }))
     } catch(error: any) {
       if (error.response && error.response.status == 400) {
@@ -51,13 +47,11 @@ export const useLeasesStates = () => {
   const getCurrentLeaseState = async (rental: number) => {
     try {
       dispatch(setCurrentRentalState({ currentRentalState: null }));
-      console.log('OBTENIENDO EL ESTADO ACTUAL');
       const { data } = await api.get(`/leases/get_state/`, {
         params: {
           rental: rental
         }
       })
-      console.log(data)
       dispatch(setCurrentRentalState({ currentRentalState: data }));
     } catch (error: any) {
       if (error.response && error.response.status == 400) {
@@ -71,8 +65,6 @@ export const useLeasesStates = () => {
   }
   const postChangeRentalState = async (body: any) => {
     try {
-      console.log('CAMBIANDO EL ESTADO');
-      console.log(body)
       await api.post('/leases/change_state/', body)
       getCurrentLeaseState(body.rental)
     } catch (error: any) {
@@ -88,10 +80,7 @@ export const useLeasesStates = () => {
 
   const patchUpdateTime = async (productId: number, body: object) => {
     try {
-      console.log('EDITANDO LA HORA DE UN PRODUCTO SELECCIONADO');
-      const { data } = await api.patch(`/leases/selected_product/${productId}`, body);
-      console.log(data)
-      // dispatch(refreshCustomer());
+      await api.patch(`/leases/selected_product/${productId}`, body);
       Swal.fire('Se edito correctamente la fecha', '', 'success');
     } catch (error: any) {
       if (error.response && error.response.status == 400) {

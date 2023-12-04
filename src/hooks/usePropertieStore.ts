@@ -11,9 +11,7 @@ export const usePropertieStore = () => {
 
   const getPropertiesRooms = async () => {
     try {
-      console.log('OBTENIENDO TODOS LOS INMUEBLES Y AMBIENTES')
       const { data } = await api.get('/rooms/properties/roomslist/');
-      console.log(data.properties);
       dispatch(setProperties({ properties: data.properties }))
     } catch (error: any) {
       if (error.response && error.response.status == 400) {
@@ -28,10 +26,7 @@ export const usePropertieStore = () => {
 
   const postCreatePropertie = async (body: object) => {
     try {
-      // console.log('CREANDO UN NUEVO INMUEBLE');
-      // console.log(body)
       const { data } = await api.post(`/rooms/properties/`, body);
-      // console.log(data)
       dispatch(addPropertie({ propertie: data }));
       Swal.fire('Inmueble creado correctamente', '', 'success');
     } catch (error: any) {
@@ -47,10 +42,7 @@ export const usePropertieStore = () => {
 
   const patchUpdatePropertie = async (id: number, body: object) => {
     try {
-      // console.log('EDITANDO UN NUEVO INMUEBLE');
-      // console.log(body)
       const { data } = await api.patch(`/rooms/properties/${id}`, body);
-      // console.log(data)
       dispatch(updatePropertie({ propertie: data }));
       Swal.fire('Inmueble editado correctamente', '', 'success');
     } catch (error: any) {

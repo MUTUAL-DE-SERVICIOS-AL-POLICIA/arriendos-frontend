@@ -11,9 +11,7 @@ export const useRoomStore = () => {
 
   const postRoom = async (body: object) => {
     try {
-      console.log('CREANDO UN NUEVO AMBIENTE');
       const { data } = await api.post(`/rooms/`, body);
-      console.log(data)
       dispatch(addRoom({ room: data }));
       Swal.fire('Ambiente creado correctamente', '', 'success');
     } catch (error: any) {
@@ -29,9 +27,7 @@ export const useRoomStore = () => {
 
   const patchEditRoom = async (id: number, body: object) => {
     try {
-      console.log('EDITANDO AMBIENTE');
       const { data } = await api.patch(`/rooms/${id}/`, body);
-      console.log(data)
       dispatch(updateRoom({ room: data }));
       Swal.fire('Requisito editado correctamente', '', 'success');
     } catch (error: any) {

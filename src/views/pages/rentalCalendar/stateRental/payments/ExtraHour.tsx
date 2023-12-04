@@ -60,7 +60,6 @@ export const ComponentExtraHour = (props: elementsProps) => {
   }
 
   const handleEvent = async (value: any) => {
-    console.log(value)
     const price = await getExtraHour(value);
     onListValuesChange(['amount', 'eventSelect'], [price, value])
   }
