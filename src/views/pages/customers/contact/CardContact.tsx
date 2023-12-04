@@ -88,7 +88,7 @@ export const CardContact = (props: contendProps) => {
                 <Grid item xs={12} sm={6} sx={{ padding: '2px' }}>
                     <Phone
                         phones={phones}
-                        onUpdate={(value) => onValueChange('phones', value)}
+                        onUpdate={(value:string[]) => onValueChange('phones', value)}
                         error={!!phonesValid && formSubmitted}
                         helperText={formSubmitted ? phonesValid : ''}
                         disabled={disabled}
