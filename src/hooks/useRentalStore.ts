@@ -46,12 +46,12 @@ export const useRentalStore = () => {
   const postCreateRental = async (body: object, setShoppingCart: Function, onClose: Function) => {
     Swal.fire({
       title: '¿Estás seguro?',
-      text: `Estas creando un Alquiler`,
+      text: `Se creará un alquiler`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: '¡Sí, estoy seguro!',
+      confirmButtonText: 'Crear',
       cancelButtonText: 'Cancelar'
     }).then(async (result) => {
       if (result.isConfirmed) {

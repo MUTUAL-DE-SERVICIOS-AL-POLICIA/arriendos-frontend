@@ -69,12 +69,12 @@ export const useProductStore = () => {
 
     Swal.fire({
       title: '¿Estás seguro?',
-      text: `Estas eliminando al producto: ${product.room.name} - ${product.rate.name}`,
+      text: `Se eliminará el producto: ${product.room.name} - ${product.rate.name}`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: '¡Sí, estoy seguro!',
+      confirmButtonText: 'Eliminar',
       cancelButtonText: 'Cancelar'
     }).then(async (result) => {
       if (result.isConfirmed) {

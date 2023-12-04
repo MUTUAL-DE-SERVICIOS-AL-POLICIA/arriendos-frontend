@@ -62,12 +62,12 @@ export const useRequirementStore = () => {
 
     Swal.fire({
       title: '¿Estás seguro?',
-      text: `Estas eliminando el requisito: ${requirement.requirement_name}`,
+      text: `Se eliminará el requisito: ${requirement.requirement_name}`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: '¡Sí, estoy seguro!',
+      confirmButtonText: 'Eliminar',
       cancelButtonText: 'Cancelar'
     }).then(async (result) => {
       if (result.isConfirmed) {

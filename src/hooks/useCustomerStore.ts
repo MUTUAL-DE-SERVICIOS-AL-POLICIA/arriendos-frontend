@@ -59,12 +59,12 @@ export const useCustomerStore = () => {
 
     Swal.fire({
       title: '¿Estás seguro?',
-      text: `Estas eliminando a ${customer.institution_name ?? customer.contacts[0].name}`,
+      text: `Se eliminará a ${customer.institution_name ?? customer.contacts[0].name}`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: '¡Sí, estoy seguro!',
+      confirmButtonText: 'Eliminar',
       cancelButtonText: 'Cancelar'
     }).then(async (result) => {
       if (result.isConfirmed) {

@@ -62,12 +62,12 @@ export const useUserStore = () => {
 
     Swal.fire({
       title: '¿Estás seguro?',
-      text: `Estas ${user.is_active ? 'desactivando' : 'activando'} a ${user.username}`,
+      text: `Se ${user.is_active ? 'inactivará' : 'activará'} a ${user.username}`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: '¡Sí, estoy seguro!',
+      confirmButtonText: `${user.is_active ? 'Inactivar' : 'activar'}`,
       cancelButtonText: 'Cancelar'
     }).then(async (result) => {
       if (result.isConfirmed) {
@@ -76,7 +76,7 @@ export const useUserStore = () => {
           dispatch(refreshUsers());
           Swal.fire(
             `${user.is_active ? '¡Desactivado!' : '¡Activado!'}`,
-            `${user.username} fue ${user.is_active ? 'desactivado' : 'activado'}`,
+            `${user.username} fue ${user.is_active ? 'inactivado' : 'activado'}`,
             'success'
           )
         } catch (error: any) {
