@@ -1,4 +1,4 @@
-import { Bento, CalendarMonth, Group, Home, Receipt } from "@mui/icons-material"
+import { Bento, CalendarMonth, Group, Home } from "@mui/icons-material"
 
 export const menu = () => {
     return [
@@ -8,64 +8,34 @@ export const menu = () => {
         //     icon: <Home />
         // },
         {
-            title: "Gestión de Ambientes",
-            permission: "show-rent",
-            group: [
-                {
-                    path: "/propertiesView",
-                    title: "Inmuebles",
-                    icon: <Home />,
-                    permission: "show-halls"
-                },
-                {
-                    path: "/productsView",
-                    title: "Productos",
-                    icon: <Bento />,
-                    permission: "show-rates"
-                },
-            ]
+            path: "/rentalCalendarView",
+            title: "Calendario",
+            icon: <CalendarMonth />,
+            permission: "show-rates"
         },
         {
-            title: "Gestión de Alquileres",
-            permission: "show-rent",
-            group: [
-                {
-                    path: "/rentalCalendarView",
-                    title: "Calendario",
-                    icon: <CalendarMonth />,
-                    permission: "show-rates"
-                },
-                {
-                    path: "/rentalView",
-                    title: "Alquileres",
-                    icon: <Receipt />,
-                    permission: "show-rates"
-                }
-            ]
+            path: "/productsView",
+            title: "Productos",
+            icon: <Bento />,
+            permission: "show-rates"
         },
         {
-            title: "Gestión de Clientes",
-            permission: "show-rent",
-            group: [
-                {
-                    path: "/customersView",
-                    title: "Clientes",
-                    icon: <Group />,
-                    permission: "show-halls"
-                },
-            ]
+            path: "/propertiesView",
+            title: "Inmuebles",
+            icon: <Home />,
+            permission: "show-halls"
         },
         // {
-        //     title: "Reportes",
-        //     permission: "show-rent",
-        //     group: [
-        //         {
-        //             path: "/rent/hallsView",
-        //             title: "Reportes",
-        //             icon: <Assessment />,
-        //             permission: "show-halls"
-        //         }
-        //     ]
+        //     path: "/rentalView",
+        //     title: "Alquileres",
+        //     icon: <Receipt />,
+        //     permission: "show-rates"
         // },
+        {
+            path: "/customersView",
+            title: "Clientes",
+            icon: <Group />,
+            permission: "show-halls"
+        },
     ]
 }

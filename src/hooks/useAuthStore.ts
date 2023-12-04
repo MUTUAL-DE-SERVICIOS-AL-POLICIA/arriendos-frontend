@@ -34,7 +34,7 @@ export const useAuthStore = () => {
       dispatch(onLogin(user));
     } catch (error: any) {
       dispatch(onLogout());
-      const message = error.response.data.detail
+      const message = error.response.data.error
       Swal.fire('Error', message, 'error')
     }
   }

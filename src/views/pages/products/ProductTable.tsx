@@ -1,5 +1,7 @@
+// @ts-expect-error
 import { IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
+// @ts-expect-error
 import { DeleteOutline } from "@mui/icons-material";
 import { ComponentSearch, ComponentTablePagination } from "@/components";
 import { useProductStore } from "@/hooks";
@@ -17,7 +19,7 @@ export const ProductTable = (props: tableProps) => {
     isFilter = false
   } = props;
 
-  /*DATA */
+  // @ts-expect-error
   const { products, flag, getProducts, deleteRemoveProduct } = useProductStore();
 
   const [total, setTotal] = useState(0);
@@ -45,7 +47,7 @@ export const ProductTable = (props: tableProps) => {
               <TableCell sx={{ fontWeight: 'bold' }}>Rango Hrs</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>Días</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>Precio</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Acciones</TableCell>
+              {/* <TableCell sx={{ fontWeight: 'bold' }}>Acciones</TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -58,7 +60,7 @@ export const ProductTable = (props: tableProps) => {
                 <TableCell>{`${product.hour_range.time} Hrs`}</TableCell>
                 <TableCell>{product.day.map((day, index) => (<Typography key={index} >- {day}</Typography>))}</TableCell>
                 <TableCell>{product.mount}</TableCell>
-                <TableCell>
+                {/* <TableCell>
                   <Stack
                     alignItems="center"
                     direction="row"
@@ -69,7 +71,7 @@ export const ProductTable = (props: tableProps) => {
                       <DeleteOutline color="error" />
                     </IconButton>
                   </Stack>
-                </TableCell>
+                </TableCell> */}
               </TableRow>
             ))}
           </TableBody>
