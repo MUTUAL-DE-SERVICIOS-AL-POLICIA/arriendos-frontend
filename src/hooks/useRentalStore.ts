@@ -13,7 +13,6 @@ export const useRentalStore = () => {
 
   const getRentals = async (roomId?: number) => {
     try {
-      console.log("OBTENIENDO ALQUILERES")
       const { data } = await api.get(`/leases/calendar/`, {
         params: {
           room: roomId
@@ -32,7 +31,6 @@ export const useRentalStore = () => {
         events.push(event)
         i++
       });
-      console.log(events)
       dispatch(setRentals({ rentals: events }));
     } catch (error: any) {
       if (error.response && error.response.status == 400) {
@@ -58,8 +56,6 @@ export const useRentalStore = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          console.log("REGISTRANDO ALQUILER")
-          console.log(body)
           await api.post('/leases/', body)
           Swal.fire('¡Prereserva exitoso!', '', 'success');
           setShoppingCart([])
@@ -84,7 +80,6 @@ export const useRentalStore = () => {
           rental: rental
         }
       })
-      console.log(data.data)
       return data.data
     } catch (error: any) {
       if (error.response && error.response.status == 400) {

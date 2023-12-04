@@ -12,9 +12,7 @@ export const useRequirementStore = () => {
 
   const getRequirements = async ({ page, limit }: { page: number, limit: number }) => {
     try {
-      console.log('OBTENIENDO TODOS LOS REQUISITOS')
       const { data } = await api.get(`/requirements/?page=${page}&limit=${limit}`);
-      console.log(data)
       dispatch(setRequirements({ requirements: data.requirements }));
       return data.total
     } catch (error: any) {
@@ -30,10 +28,7 @@ export const useRequirementStore = () => {
 
   const postCreateRequirement = async (body: object) => {
     try {
-      console.log('CREANDO UN NUEVO REQUISITO');
-      console.log(body)
-      const { data } = await api.post(`/requirements/`, body);
-      console.log(data)
+      await api.post(`/requirements/`, body);
       dispatch(refreshRequirement());
       Swal.fire('Requisito creado correctamente', '', 'success');
     } catch (error: any) {
@@ -49,9 +44,7 @@ export const useRequirementStore = () => {
 
   const patchEditRequirement = async (id: number, body: object) => {
     try {
-      console.log('EDITANDO REQUISITO');
-      const { data } = await api.patch(`/requirements/${id}`, body);
-      console.log(data)
+      await api.patch(`/requirements/${id}`, body);
       dispatch(refreshRequirement());
       Swal.fire('Requisito editado correctamente', '', 'success');
     } catch (error: any) {
@@ -79,9 +72,7 @@ export const useRequirementStore = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          console.log('ELIMINANDO UN REQUISITO')
-          const { data } = await api.delete(`/requirements/${requirement.id}`)
-          console.log(data)
+          await api.delete(`/requirements/${requirement.id}`)
           dispatch(refreshRequirement());
           Swal.fire(
             `¡Listo!`,

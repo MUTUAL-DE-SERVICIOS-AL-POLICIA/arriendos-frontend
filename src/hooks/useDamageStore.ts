@@ -8,8 +8,6 @@ const api = coffeApi;
 export const useDamageStore = () => {
   const postRegisterDiscountWarranty = async (body: object) => {
     try {
-      // console.log(`REGISTRANDO UN NUEVO DAÑO`);
-      // console.log(body);
       const res = await api.post('/financials/discount_warranty/', body, {
         responseType: 'arraybuffer'
       })

@@ -33,12 +33,10 @@ export const CartView = (props: cartProps) => {
   }, [])
 
   const handleAddProduct = (value: any) => {
-    console.log(value)
     setShoppingCart([...shoppingCart, { productSelect: leakedProducts.find((product: ProductModel) => product.id == value), date, state: false }])
   }
 
   const handlePlan = (value: any) => {
-    console.log(value)
     setShoppingCart([])
     setPlanSelect(value)
   }
@@ -61,7 +59,6 @@ export const CartView = (props: cartProps) => {
     setShoppingCart(updateShopping);
   }
   const sendSubmit = (event: FormEvent<HTMLFormElement>) => {
-    console.log(shoppingCart)
     event.preventDefault();
     setFormSubmitted(true);
     if (shoppingCart.filter((e: any) => !e.state).length > 0) return;

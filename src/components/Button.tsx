@@ -22,13 +22,6 @@ export const ComponentButton = memo((
             endIcon={endIcon}
             onClick={onClick}
             color={color}
-            // sx={{
-            //     fontWeight: 'bold',
-            //     display: 'flex',
-            //     margin: { margin },
-            //     width: { width },
-            //     height: { height },
-            // }}
             sx={sx}
         >
             {text}

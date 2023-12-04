@@ -12,9 +12,7 @@ export const useEventStore = () => {
 
   const getEvents = async () => {
     try {
-      // console.log('OBTIENDO TODOS LOS EVENTOS')
       const { data } = await api.get('/leases/event/')
-      // console.log(data)
       dispatch(setEvents({ events: data }));
       return data
     } catch (error: any) {

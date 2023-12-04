@@ -48,7 +48,6 @@ export const CreateCustomer = (props: createProps) => {
 
 
   const sendSubmit = (event: FormEvent<HTMLFormElement>) => {
-    console.log(listContacts)
     event.preventDefault();
     setFormSubmitted(true);
     if ((listContacts.filter((e: any) => !e.state).length > 0)) return;
@@ -63,7 +62,6 @@ export const CreateCustomer = (props: createProps) => {
     } else {
       data.customer = listContacts[0]
     }
-    console.log(data)
     if (item == null) {
       postCreateCustomer(data);
     } else {

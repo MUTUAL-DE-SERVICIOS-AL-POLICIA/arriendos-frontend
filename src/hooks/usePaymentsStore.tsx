@@ -11,7 +11,6 @@ export const usePaymentsStore = () => {
   const dispatch = useDispatch();
   const getRegistersPayments = async (rental: number) => {
     try {
-      console.log(`OBTENIENDO LA INFORMACIÓN DE LOS PAGOS ${rental}`)
       const { data } = await api.get('/financials/register_payment/', {
         params: {
           rental: rental
@@ -29,7 +28,6 @@ export const usePaymentsStore = () => {
             sx={{ cursor: 'pointer' }}
           /> : ''
       }))];
-      console.log(payments)
       dispatch(setPayments({ payments: payments, amountTotal: data.total_mount }));
     } catch (error: any) {
       if (error.response && error.response.status == 400) {

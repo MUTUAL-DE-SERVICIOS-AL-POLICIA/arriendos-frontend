@@ -24,16 +24,13 @@ export const ComponentPayment = (props: elementsProps) => {
     amountRecomend,
     disalbleMount = false,
   } = props;
-  console.log(`amountRecomend ${amountRecomend}`)
   const formValidations: FormPaymentValidations = {
     amount: [(value: number) =>
       {
         if(amountRecomend != 0 && value > 0 && value <= parseFloat(`${amountRecomend}`)){
-          console.log("algo aca")
           return true
         }
         else if(amountRecomend == 0 && value > 0) {
-          console.log("algo no aca")
           return true
         }
         return false

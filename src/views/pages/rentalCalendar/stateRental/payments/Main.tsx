@@ -84,7 +84,6 @@ export const Rented = (props: Props) => {
   // @ts-expect-error
   const handleEvent = async (value: any) => {
     setMountExtraHour(0);
-    console.log(value)
     const price = await getExtraHour(value);
     setMountExtraHour(price);
     setEventSelect(value)

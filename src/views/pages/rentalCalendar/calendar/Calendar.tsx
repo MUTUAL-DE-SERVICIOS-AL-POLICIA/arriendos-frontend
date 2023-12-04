@@ -52,7 +52,6 @@ export const CalendarComponent = (props: calendarProps) => {
   };
 
   const onSelectSlot = async (slotInfo: SlotInfo) => {
-    console.log(slotInfo)
     if (daySelect == null) {
       onSelectDay(slotInfo.start)
       onEvents(groupEventsByDate(rentals, slotInfo.start))

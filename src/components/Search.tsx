@@ -22,13 +22,9 @@ export const ComponentSearch = (props: searchProps) => {
         const inputQuery = event.target.value;
         setQuery(inputQuery);
         setLoading(true);
-        // Limpiamos el timeout anterior si existe
         if (typingTimeout) clearTimeout(typingTimeout);
 
-        // Configuramos un nuevo timeout para realizar la búsqueda después de 2 segundos
         const newTypingTimeout = setTimeout(() => {
-            // Aquí podrías llamar a tu función de búsqueda con el valor actual de 'query'
-            console.log('Realizar búsqueda con:', inputQuery);
             onSearch(inputQuery);
             setLoading(false);
         }, 1500);

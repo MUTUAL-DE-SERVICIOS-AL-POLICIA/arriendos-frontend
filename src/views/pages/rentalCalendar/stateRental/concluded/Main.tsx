@@ -1,6 +1,6 @@
 import { ComponentButton } from "@/components";
 import { useRentalStore } from "@/hooks"
-import { Print } from "@mui/icons-material";
+import { KeyboardReturn, Print } from "@mui/icons-material";
 import { Divider, Grid, Typography } from "@mui/material"
 import { Box } from "@mui/system"
 import { useState } from "react";
@@ -41,7 +41,6 @@ export const Concluded = (props: Props) => {
     const res = await getPrintWarrantyReturn(rental)
     if(res) {
       setDisabled(res => res ? !res : res)
-      console.log(res)
     }
     setLoadingPrint(false)
   }
@@ -87,9 +86,10 @@ export const Concluded = (props: Props) => {
           <ComponentButton
             onClick={warrantyReturn}
             text="DEVOLVER"
-            startIcon={<Print/>}
+            startIcon={<KeyboardReturn/>}
             disable={disabled}
             loading={loadingWarrantyReturn}
+            color={`warning`}
           />
         </Grid>
       </Grid>

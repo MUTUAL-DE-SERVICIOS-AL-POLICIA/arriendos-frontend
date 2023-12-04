@@ -11,9 +11,7 @@ export const useRateStore = () => {
 
   const getRates = async ({ page, limit }: { page: number, limit: number }) => {
     try {
-      // console.log('OBTENIENDO TODAS LAS TARIFAS')
       const { data } = await api.get(`/requirements/allrates/?page=${page}&limit=${limit}`);
-      // console.log(data)
       dispatch(setRates({ rates: data.rates }));
       return data.total;
     } catch (error: any) {
@@ -29,10 +27,7 @@ export const useRateStore = () => {
 
   const postCreateRate = async (body: object) => {
     try {
-      // console.log('CREANDO UNA NUEVA TARIFA');
-      // console.log(body)
-      const { data } = await api.post(`/requirements/rates/`, body);
-      console.log(data)
+      await api.post(`/requirements/rates/`, body);
       dispatch(refreshRate());
       Swal.fire('Tarifa creado correctamente', '', 'success');
     } catch (error: any) {
@@ -60,9 +55,7 @@ export const useRateStore = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          console.log('ELIMINANDO UNA TARIFA')
-          const { data } = await api.delete(`/requirements/rates${rate.id}`)
-          console.log(data)
+          await api.delete(`/requirements/rates${rate.id}`)
           dispatch(refreshRate());
           Swal.fire(
             `¡Listo!`,

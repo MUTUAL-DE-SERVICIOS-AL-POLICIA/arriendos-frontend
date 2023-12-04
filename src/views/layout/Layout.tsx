@@ -48,7 +48,6 @@ export const Layout = (props: Props) => {
         },
         [pathname]
     );
-    console.log(children.props)
     return (
         <>
             <TopNav

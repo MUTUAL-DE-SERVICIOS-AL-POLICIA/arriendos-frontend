@@ -29,7 +29,6 @@ const createAxiosInstance = (baseURL: string) => {
         if (token != null && token != undefined) {
           const decoded = jwtDecode(token)
           if (isTokenExpired(decoded.exp)) {
-            console.log("token expirado")
             localStorage.clear()
             window.location.href = '/'
           }
@@ -59,7 +58,6 @@ const createAxiosInstance = (baseURL: string) => {
 const isTokenExpired = (expirationDate: any) => {
   const now = new Date().getTime() // ahora
   expirationDate *= 1000
-  console.log(expirationDate)
   return now > expirationDate
 }
 

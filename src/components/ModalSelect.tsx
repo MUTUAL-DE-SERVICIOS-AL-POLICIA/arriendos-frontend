@@ -44,7 +44,6 @@ export const ModalSelectComponent = React.memo((props: any) => {
                                 onClick={() => onClickButton()}
                                 startIcon={<SvgIcon fontSize="small"><Add /></SvgIcon>}
                                 variant="contained"
-                            // disabled={permisions().filter((e) => e.name === 'Crear producto').length == 0}
                             >
                                 {titleButton}
                             </Button>
