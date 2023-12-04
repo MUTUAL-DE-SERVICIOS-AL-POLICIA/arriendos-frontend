@@ -61,12 +61,12 @@ export const useHourRangeStore = () => {
 
     Swal.fire({
       title: '¿Estás seguro?',
-      text: `Estas eliminando el Rango de hora: ${hourRange.time} hora`,
+      text: `Se eliminará el Rango de hora: ${hourRange.time} hora`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: '¡Sí, estoy seguro!',
+      confirmButtonText: 'Eliminar',
       cancelButtonText: 'Cancelar'
     }).then(async (result) => {
       if (result.isConfirmed) {
