@@ -27,7 +27,12 @@ const formValidations: FormProductValidations = {
   hour_range: [(value: HourRangeModel) => value != null, 'Debe seleccionar un rango de horas'],
   room: [(value: RoomModel) => value != null, 'Debe seleccionar un ambiente'],
   rate: [(value: RateModel) => value != null, 'Debe seleccionar una tarifa'],
-  mount: [(values: number) => values != 0, 'Debe agregar un precio'],
+  mount: [(value: any) => {
+    const parsedValue = parseFloat(value)
+    return !isNaN(parsedValue) && Number.isFinite(parsedValue) && parsedValue > 0
+  },
+  'Debe ingresar un valor numérico mayor a cero'
+  ],
 }
 
 

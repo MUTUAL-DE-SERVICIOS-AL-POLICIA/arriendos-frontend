@@ -33,7 +33,7 @@ export const Phone = (props: phoneProps) => {
                 value={value}
                 onChange={(V: any) => {
                   const phone = V.target.value;
-                  const regex = /^[0-9\b]+$/;
+                  const regex = /^$|^[0-9\b]+$/;
                   const item = regex.test(phone) ? phone : value;
                   onUpdate([...phones.map((e, i) => i === index ? item : e)])
                 }}
