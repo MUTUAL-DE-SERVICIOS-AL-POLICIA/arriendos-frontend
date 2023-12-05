@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 export const typeCustomerSlice = createSlice({
   name: 'typeCustomer',
   initialState: {
-    typesCustomers: [],
+    typesCustomers: null,
     flag: false
   } as any,
   reducers: {
@@ -14,7 +14,7 @@ export const typeCustomerSlice = createSlice({
       state.flag = !state.flag
     },
     clearTypesCustomers: (state,/* action*/) => {
-      state.typesCustomers = []
+      state.typesCustomers = null
     }
   }
 });

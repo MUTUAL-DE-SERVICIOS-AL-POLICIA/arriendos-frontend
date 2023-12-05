@@ -9,15 +9,16 @@ interface Props {
 
 export const DepartamentTable = (props: Props) => {
 
-  const { data, stateSelect = false, items = [], itemSelect} = props
+  const { data, stateSelect = false, items = [], itemSelect } = props
 
   return (
     <TableContainer>
       <Table sx={{ minWidth: 350 }} size="small">
         <TableHead>
           <TableRow sx={{ backgroundColor: '#E2F6F0' }}>
+            <TableCell />
             <TableCell sx={{ fontWeight: 'bold' }}>
-              Departamento
+              Departamentos
             </TableCell>
           </TableRow>
         </TableHead>
@@ -29,12 +30,12 @@ export const DepartamentTable = (props: Props) => {
                 <TableRow
                   key={departament.id}
                 >
-                  { stateSelect && <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={isSelected}
-                        onChange={() => itemSelect!(departament)}
-                      />
-                    </TableCell>
+                  {stateSelect && <TableCell padding="checkbox">
+                    <Checkbox
+                      checked={isSelected}
+                      onChange={() => itemSelect!(departament)}
+                    />
+                  </TableCell>
                   }
                   <TableCell>{`${departament.name}`}</TableCell>
                 </TableRow>

@@ -217,7 +217,7 @@ export const CreateProduct = (props: createProps) => {
           <DialogActions>
             <Button onClick={handleClose}>Cancelar</Button>
             <Button type="submit">
-              {item == null ? 'CREAR' : 'EDITAR'}
+              {item == null ? 'CREAR' : 'GUARDAR'}
             </Button>
           </DialogActions>
         </form>

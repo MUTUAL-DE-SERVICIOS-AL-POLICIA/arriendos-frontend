@@ -27,6 +27,7 @@ export const ProductsView = () => {
           onClick={() => handleDialog(true)}
           startIcon={<SvgIcon fontSize="small"><Add /></SvgIcon>} />
       </Stack>
+
       <ProductTable
         handleEdit={(v) => {
           setItemEdit(v)

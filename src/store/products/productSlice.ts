@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 export const productSlice = createSlice({
   name: 'product',
   initialState: {
-    products: [],
+    products: null,
     leakedProducts: [],
     flag: false,
   },
@@ -21,7 +21,7 @@ export const productSlice = createSlice({
       state.leakedProducts = [];
     },
     clearProducts: (state,/* action*/) => {
-      state.products = []
+      state.products = null
       state.leakedProducts = []
     }
   }

@@ -3,7 +3,7 @@ import { ComponentImage } from "@/components/Image";
 import { useForm, usePropertieStore } from "@/hooks";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid } from "@mui/material";
 import { useEffect, useState } from "react";
-import { FormPropertieModel, FormPropertieValidations, PropertieModel } from '@/models';
+import { DepartmentModel, FormPropertieModel, FormPropertieValidations, PropertieModel, listDepartments } from '@/models';
 import { isFile } from "@/helpers";
 import noimage from "@/assets/images/no-image.webp";
 import { DepartamentTable } from "./DepartamentTable";
@@ -16,25 +16,13 @@ interface CreatePropertieProps {
 
 const formFields: FormPropertieModel = {
   name: '',
-  photo: null
+  photo: null,
+  address: '',
+  department: null,
 };
 
-const formValidations: FormPropertieValidations = {
-  name: [(value) => value.length >= 1, 'Debe ingresar un nombre'],
-  photo: [(value) => isFile("image/jpeg, image/png, image/gif", value), 'Debe seleccionar una imagen'],
-};
 
-const departaments = [
-  {id: 0, name: 'LA PAZ'},
-  {id: 1, name: 'ORURO'},
-  {id: 2, name: 'SANTA CRUZ'},
-  {id: 3, name: 'POTOSÍ'},
-  {id: 4, name: 'COCHABAMBA'},
-  {id: 5, name: 'CHUQUISACA'},
-  {id: 6, name: 'BENI'},
-  {id: 7, name: 'TARIJA'},
-  {id: 8, name: 'PANDO'},
-]
+
 
 export const CreatePropertie = (props: CreatePropertieProps) => {
   const {
@@ -42,20 +30,34 @@ export const CreatePropertie = (props: CreatePropertieProps) => {
     handleClose,
     propertie,
   } = props;
+
+  const formValidations: FormPropertieValidations = {
+    name: [(value: string) => value.length >= 1, 'Debe ingresar un nombre'],
+    photo: [(value) => propertie == null ? isFile("image/jpeg, image/png, image/gif", value) : true, 'Debe seleccionar una imagen'],
+    address: [(value: string) => value.length >= 1, 'Debe ingresar una dirección'],
+    department: [(value: DepartmentModel) => value != null, 'Debe ingresar un departamento'],
+  };
+
   const { postCreatePropertie, patchUpdatePropertie } = usePropertieStore();
   const [newImage, setNewImage] = useState<string>(noimage)
   const [formSubmitted, setFormSubmitted] = useState(false);
-  const [modal, setModal] = useState(false)
+  const [modal, setModal] = useState(false);
+
+  const {
+    name, photo, address, department,
+    onValueChange,
+    onInputChange, onFileChange, isFormValid, onResetForm,
+    nameValid, addressValid, departmentValid, photoValid } = useForm(propertie ?? formFields, formValidations);
+
   useEffect(() => {
-    if (propertie != null) setNewImage(propertie.photo)
+    if (propertie != null) {
+      setNewImage(propertie.photo);
+      const departmentSelect = listDepartments.find((item: DepartmentModel) => item.name === propertie.department)
+      onValueChange('department', departmentSelect)
+    }
   }, [propertie])
 
 
-  const {
-    name, direction,
-    photo, departament, onValueChange,
-    onInputChange, onFileChange, isFormValid, onResetForm,
-    nameValid, directionValid, departamentValid, photoValid } = useForm(propertie ?? formFields, formValidations);
 
   const sendSubmit = (event: any) => {
     event.preventDefault();
@@ -63,9 +65,9 @@ export const CreatePropertie = (props: CreatePropertieProps) => {
     if (!isFormValid) return;
     var bodyFormData = new FormData();
     bodyFormData.append('name', name);
-    bodyFormData.append('photo', photo);
-    bodyFormData.append('address', direction);
-    bodyFormData.append('department', departament.name);
+    if (propertie == null || isFile("image/jpeg, image/png, image/gif", photo)) bodyFormData.append('photo', photo);
+    bodyFormData.append('address', address);
+    bodyFormData.append('department', department.name);
     if (propertie == null) {
       postCreatePropertie(bodyFormData);
     } else {
@@ -81,62 +83,62 @@ export const CreatePropertie = (props: CreatePropertieProps) => {
 
   return (
     <>
-    {
-      modal && <ModalSelectComponent
+      {
+        modal && <ModalSelectComponent
           stateSelect={true}
           stateMultiple={false}
           title='Departamentos'
           opendrawer={modal}
           handleDrawer={handleSelectDepartment}
-      >
-        <DepartamentTable
-          data={departaments}
-          stateSelect={true}
-          itemSelect={ (v) => {
-            if(departament == null || departament.id != v.id) {
-              onValueChange('departament', v)
-              handleSelectDepartment(false)
-            }
-          }}
-          items={departament == null ? [] : [departament.id]}
-        />
-      </ModalSelectComponent>
-    }
+        >
+          <DepartamentTable
+            data={listDepartments}
+            stateSelect={true}
+            itemSelect={(v) => {
+              if (department == null || department.id != v.id) {
+                onValueChange('department', v)
+                handleSelectDepartment(false)
+              }
+            }}
+            items={department == null ? [] : [department.id]}
+          />
+        </ModalSelectComponent>
+      }
       <Dialog open={open} onClose={handleClose} >
         <DialogTitle>{propertie == null ? 'Nuevo Inmueble' : `${propertie.name}`}</DialogTitle>
         <form onSubmit={sendSubmit}>
           <DialogContent>
             <Grid container>
               <Grid item xs={12} sm={6}>
-                <Grid item xs={12} sm={12} sx={{padding: '5px'}}>
+                <Grid item xs={12} sm={12} sx={{ padding: '5px' }}>
                   <ComponentInput
                     type="text"
                     label="Nombre"
                     name="name"
                     value={name}
-                    onChange={onInputChange}
+                    onChange={(V: any) => onInputChange(V, true)}
                     error={!!nameValid && formSubmitted}
                     helperText={formSubmitted ? nameValid : ''}
                   />
                 </Grid>
-                <Grid item xs={12} sm={12} sx={{padding: '5px'}}>
+                <Grid item xs={12} sm={12} sx={{ padding: '5px' }}>
                   <ComponentInput
-                      type="text"
-                      label="Dirección"
-                      name="direction"
-                      value={direction}
-                      onChange={onInputChange}
-                      error={!!directionValid && formSubmitted}
-                      helperText={formSubmitted ? directionValid : ''}
+                    type="text"
+                    label="Dirección"
+                    name="address"
+                    value={address}
+                    onChange={onInputChange}
+                    error={!!addressValid && formSubmitted}
+                    helperText={formSubmitted ? addressValid : ''}
                   />
                 </Grid>
-                <Grid item xs={12} sm={12} sx={{padding: '7px'}}>
+                <Grid item xs={12} sm={12} sx={{ padding: '7px' }}>
                   <ComponentInputSelect
-                    label="Departamentos"
-                    title={departament != null ? `${departament.name}` : 'Departamento'}
-                    onPressed={handleSelectDepartment}
-                    error={!!departamentValid && formSubmitted}
-                    helperText={formSubmitted ? departamentValid : ''}
+                    label={department != null ? 'Departamento' : ''}
+                    title={department != null ? department.name : 'Departamento'}
+                    onPressed={() => handleSelectDepartment(true)}
+                    error={!!departmentValid && formSubmitted}
+                    helperText={formSubmitted ? departmentValid : ''}
                   />
                 </Grid>
               </Grid>
@@ -157,7 +159,7 @@ export const CreatePropertie = (props: CreatePropertieProps) => {
           <DialogActions>
             <Button onClick={handleClose}>Cancelar</Button>
             <Button type="submit">
-              {propertie == null ? 'CREAR' : 'EDITAR'}
+              {propertie == null ? 'CREAR' : 'GUARDAR'}
             </Button>
           </DialogActions>
         </form>

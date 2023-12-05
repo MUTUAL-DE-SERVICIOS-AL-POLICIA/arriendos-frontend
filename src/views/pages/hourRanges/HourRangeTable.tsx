@@ -1,5 +1,6 @@
 
 
+import { SkeletonComponent } from "@/components";
 import { useHourRangeStore } from "@/hooks/useHourRangeStore";
 import { HourRangeModel } from "@/models";
 import { DeleteOutline, EditOutlined } from "@mui/icons-material";
@@ -35,9 +36,7 @@ export const HourRangeTable = (props: tableProps) => {
         <Table sx={{ minWidth: 350 }} size="small">
           <TableHead>
             <TableRow sx={{ backgroundColor: '#E2F6F0' }}>
-              {
-                stateSelect && <TableCell />
-              }
+              {stateSelect && <TableCell />}
               <TableCell sx={{ fontWeight: 'bold' }}>Rango</TableCell>
               {
                 !stateSelect && <TableCell sx={{ fontWeight: 'bold' }}>Acciones</TableCell>
@@ -45,46 +44,49 @@ export const HourRangeTable = (props: tableProps) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {hourRanges.map((hourRange: HourRangeModel) => {
-              const isSelected = items.includes(hourRange.id);
-              return (
-                <TableRow
-                  key={hourRange.id}
-                >
-                  {
-                    stateSelect && <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={isSelected}
-                        onChange={() => itemSelect!(hourRange)}
-                      />
-                    </TableCell>
-                  }
-                  <TableCell>{`${hourRange.time} HORAS`}</TableCell>
-                  {
-                    !stateSelect && <TableCell>
-                      <Stack
-                        alignItems="center"
-                        direction="row"
-                        spacing={2}
-                      >
-                        <IconButton
-                          sx={{ p: 0 }}
-                          onClick={() => handleEdit!(hourRange)}
+            {hourRanges == null ?
+              <SkeletonComponent
+                quantity={2}
+              /> : hourRanges.map((hourRange: HourRangeModel) => {
+                const isSelected = items.includes(hourRange.id);
+                return (
+                  <TableRow
+                    key={hourRange.id}
+                  >
+                    {
+                      stateSelect && <TableCell padding="checkbox">
+                        <Checkbox
+                          checked={isSelected}
+                          onChange={() => itemSelect!(hourRange)}
+                        />
+                      </TableCell>
+                    }
+                    <TableCell>{`${hourRange.time} HORAS`}</TableCell>
+                    {
+                      !stateSelect && <TableCell>
+                        <Stack
+                          alignItems="center"
+                          direction="row"
+                          spacing={2}
                         >
-                          <EditOutlined color="info" />
-                        </IconButton>
-                        <IconButton
-                          sx={{ p: 0 }}
-                          onClick={() => deleteRemoveHourRange(hourRange)}
-                        >
-                          <DeleteOutline color="error" />
-                        </IconButton>
-                      </Stack>
-                    </TableCell>
-                  }
-                </TableRow>
-              );
-            })}
+                          <IconButton
+                            sx={{ p: 0 }}
+                            onClick={() => handleEdit!(hourRange)}
+                          >
+                            <EditOutlined color="info" />
+                          </IconButton>
+                          <IconButton
+                            sx={{ p: 0 }}
+                            onClick={() => deleteRemoveHourRange(hourRange)}
+                          >
+                            <DeleteOutline color="error" />
+                          </IconButton>
+                        </Stack>
+                      </TableCell>
+                    }
+                  </TableRow>
+                );
+              })}
           </TableBody>
         </Table>
       </TableContainer>

@@ -91,7 +91,7 @@ export const CardContact = (props: contendProps) => {
                         onUpdate={(value:string[]) => onValueChange('phones', value)}
                         error={!!phonesValid && formSubmitted}
                         helperText={formSubmitted ? phonesValid : ''}
-                        disabled={disabled}
+                    // disabled={disabled}
                     />
                 </Grid>
             </Grid>

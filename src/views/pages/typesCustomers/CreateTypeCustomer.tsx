@@ -101,7 +101,7 @@ export const CreateTypeCustomer = (props: createProps) => {
               handleClose()
             }}>Cancelar</Button>
             <Button type="submit">
-              {item == null ? 'CREAR' : 'EDITAR'}
+              {item == null ? 'CREAR' : 'GUARDAR'}
             </Button>
           </DialogActions>
         </form>

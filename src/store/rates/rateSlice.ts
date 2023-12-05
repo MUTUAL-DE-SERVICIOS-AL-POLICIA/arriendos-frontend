@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 export const rateSlice = createSlice({
   name: 'rate',
   initialState: {
-    rates: [],
+    rates: null,
     flag: false
   },
   reducers: {
@@ -14,7 +14,7 @@ export const rateSlice = createSlice({
       state.flag = !state.flag
     },
     clearRates: (state, /* action */) => {
-      state.rates = [];
+      state.rates = null;
     }
   }
 });

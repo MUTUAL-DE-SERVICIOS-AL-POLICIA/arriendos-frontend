@@ -1,4 +1,4 @@
-import { ComponentSearch, ComponentTablePagination, SeverityPill } from "@/components";
+import { ComponentSearch, ComponentTablePagination, SeverityPill, SkeletonComponent } from "@/components";
 import { useTypeCustomerStore } from "@/hooks";
 import { TypeCustomerModel } from "@/models";
 import { DeleteOutline, EditOutlined } from "@mui/icons-material";
@@ -52,48 +52,51 @@ export const TypeCustomerTable = (props: tableProps) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {typesCustomers.map((typeCustomer: TypeCustomerModel) => {
-              const isSelected = items.includes(typeCustomer.id);
-              const isInstitution = typeCustomer.is_institution;
-              return (
-                <TableRow key={typeCustomer.id} >
-                  {
-                    stateSelect && <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={isSelected}
-                        onChange={() => itemSelect!(typeCustomer)}
-                      />
+            {typesCustomers == null ?
+              <SkeletonComponent
+                quantity={3}
+              /> : typesCustomers.map((typeCustomer: TypeCustomerModel) => {
+                const isSelected = items.includes(typeCustomer.id);
+                const isInstitution = typeCustomer.is_institution;
+                return (
+                  <TableRow key={typeCustomer.id} >
+                    {
+                      stateSelect && <TableCell padding="checkbox">
+                        <Checkbox
+                          checked={isSelected}
+                          onChange={() => itemSelect!(typeCustomer)}
+                        />
+                      </TableCell>
+                    }
+                    <TableCell>{typeCustomer.name}</TableCell>
+                    <TableCell>
+                      <SeverityPill color={isInstitution ? 'info' : 'warning'}>
+                        {isInstitution ? 'SI es institución' : 'No es institución'}
+                      </SeverityPill>
                     </TableCell>
-                  }
-                  <TableCell>{typeCustomer.name}</TableCell>
-                  <TableCell>
-                    <SeverityPill color={isInstitution ? 'info' : 'warning'}>
-                      {isInstitution ? 'SI es institución' : 'No es institución'}
-                    </SeverityPill>
-                  </TableCell>
-                  {
-                    !stateSelect && <TableCell align="right">
-                      <Stack
-                        alignItems="center"
-                        direction="row"
-                        spacing={2}
-                      >
-                        <IconButton
-                          sx={{ p: 0 }}
-                          onClick={() => handleEdit!(typeCustomer)} >
-                          <EditOutlined color="info" />
-                        </IconButton>
-                        <IconButton
-                          sx={{ p: 0 }}
-                          onClick={() => deleteRemoveTypeCustomer(typeCustomer)} >
-                          <DeleteOutline color="error" />
-                        </IconButton>
-                      </Stack>
-                    </TableCell>
-                  }
-                </TableRow>
-              );
-            })}
+                    {
+                      !stateSelect && <TableCell align="right">
+                        <Stack
+                          alignItems="center"
+                          direction="row"
+                          spacing={2}
+                        >
+                          <IconButton
+                            sx={{ p: 0 }}
+                            onClick={() => handleEdit!(typeCustomer)} >
+                            <EditOutlined color="info" />
+                          </IconButton>
+                          <IconButton
+                            sx={{ p: 0 }}
+                            onClick={() => deleteRemoveTypeCustomer(typeCustomer)} >
+                            <DeleteOutline color="error" />
+                          </IconButton>
+                        </Stack>
+                      </TableCell>
+                    }
+                  </TableRow>
+                );
+              })}
           </TableBody>
         </Table>
       </TableContainer>

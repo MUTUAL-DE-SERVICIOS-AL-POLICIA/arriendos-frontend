@@ -92,7 +92,7 @@ export const useCustomerStore = () => {
   const searchAffiliate = async (ciAffiliate: String) => {
     try {
       const { data } = await api.get(`/customers/identify_police/${ciAffiliate}/`);
-      return data.data[0]
+      return data[0]
     } catch (error: any) {
       return;
     }

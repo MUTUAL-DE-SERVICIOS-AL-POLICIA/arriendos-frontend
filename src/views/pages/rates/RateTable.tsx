@@ -1,4 +1,4 @@
-import { ComponentSearch, ComponentTablePagination } from "@/components";
+import { ComponentSearch, ComponentTablePagination, SkeletonComponent } from "@/components";
 import { useRateStore } from "@/hooks/useRateStore";
 import { RateModel } from "@/models";
 import { DeleteOutline } from "@mui/icons-material";
@@ -48,36 +48,39 @@ export const RateTable = (props: tableProps) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rates.map((rate: RateModel) => {
-              const isSelected = items.includes(rate.id);
-              return (
-                <TableRow key={rate.id}>
-                  {
-                    stateSelect && <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={isSelected}
-                        onChange={() => itemSelect!(rate)}
-                      />
-                    </TableCell>
-                  }
-                  <TableCell>{rate.name}</TableCell>
-                  <TableCell>{rate.customer_type.map((e) => (<Typography key={e.id}>-{e.name}</Typography>))}</TableCell>
-                  <TableCell>{rate.requirements.map((e) => (<Typography key={e.id}>-{e.requirement_name}</Typography>))}</TableCell>
-                  {
-                    !stateSelect && <TableCell>
-                      <Stack
-                        alignItems="center"
-                        direction="row"
-                      >
-                        <IconButton sx={{ p: 0 }} onClick={() => deleteRemoveRate(rate)}>
-                          <DeleteOutline color="error" />
-                        </IconButton>
-                      </Stack>
-                    </TableCell>
-                  }
-                </TableRow>
-              )
-            })}
+            {rates == null ?
+              <SkeletonComponent
+                quantity={4}
+              /> : rates.map((rate: RateModel) => {
+                const isSelected = items.includes(rate.id);
+                return (
+                  <TableRow key={rate.id}>
+                    {
+                      stateSelect && <TableCell padding="checkbox">
+                        <Checkbox
+                          checked={isSelected}
+                          onChange={() => itemSelect!(rate)}
+                        />
+                      </TableCell>
+                    }
+                    <TableCell>{rate.name}</TableCell>
+                    <TableCell>{rate.customer_type.map((e) => (<Typography key={e.id}>-{e.name}</Typography>))}</TableCell>
+                    <TableCell>{rate.requirements.map((e) => (<Typography key={e.id}>-{e.requirement_name}</Typography>))}</TableCell>
+                    {
+                      !stateSelect && <TableCell>
+                        <Stack
+                          alignItems="center"
+                          direction="row"
+                        >
+                          <IconButton sx={{ p: 0 }} onClick={() => deleteRemoveRate(rate)}>
+                            <DeleteOutline color="error" />
+                          </IconButton>
+                        </Stack>
+                      </TableCell>
+                    }
+                  </TableRow>
+                )
+              })}
           </TableBody>
         </Table>
       </TableContainer>

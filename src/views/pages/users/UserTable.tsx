@@ -1,6 +1,6 @@
 
 import { Stack, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, } from '@mui/material';
-import { ComponentSearch, ComponentTablePagination } from '@/components';
+import { ComponentSearch, ComponentTablePagination, SkeletonComponent } from '@/components';
 import { useEffect, useState } from 'react';
 import { useUserStore } from '@/hooks';
 import { UserModel } from '@/models';
@@ -43,25 +43,28 @@ export const UserTable = (props: tableProps) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {users.map((user: UserModel) => {
-                return (
-                  <TableRow key={user.id} >
-                    <TableCell>{user.username}</TableCell>
-                    <TableCell>{user.first_name}</TableCell>
-                    <TableCell>{user.last_name}</TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>
-                      <Switch
+              {users == null ?
+                <SkeletonComponent
+                  quantity={5}
+                /> : users.map((user: UserModel) => {
+                  return (
+                    <TableRow key={user.id} >
+                      <TableCell>{user.username}</TableCell>
+                      <TableCell>{user.first_name}</TableCell>
+                      <TableCell>{user.last_name}</TableCell>
+                      <TableCell>{user.email}</TableCell>
+                      <TableCell>
+                        <Switch
 
-                        checked={user.is_active}
-                        onChange={() => toggleActivation(user)}
-                        color="success"
-                        size="small"
-                      />
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+                          checked={user.is_active}
+                          onChange={() => toggleActivation(user)}
+                          color="success"
+                          size="small"
+                        />
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
             </TableBody>
           </Table>
         </TableContainer>

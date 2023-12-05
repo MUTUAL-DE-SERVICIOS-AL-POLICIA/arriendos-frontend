@@ -1,4 +1,4 @@
-import { ComponentSearch, ComponentTablePagination } from '@/components';
+import { ComponentSearch, ComponentTablePagination, SkeletonComponent } from '@/components';
 import { useRequirementStore } from '@/hooks';
 import { RequirementModel } from '@/models';
 import { DeleteOutline, EditOutlined } from '@mui/icons-material';
@@ -50,43 +50,46 @@ export const RequirementTable = (props: tableProps) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {requirements.map((requirement: RequirementModel) => {
-              const isSelected = items.includes(requirement.id);
-              return (
-                <TableRow
-                  hover
-                  key={requirement.id}
-                >
-                  {
-                    stateSelect && <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={isSelected}
-                        onChange={() => itemSelect!(requirement)}
-                      />
+            {requirements == null ?
+              <SkeletonComponent
+                quantity={2}
+              /> : requirements.map((requirement: RequirementModel) => {
+                const isSelected = items.includes(requirement.id);
+                return (
+                  <TableRow
+                    hover
+                    key={requirement.id}
+                  >
+                    {
+                      stateSelect && <TableCell padding="checkbox">
+                        <Checkbox
+                          checked={isSelected}
+                          onChange={() => itemSelect!(requirement)}
+                        />
+                      </TableCell>
+                    }
+                    <TableCell>{requirement.requirement_name}</TableCell>
+                    <TableCell>
+                      <Stack
+                        alignItems="center"
+                        direction="row"
+                        spacing={2}
+                      >
+                        <IconButton
+                          sx={{ p: 0 }}
+                          onClick={() => handleEdit!(requirement)} >
+                          <EditOutlined color="info" />
+                        </IconButton>
+                        <IconButton
+                          sx={{ p: 0 }}
+                          onClick={() => deleteRemoveRequirement(requirement)} >
+                          <DeleteOutline color="error" />
+                        </IconButton>
+                      </Stack>
                     </TableCell>
-                  }
-                  <TableCell>{requirement.requirement_name}</TableCell>
-                  <TableCell>
-                    <Stack
-                      alignItems="center"
-                      direction="row"
-                      spacing={2}
-                    >
-                      <IconButton
-                        sx={{ p: 0 }}
-                        onClick={() => handleEdit!(requirement)} >
-                        <EditOutlined color="info" />
-                      </IconButton>
-                      <IconButton
-                        sx={{ p: 0 }}
-                        onClick={() => deleteRemoveRequirement(requirement)} >
-                        <DeleteOutline color="error" />
-                      </IconButton>
-                    </Stack>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
+                  </TableRow>
+                );
+              })}
           </TableBody>
         </Table>
       </TableContainer>
