@@ -102,13 +102,12 @@ export const CreateCustomer = (props: createProps) => {
   const handleSearch = async (search: string) => {
     const res = await searchAffiliate(search);
     if (res) {
-
       const newContact = {
         degree: `${res.degree == null ? '' : res.degree}`,
         name: `${res.name}`,
         ci_nit: `${res.ci}`,
         phones: [''],
-        nup: null,//corregir
+        nup: res.id_affiliate,//corregir
         state: false
       };
 
@@ -229,7 +228,7 @@ export const CreateCustomer = (props: createProps) => {
           <DialogActions>
             <Button onClick={handleClose}>Cancelar</Button>
             <Button type="submit">
-              {item == null ? 'CREAR' : 'EDITAR'}
+              {item == null ? 'CREAR' : 'GUARDAR'}
             </Button>
           </DialogActions>
         </form>

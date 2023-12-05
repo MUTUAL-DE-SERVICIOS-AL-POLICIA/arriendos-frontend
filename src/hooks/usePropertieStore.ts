@@ -42,7 +42,7 @@ export const usePropertieStore = () => {
 
   const patchUpdatePropertie = async (id: number, body: object) => {
     try {
-      const { data } = await api.patch(`/rooms/properties/${id}`, body);
+      const { data } = await api.patch(`/rooms/properties/${id}/`, body);
       dispatch(updatePropertie({ propertie: data }));
       Swal.fire('Inmueble editado correctamente', '', 'success');
     } catch (error: any) {

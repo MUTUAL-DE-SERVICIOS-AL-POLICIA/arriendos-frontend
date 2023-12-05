@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 export const requirementSlice = createSlice({
   name: 'requirement',
   initialState: {
-    requirements: [],
+    requirements: null,
     flag: false
   },
   reducers: {
@@ -14,7 +14,7 @@ export const requirementSlice = createSlice({
       state.flag = !state.flag
     },
     clearRequirements: (state,/* action*/) => {
-      state.requirements = []
+      state.requirements = null
     }
   }
 });

@@ -4,7 +4,7 @@ export const userSlice = createSlice({
   name: 'user',
   initialState: {
     usersLDAP: [],
-    users: [],
+    users: null,
     flag: false
   },
   reducers: {
@@ -19,7 +19,7 @@ export const userSlice = createSlice({
     },
     clearUsers: (state,/* action*/) => {
       state.usersLDAP = []
-      state.users = []
+      state.users = null
     }
   }
 });

@@ -4,17 +4,17 @@ import { createSlice } from '@reduxjs/toolkit';
 export const propertieSlice = createSlice({
   name: 'propertie',
   initialState: {
-    properties: <PropertieModel[]>[],
+    properties: <PropertieModel[] | null>null,
   },
   reducers: {
     setProperties: (state, action) => {
       state.properties = action.payload.properties;
     },
     addPropertie: (state, action) => {
-      state.properties = [...state.properties, action.payload.propertie]
+      state.properties = [...state.properties!, action.payload.propertie]
     },
     updatePropertie: (state, action) => {
-      state.properties = [...state.properties.map((e: PropertieModel) => {
+      state.properties = [...state.properties!.map((e: PropertieModel) => {
         if (e.id === action.payload.propertie.id) {
           return { ...action.payload.propertie }
         }
@@ -23,7 +23,7 @@ export const propertieSlice = createSlice({
     },
 
     addRoom: (state, action) => {
-      state.properties = [...state.properties.map((e: PropertieModel) => {
+      state.properties = [...state.properties!.map((e: PropertieModel) => {
         if (e.id === action.payload.room.property) {
           e.rooms = [...e.rooms, action.payload.room]
         }
@@ -33,10 +33,10 @@ export const propertieSlice = createSlice({
 
     updateRoom: (state, action) => {
 
-      const propertyIndex = state.properties.findIndex((e) => e.id === action.payload.room.property)
+      const propertyIndex = state.properties!.findIndex((e) => e.id === action.payload.room.property)
 
       if (propertyIndex !== -1) {
-        const updatedProperty = { ...state.properties[propertyIndex] }
+        const updatedProperty = { ...state.properties![propertyIndex] }
 
         updatedProperty.rooms = updatedProperty.rooms.map((room) => {
           if (room.id === action.payload.room.id) {
@@ -44,11 +44,11 @@ export const propertieSlice = createSlice({
           }
           return room
         })
-        state.properties[propertyIndex] = updatedProperty;
+        state.properties![propertyIndex] = updatedProperty;
       }
     },
     clearProperties: (state,/* action*/) => {
-      state.properties = []
+      state.properties = null
     }
   }
 });

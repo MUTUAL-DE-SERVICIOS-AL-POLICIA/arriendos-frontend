@@ -24,12 +24,12 @@ export const useForm = (initialForm: any = {}, formValidations: any = {}) => {
 
 
 
-  const onInputChange = ({ target }: { target: any }, uppercase = false, onlynumber = false) => {
+  const onInputChange = ({ target }: { target: any }, uppercase = false, onlyfloat = false, onlyInteger = false) => {
     const { name, value } = target;
 
-    if (onlynumber) {
+    if (onlyfloat || onlyInteger) {
       // Si solo se permiten números, elimina cualquier carácter no numérico del valor
-      const numericValue = value.replace(/[^0-9.]/g, '');
+      const numericValue = onlyfloat ? value.replace(/[^0-9.]/g, '') : value.replace(/[^0-9]/g, '');
       setFormState({
         ...formState,
         [name]: numericValue

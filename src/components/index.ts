@@ -12,3 +12,4 @@ export * from './AutoComplete';
 export * from './InputTime';
 export * from './Select';
 export * from './Paper';
+export * from './Skeleton';

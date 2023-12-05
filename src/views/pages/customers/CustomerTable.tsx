@@ -1,4 +1,4 @@
-import { ComponentSearch, ComponentTablePagination } from "@/components";
+import { ComponentSearch, ComponentTablePagination, SkeletonComponent } from "@/components";
 import { useCustomerStore } from "@/hooks";
 import { CustomerModel } from "@/models";
 import { Checkbox, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
@@ -60,57 +60,61 @@ export const CustomerTable = (props: tableProps) => {
           </TableHead>
           <TableBody>
             {
-              customers.map((customer: CustomerModel, index: number) => {
-                const isSelected = items?.includes(customer.id);
-                return (
-                  <React.Fragment key={index} >
-                    <TableRow>
-                      {
-                        stateSelect && <TableCell padding="checkbox">
-                          <Checkbox
-                            checked={isSelected}
-                            onChange={() => itemSelect!(customer)}
-                          />
-                        </TableCell>
-                      }
-                      <TableCell>{customer.nit ?? customer.contacts.length > 0 ? customer.contacts[0].ci_nit : ''} </TableCell>
-                      <TableCell>{customer.institution_name ?? (customer.contacts.length > 0 ? customer.contacts[0].name : '')}</TableCell>
-                      <TableCell>{customer.customer_type.name}</TableCell>
-                      {
-                        customer.customer_type.is_institution ?
-                          <TableCell>
-                            <IconButton
-                              aria-label="expand row"
-                              size="small"
-                              onClick={() => setOpenIndex(openIndex == customer.id ? null : customer.id)}
-                            >
-                              {openIndex == customer.id ? <KeyboardArrowUpOutlined /> : <KeyboardArrowDownOutlined />}
+              customers == null ?
+                <SkeletonComponent
+                  quantity={5}
+                /> :
+                customers.map((customer: CustomerModel, index: number) => {
+                  const isSelected = items?.includes(customer.id);
+                  return (
+                    <React.Fragment key={index} >
+                      <TableRow>
+                        {
+                          stateSelect && <TableCell padding="checkbox">
+                            <Checkbox
+                              checked={isSelected}
+                              onChange={() => itemSelect!(customer)}
+                            />
+                          </TableCell>
+                        }
+                        <TableCell>{customer.nit ?? customer.contacts.length > 0 ? customer.contacts[0].ci_nit : ''} </TableCell>
+                        <TableCell>{customer.institution_name ?? (customer.contacts.length > 0 ? customer.contacts[0].name : '')}</TableCell>
+                        <TableCell>{customer.customer_type.name}</TableCell>
+                        {
+                          customer.customer_type.is_institution ?
+                            <TableCell>
+                              <IconButton
+                                aria-label="expand row"
+                                size="small"
+                                onClick={() => setOpenIndex(openIndex == customer.id ? null : customer.id)}
+                              >
+                                {openIndex == customer.id ? <KeyboardArrowUpOutlined /> : <KeyboardArrowDownOutlined />}
+                              </IconButton>
+                            </TableCell> :
+                            <TableCell>{customer.contacts.length > 0 ? customer.contacts[0].phone : ''}</TableCell>
+                        }
+                        {!stateSelect && <TableCell>
+                          <Stack
+                            alignItems="center"
+                            direction="row"
+                          >
+                            <IconButton sx={{ p: 0 }} onClick={() => itemEdit!(customer)} >
+                              <EditOutlined color="info" />
                             </IconButton>
-                          </TableCell> :
-                          <TableCell>{customer.contacts.length > 0 ? customer.contacts[0].phone : ''}</TableCell>
-                      }
-                      {!stateSelect && <TableCell>
-                        <Stack
-                          alignItems="center"
-                          direction="row"
-                        >
-                          <IconButton sx={{ p: 0 }} onClick={() => itemEdit!(customer)} >
-                            <EditOutlined color="info" />
-                          </IconButton>
-                          <IconButton sx={{ p: 0 }} onClick={() => deleteRemoveCustomer(customer)} >
-                            <DeleteOutline color="error" />
-                          </IconButton>
-                        </Stack>
-                      </TableCell>}
-                    </TableRow>
-                    <ContactTable
-                      open={openIndex == customer.id}
-                      contacts={customer.contacts}
-                    />
-                  </React.Fragment>
-                )
-              }
-              )}
+                            <IconButton sx={{ p: 0 }} onClick={() => deleteRemoveCustomer(customer)} >
+                              <DeleteOutline color="error" />
+                            </IconButton>
+                          </Stack>
+                        </TableCell>}
+                      </TableRow>
+                      <ContactTable
+                        open={openIndex == customer.id}
+                        contacts={customer.contacts}
+                      />
+                    </React.Fragment>
+                  )
+                }
+                )}
           </TableBody>
         </Table>
       </TableContainer>
