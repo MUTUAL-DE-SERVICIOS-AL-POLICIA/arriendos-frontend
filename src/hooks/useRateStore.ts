@@ -30,14 +30,16 @@ export const useRateStore = () => {
       await api.post(`/requirements/rates/`, body);
       dispatch(refreshRate());
       Swal.fire('Tarifa creado correctamente', '', 'success');
+      return true;
     } catch (error: any) {
-      if (error.response && error.response.status == 400) {
-        const message = error.response.data.error
-        Swal.fire('Error', message, 'error')
-      } else if (error.response && error.response.status == 403) {
+      if (error.response && error.response.status == 403) {
         const message = error.response.data.detail
         Swal.fire('Acceso denegado', message, 'warning')
-      } else throw new Error('Ocurrió algun error en el backend')
+      } else {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error');
+      }
+      return false;
     }
   }
 

@@ -1,14 +1,15 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { coffeApi } from '@/services';
 import Swal from 'sweetalert2';
-import { setRentals } from '@/store';
+import { setGroupRentals, setRentalSelected, setRentals } from '@/store';
 import printJS from 'print-js';
 import { formatDate } from '@/helpers';
+import { EventsCalendarModel } from '@/models';
 
 const api = coffeApi;
 
 export const useRentalStore = () => {
-  const { rentals = [] } = useSelector((state: any) => state.rentals);
+  const { rentals = [], groupRentals = [], rentalSelected } = useSelector((state: any) => state.rentals);
   const dispatch = useDispatch();
 
   const getRentals = async (roomId?: number) => {
@@ -36,11 +37,18 @@ export const useRentalStore = () => {
       if (error.response && error.response.status == 400) {
         const message = error.response.data.error
         Swal.fire('Error', message, 'error')
-      } else if(error.response && error.response.status == 403) {
+      } else if (error.response && error.response.status == 403) {
         const message = error.response.data.detail
         Swal.fire('Acceso denegado', message, 'warning')
       } else throw new Error('Ocurrió algun error en el backend')
     }
+  }
+
+  const saveGroupRental = (rentals: EventsCalendarModel[]) => {
+    dispatch(setGroupRentals({ groupRentals: rentals }))
+  }
+  const saveRentalSelected = (rental: EventsCalendarModel) => {
+    dispatch(setRentalSelected({ rentalSelected: rental }))
   }
 
   const postCreateRental = async (body: object, setShoppingCart: Function, onClose: Function) => {
@@ -64,7 +72,7 @@ export const useRentalStore = () => {
           if (error.response && error.response.status == 400) {
             const message = error.response.data.error
             Swal.fire('Error', message, 'error')
-          } else if(error.response && error.response.status == 403) {
+          } else if (error.response && error.response.status == 403) {
             const message = error.response.data.detail
             Swal.fire('Acceso denegado', message, 'warning')
           } else throw new Error('Ocurrió algun error en el backend')
@@ -85,7 +93,7 @@ export const useRentalStore = () => {
       if (error.response && error.response.status == 400) {
         const message = error.response.data.error
         Swal.fire('Error', message, 'error')
-      } else if(error.response && error.response.status == 403) {
+      } else if (error.response && error.response.status == 403) {
         const message = error.response.data.detail
         Swal.fire('Acceso denegado', message, 'warning')
       } else throw new Error('Ocurrió algun error en el backend')
@@ -135,7 +143,7 @@ export const useRentalStore = () => {
       if (error.response && error.response.status == 400) {
         const message = error.response.data.error
         Swal.fire('Error', message, 'error')
-      } else if(error.response && error.response.status == 403) {
+      } else if (error.response && error.response.status == 403) {
         const message = error.response.data.detail
         Swal.fire('Acceso denegado', message, 'warning')
       } else throw new Error('Ocurrió algun error en el backend')
@@ -253,8 +261,12 @@ export const useRentalStore = () => {
   return {
     //* Propiedades
     rentals,
+    groupRentals,
+    rentalSelected,
     //* Métodos
     getRentals,
+    saveGroupRental,
+    saveRentalSelected,
     getRentalRequirements,
     postSendRequirements,
     postWarrantyReturn,

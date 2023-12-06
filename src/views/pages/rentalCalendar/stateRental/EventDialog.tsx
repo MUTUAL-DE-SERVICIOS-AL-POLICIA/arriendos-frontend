@@ -5,7 +5,6 @@ import { ArrowCircleRight, Cancel, Close } from "@mui/icons-material"
 import { useLeasesStates } from "@/hooks/useLeasesStates"
 import { useRentalStore } from "@/hooks"
 import Swal from "sweetalert2"
-import { EventsCalendarModel } from "@/models"
 import { InfoRental } from "./InfoRental"
 import { Reserver } from "./reserve/Main"
 import { Rented } from "./payments/Main"
@@ -15,7 +14,6 @@ import { ComponentButton } from "@/components"
 interface elementsProps {
   open: boolean;
   handleClose: () => void;
-  selectedEvent: EventsCalendarModel;
   date: Date;
 }
 
@@ -24,12 +22,11 @@ export const EventDialog = (props: elementsProps) => {
   const {
     open,
     handleClose,
-    selectedEvent,
     date,
   } = props
 
   //INFORMACIÓN DEL ALQUILER
-  const { postSendRequirements } = useRentalStore();
+  const { rentalSelected, postSendRequirements } = useRentalStore();
 
 
   const { states, rentalInformation, currentRentalState, getLeaseState, getRental, getCurrentLeaseState, postChangeRentalState } = useLeasesStates();
@@ -39,9 +36,9 @@ export const EventDialog = (props: elementsProps) => {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    getRental(selectedEvent.rental);
+    getRental(rentalSelected.rental);
     getLeaseState()
-    getCurrentLeaseState(selectedEvent.rental)
+    getCurrentLeaseState(rentalSelected.rental)
   }, [])
 
 
@@ -59,7 +56,7 @@ export const EventDialog = (props: elementsProps) => {
         return result
       }, [])
       const requirementsToSend = {
-        rental: selectedEvent.rental,
+        rental: rentalSelected.rental,
         list_requirements: requirementsSelected
       }
       if (requirementsSelected.length != 0) {
@@ -89,7 +86,7 @@ export const EventDialog = (props: elementsProps) => {
       }
     });
     const changeRentalState = {
-      rental: selectedEvent.rental,
+      rental: rentalSelected.rental,
       state: estadoSiguienteId
     }
     await postChangeRentalState(changeRentalState)
@@ -121,9 +118,7 @@ export const EventDialog = (props: elementsProps) => {
           </IconButton>
           {
             rentalInformation && <InfoRental
-              selectedEvent={selectedEvent}
               date={date}
-              productId={selectedEvent.product_id}
             />
           }
           {currentRentalState && <Card sx={{ margin: '20px 0px', padding: '10px 10px 0px 10px', borderRadius: '10px' }} variant="outlined">
@@ -141,20 +136,18 @@ export const EventDialog = (props: elementsProps) => {
               {
                 currentRentalState.current_state.id == 1 &&
                 <Reserver
-                  rentalId={selectedEvent.rental}
+                  rentalId={rentalSelected.rental}
                   checkeds={mergeRequirements}
                 />
               }
               {
                 currentRentalState.current_state.id == 2 &&
-                <Rented
-                  selectedEvent={selectedEvent}
-                />
+                <Rented />
               }
               {
                 currentRentalState.current_state.id == 3 &&
                 <Concluded
-                  rental={selectedEvent.rental}
+                  rental={rentalSelected.rental}
                 />
               }
             </>

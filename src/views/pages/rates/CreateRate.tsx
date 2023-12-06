@@ -1,7 +1,7 @@
 import { ComponentInput, ComponentInputSelect, ModalSelectComponent } from "@/components";
 import { useForm } from "@/hooks";
 import { useRateStore } from "@/hooks/useRateStore";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid } from "@mui/material";
+import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid } from "@mui/material";
 import { FormEvent, useCallback, useState } from "react";
 import { FormRateModel, FormRateValidations, RequirementModel, TypeCustomerModel } from "@/models";
 import { RequirementTable } from "../requirements";
@@ -30,24 +30,30 @@ export const CreateRate = (props: createProps) => {
 
   const { postCreateRate } = useRateStore();
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const {
     rate, customer_type, requirement,
     onInputChange, onValueChange, isFormValid, onResetForm,
     rateValid, requirementValid, customer_typeValid } = useForm(formFields, formValidations);
 
-  const sendSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const sendSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setFormSubmitted(true);
     if (!isFormValid) return;
-    postCreateRate(
+    setLoading(true);
+    await postCreateRate(
       {
         rate,
         requirement: requirement.map((e: RequirementModel) => e.id),
         customer_type: customer_type.map((e: TypeCustomerModel) => e.id),
-      })
-    handleClose();
-    onResetForm();
+      }).then((res) => {
+        if (res) {
+          handleClose();
+          onResetForm();
+        }
+      });
+    setLoading(false);
   }
 
   const [modalCustomerType, setCustomerType] = useState(false);
@@ -119,7 +125,7 @@ export const CreateRate = (props: createProps) => {
                   label="Nombre"
                   name="rate"
                   value={rate}
-                  onChange={onInputChange}
+                  onChange={(V: any) => onInputChange(V, true)}
                   error={!!rateValid && formSubmitted}
                   helperText={formSubmitted ? rateValid : ''}
                 />
@@ -147,10 +153,17 @@ export const CreateRate = (props: createProps) => {
             </Grid>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>Cancelar</Button>
-            <Button type="submit">
-              {'CREAR'}
-            </Button>
+            {
+              loading ?
+                <CircularProgress color="success" size={30} /> :
+                <>
+
+                  <Button onClick={handleClose}>Cancelar</Button>
+                  <Button type="submit">
+                    {'CREAR'}
+                  </Button>
+                </>
+            }
           </DialogActions>
         </form>
       </Dialog>

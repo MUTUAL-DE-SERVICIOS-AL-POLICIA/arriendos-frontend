@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Grid, Switch } from "@mui/material"
+import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Grid, Switch } from "@mui/material"
 import { ComponentInput } from "@/components"
 import { useForm, useRoomStore } from "@/hooks";
 import { FormRoomModel, FormRoomValidations } from "@/models";
@@ -28,6 +28,7 @@ export const CreateRoom = (props: any) => {
 
   const { postRoom, patchEditRoom } = useRoomStore();
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const {
     name, is_active, capacity, warranty,
@@ -36,7 +37,7 @@ export const CreateRoom = (props: any) => {
   } = useForm('capacity' in property ? property : formFields, formValidations);
 
 
-  const sendSubmit = (event: any) => {
+  const sendSubmit = async (event: any) => {
     event.preventDefault();
     setFormSubmitted(true);
     if (!isFormValid) return;
@@ -47,13 +48,23 @@ export const CreateRoom = (props: any) => {
     bodyFormData.append('is_active', is_active)
     bodyFormData.append('group', '1')
     bodyFormData.append('property', property.property)
+    setLoading(true);
     if (!('capacity' in property)) {
-      postRoom(bodyFormData)
+      await postRoom(bodyFormData).then((res) => {
+        if (res) {
+          handleClose();
+          onResetForm();
+        }
+      })
     } else {
-      patchEditRoom(property.id, bodyFormData)
+      await patchEditRoom(property.id, bodyFormData).then((res) => {
+        if (res) {
+          handleClose();
+          onResetForm();
+        }
+      })
     }
-    handleClose();
-    onResetForm();
+    setLoading(false);
   }
 
   return (
@@ -111,10 +122,16 @@ export const CreateRoom = (props: any) => {
             </Grid>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>Cancelar</Button>
-            <Button type="submit">
-              {change ? 'CREAR' : 'GUARDAR'}
-            </Button>
+            {
+              loading ?
+                <CircularProgress color="success" size={30} /> :
+                <>
+                  <Button onClick={handleClose}>Cancelar</Button>
+                  <Button type="submit">
+                    {change ? 'CREAR' : 'GUARDAR'}
+                  </Button>
+                </>
+            }
           </DialogActions>
         </form>
       </Dialog>

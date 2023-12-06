@@ -30,14 +30,16 @@ export const useTypeCustomerStore = () => {
       await api.post(`/customers/type/`, body);
       dispatch(refreshTypesCustomers());
       Swal.fire('Tipo de cliente creado correctamente', '', 'success');
+      return true;
     } catch (error: any) {
-      if (error.response && error.response.status == 400) {
-        const message = error.response.data.error
-        Swal.fire('Error', message, 'error')
-      } else if (error.response && error.response.status == 403) {
+      if (error.response && error.response.status == 403) {
         const message = error.response.data.detail
         Swal.fire('Acceso denegado', message, 'warning')
-      } else throw new Error('Ocurrió algun error en el backend')
+      } else {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error');
+      }
+      return false;
     }
   }
 
@@ -46,14 +48,16 @@ export const useTypeCustomerStore = () => {
       await api.patch(`/customers/type/${id}`, body);
       dispatch(refreshTypesCustomers());
       Swal.fire('Tipo de cliente editado correctamente', '', 'success');
+      return true;
     } catch (error: any) {
-      if (error.response && error.response.status == 400) {
-        const message = error.response.data.error
-        Swal.fire('Error', message, 'error')
-      } else if (error.response && error.response.status == 403) {
+      if (error.response && error.response.status == 403) {
         const message = error.response.data.detail
         Swal.fire('Acceso denegado', message, 'warning')
-      } else throw new Error('Ocurrió algun error en el backend')
+      } else {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error');
+      }
+      return false;
     }
   }
 

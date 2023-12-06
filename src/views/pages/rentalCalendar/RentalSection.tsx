@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { CartView } from "./cart";
-import { CustomerModel, EventsCalendarModel } from "@/models";
+import { CustomerModel } from "@/models";
 import { virifyDate } from "@/helpers";
 import { RentalCard } from "./stateRental/RentalCard";
 
 interface rentalProps {
   date: Date | null;
   customer: CustomerModel;
-  events: EventsCalendarModel[];
   onClose: () => void;
   screenHeight: number;
 }
@@ -16,7 +15,6 @@ export const RentalSection = (props: rentalProps) => {
   const {
     date,
     customer,
-    events,
     onClose,
     screenHeight,
   } = props;
@@ -42,7 +40,6 @@ export const RentalSection = (props: rentalProps) => {
           screenHeight={screenHeight}
           showGrow={showGrow}
           date={date}
-          events={events}
         />
         {virifyDate(date) && <CartView
           date={date}

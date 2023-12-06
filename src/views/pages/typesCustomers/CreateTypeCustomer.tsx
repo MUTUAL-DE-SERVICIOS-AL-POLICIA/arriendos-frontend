@@ -1,7 +1,7 @@
 import { ComponentInput } from "@/components"
 import { useForm, useTypeCustomerStore } from "@/hooks";
 import { FormTypeCustomerModel, FormTypeCustomerValidations, TypeCustomerModel } from "@/models";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Grid, Switch } from "@mui/material"
+import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Grid, Switch } from "@mui/material"
 import { FormEvent, useState } from "react";
 
 interface createProps {
@@ -29,28 +29,40 @@ export const CreateTypeCustomer = (props: createProps) => {
   const { postCreateTypeCustomer, patchEditTypeCustomer } = useTypeCustomerStore();
 
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const {
     name, is_institution, is_police,
     onInputChange, onSwitchChange, isFormValid,
     nameValid, onResetForm
   } = useForm(item ?? formFields, formValidations);
 
-  const sendSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const sendSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setFormSubmitted(true);
     if (!isFormValid) return;
+    setLoading(true)
     if (item == null) {
-      postCreateTypeCustomer(
+      await postCreateTypeCustomer(
         {
           name: name.trim(),
           is_institution,
           is_police
+        }).then((res) => {
+          if (res) {
+            handleClose();
+            onResetForm();
+          }
         });
     } else {
-      patchEditTypeCustomer(item.id, { name, is_institution, is_police });
+      await patchEditTypeCustomer(item.id, { name, is_institution, is_police }).then((res) => {
+        if (res) {
+          handleClose();
+          onResetForm();
+        }
+      });
     }
-    handleClose();
-    onResetForm();
+    setLoading(false)
   }
 
   return (
@@ -96,13 +108,19 @@ export const CreateTypeCustomer = (props: createProps) => {
             </Grid>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => {
-              onResetForm();
-              handleClose()
-            }}>Cancelar</Button>
-            <Button type="submit">
-              {item == null ? 'CREAR' : 'GUARDAR'}
-            </Button>
+            {
+              loading ?
+                <CircularProgress color="success" size={30} /> :
+                <>
+                  <Button onClick={() => {
+                    onResetForm();
+                    handleClose()
+                  }}>Cancelar</Button>
+                  <Button type="submit">
+                    {item == null ? 'CREAR' : 'GUARDAR'}
+                  </Button>
+                </>
+            }
           </DialogActions>
         </form>
       </Dialog>

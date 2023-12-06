@@ -1,7 +1,7 @@
 import { ComponentInput, ComponentInputSelect, ModalSelectComponent } from "@/components";
 import { ComponentImage } from "@/components/Image";
 import { useForm, usePropertieStore } from "@/hooks";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid } from "@mui/material";
+import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 import { DepartmentModel, FormPropertieModel, FormPropertieValidations, PropertieModel, listDepartments } from '@/models';
 import { isFile } from "@/helpers";
@@ -42,6 +42,7 @@ export const CreatePropertie = (props: CreatePropertieProps) => {
   const [newImage, setNewImage] = useState<string>(noimage)
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [modal, setModal] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const {
     name, photo, address, department,
@@ -59,7 +60,7 @@ export const CreatePropertie = (props: CreatePropertieProps) => {
 
 
 
-  const sendSubmit = (event: any) => {
+  const sendSubmit = async (event: any) => {
     event.preventDefault();
     setFormSubmitted(true);
     if (!isFormValid) return;
@@ -68,13 +69,23 @@ export const CreatePropertie = (props: CreatePropertieProps) => {
     if (propertie == null || isFile("image/jpeg, image/png, image/gif", photo)) bodyFormData.append('photo', photo);
     bodyFormData.append('address', address);
     bodyFormData.append('department', department.name);
+    setLoading(true);
     if (propertie == null) {
-      postCreatePropertie(bodyFormData);
+      await postCreatePropertie(bodyFormData).then((res) => {
+        if (res) {
+          handleClose();
+          onResetForm();
+        }
+      })
     } else {
-      patchUpdatePropertie(propertie.id, bodyFormData);
+      await patchUpdatePropertie(propertie.id, bodyFormData).then((res) => {
+        if (res) {
+          handleClose();
+          onResetForm();
+        }
+      })
     }
-    handleClose();
-    onResetForm();
+    setLoading(false);
   }
 
   const handleSelectDepartment = (value: boolean) => {
@@ -157,10 +168,16 @@ export const CreatePropertie = (props: CreatePropertieProps) => {
             </Grid>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>Cancelar</Button>
-            <Button type="submit">
-              {propertie == null ? 'CREAR' : 'GUARDAR'}
-            </Button>
+            {
+              loading ?
+                <CircularProgress color="success" size={30} /> :
+                <>
+                  <Button onClick={handleClose}>Cancelar</Button>
+                  <Button type="submit">
+                    {propertie == null ? 'CREAR' : 'GUARDAR'}
+                  </Button>
+                </>
+            }
           </DialogActions>
         </form>
       </Dialog>

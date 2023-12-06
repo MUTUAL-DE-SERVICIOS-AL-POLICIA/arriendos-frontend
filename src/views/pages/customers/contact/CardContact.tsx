@@ -57,8 +57,8 @@ export const CardContact = (props: contendProps) => {
                         label="Grado"
                         name="degree"
                         value={degree}
-                        onChange={onInputChange}
-                        disabled={disabled}
+                        onChange={(V: any) => onInputChange(V, true)}
+                    // disabled={disabled}
                     />
                 </Grid>
                 <Grid item xs={12} sm={8} sx={{ padding: '2px' }}>
@@ -67,10 +67,10 @@ export const CardContact = (props: contendProps) => {
                         label="Nombre"
                         name="name"
                         value={name}
-                        onChange={onInputChange}
+                        onChange={(V: any) => onInputChange(V, true)}
                         error={!!nameValid && formSubmitted}
                         helperText={formSubmitted ? nameValid : ''}
-                        disabled={disabled}
+                    // disabled={disabled}
                     />
                 </Grid>
                 <Grid item xs={12} sm={6} sx={{ padding: '2px' }}>
@@ -79,7 +79,7 @@ export const CardContact = (props: contendProps) => {
                         label="ci o nit"
                         name="ci_nit"
                         value={ci_nit}
-                        onChange={(V: any) => onInputChange(V, false, true)}
+                        onChange={(V: any) => onInputChange(V, true)}
                         error={!!ci_nitValid && formSubmitted}
                         helperText={formSubmitted ? ci_nitValid : ''}
                         disabled={disabled}
@@ -88,7 +88,7 @@ export const CardContact = (props: contendProps) => {
                 <Grid item xs={12} sm={6} sx={{ padding: '2px' }}>
                     <Phone
                         phones={phones}
-                        onUpdate={(value:string[]) => onValueChange('phones', value)}
+                        onUpdate={(value: string[]) => onValueChange('phones', value)}
                         error={!!phonesValid && formSubmitted}
                         helperText={formSubmitted ? phonesValid : ''}
                     // disabled={disabled}
