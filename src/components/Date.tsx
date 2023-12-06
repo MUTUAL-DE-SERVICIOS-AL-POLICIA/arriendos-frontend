@@ -1,18 +1,19 @@
 import { DateTimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { Stack } from '@mui/material';
+import { Button, CircularProgress, DialogActions, IconButton, Stack } from '@mui/material';
 import { ComponentButton } from '.';
 import { useState } from 'react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
-import { EditCalendar } from '@mui/icons-material';
+import { CancelOutlined, EditCalendar } from '@mui/icons-material';
 
 interface dateProps {
   date: Date;
   title: string;
   timeAdd: number;
   onSave: (start: Date, end: Date) => void;
+  loading: boolean;
 }
 
 export const ComponentDate = (props: dateProps) => {
@@ -21,18 +22,16 @@ export const ComponentDate = (props: dateProps) => {
     title,
     onSave,
     timeAdd,
+    loading = false,
   } = props;
   const [newDate, setNewDate] = useState<Date | null>(null);
 
 
   const handleChange = () => {
-    const timeInit: Date = newDate!;
-    const dateStart: Date = new Date(date);
-    dateStart.setHours(timeInit.getHours());
-    dateStart.setMinutes(timeInit.getMinutes());
+    const dateStart: Date = newDate!;
     const dateEnd: Date = new Date(dateStart);
     dateEnd.setHours(dateStart.getHours() + timeAdd);
-    dateEnd.setMinutes(timeInit.getMinutes());
+    dateEnd.setMinutes(dateStart.getMinutes());
     onSave(dateStart, dateEnd);
   };
 
@@ -80,20 +79,20 @@ export const ComponentDate = (props: dateProps) => {
                 }}
               />
             </LocalizationProvider>
-            <Stack direction="column" style={{ padding: '8px' }}>
-              <ComponentButton
-                text={`Guardar`}
-                height="25px"
-                onClick={() => handleChange()}
-                margin="1px"
-              />
-              <ComponentButton
-                text={`Cancelar`}
-                height="25px"
-                onClick={() => setNewDate(null)}
-                margin="1px"
-              />
-            </Stack>
+            <DialogActions>
+              {
+                loading ?
+                  <CircularProgress color="success" size={30} /> :
+                  <>
+                    <Button onClick={() => handleChange()} >
+                      {'GUARDAR'}
+                    </Button>
+                    <IconButton onClick={() => setNewDate(null)} color="error">
+                      <CancelOutlined />
+                    </IconButton>
+                  </>
+              }
+            </DialogActions>
           </Stack> :
           <ComponentButton
             text={`Cambiar fecha`}

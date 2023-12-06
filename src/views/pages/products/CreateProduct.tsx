@@ -1,6 +1,6 @@
 
 import { useForm, useProductStore } from "@/hooks";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid } from "@mui/material";
+import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid } from "@mui/material";
 import { FormEvent, useCallback, useState } from "react";
 import { FormProductModel, FormProductValidations, HourRangeModel, ProductModel, RateModel, RoomModel } from "@/models";
 import { ComponentAutoCompleteSelect, ComponentInput, ComponentInputSelect, ModalSelectComponent } from "@/components";
@@ -31,7 +31,7 @@ const formValidations: FormProductValidations = {
     const parsedValue = parseFloat(value)
     return !isNaN(parsedValue) && Number.isFinite(parsedValue) && parsedValue > 0
   },
-  'Debe ingresar un valor numérico mayor a cero'
+    'Debe ingresar un valor numérico mayor a cero'
   ],
 }
 
@@ -44,35 +44,46 @@ export const CreateProduct = (props: createProps) => {
   } = props;
 
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { postCreateProduct, patchUpdateProduct } = useProductStore();
   const {
     day, hour_range, room, rate, mount,
     onInputChange, onArrayChange, onValueChange, isFormValid, onResetForm,
     dayValid, hour_rangeValid, roomValid, rateValid, mountValid } = useForm(item ?? formFields, formValidations);
 
-  const sendSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const sendSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setFormSubmitted(true);
     if (!isFormValid) return;
+    setLoading(true);
     if (item == null) {
-      postCreateProduct({
+      await postCreateProduct({
         day,
         rate: rate.id,
         room: room.id,
         hour_range: hour_range.id,
         mount,
+      }).then((res) => {
+        if (res) {
+          handleClose();
+          onResetForm();
+        }
       });
     } else {
-      patchUpdateProduct(item.id, {
+      await patchUpdateProduct(item.id, {
         day,
         rate: rate.id,
         room: room.id,
         hour_range: hour_range.id,
         mount,
-      });
+      }).then((res) => {
+        if (res) {
+          handleClose();
+          onResetForm();
+        }
+      })
     }
-    handleClose();
-    onResetForm();
+    setLoading(false);
   }
 
 
@@ -215,10 +226,16 @@ export const CreateProduct = (props: createProps) => {
             </Grid>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>Cancelar</Button>
-            <Button type="submit">
-              {item == null ? 'CREAR' : 'GUARDAR'}
-            </Button>
+            {
+              loading ?
+                <CircularProgress color="success" size={30} /> :
+                <>
+                  <Button onClick={handleClose}>Cancelar</Button>
+                  <Button type="submit">
+                    {item == null ? 'CREAR' : 'GUARDAR'}
+                  </Button>
+                </>
+            }
           </DialogActions>
         </form>
       </Dialog>

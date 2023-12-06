@@ -1,6 +1,6 @@
 import { ComponentButton, ComponentInput, ComponentInputSelect, ComponentSearch, ModalSelectComponent } from "@/components"
 import { useCustomerStore, useForm } from "@/hooks";
-import { Button, Collapse, Dialog, DialogActions, DialogContent, DialogTitle, Grid, ListItem, Stack, Typography } from "@mui/material"
+import { Button, CircularProgress, Collapse, Dialog, DialogActions, DialogContent, DialogTitle, Grid, ListItem, Stack, Typography } from "@mui/material"
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { TypeCustomerTable } from "../../typesCustomers";
 import { CustomerModel, FormContactModel, FormCustomerModel, FormCustomerValidations, TypeCustomerModel } from "@/models";
@@ -38,7 +38,7 @@ export const CreateCustomer = (props: createProps) => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [modal, setModal] = useState(false);
   const [listContacts, setListContacts] = useState<any[]>(item == null ? [{ state: false }] : [...item.contacts.map((e: any) => ({ ...e, state: true, phones: e.phone.split(',') }))]);
-
+  const [loading, setLoading] = useState(false);
 
   const {
     customer_type, institution_name, nit,
@@ -47,12 +47,14 @@ export const CreateCustomer = (props: createProps) => {
 
 
 
-  const sendSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const sendSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setFormSubmitted(true);
     if ((listContacts.filter((e: any) => !e.state).length > 0)) return;
     if (customer_type.is_institution) if (!isFormValid) return;
-    let data: { customer_type: number, institution?: {}, customer?: {} } = { customer_type: customer_type.id };
+    let data: { customer_type: number, institution?: {}, customer?: {} } = {
+      customer_type: customer_type.id
+    };
     if (customer_type.is_institution) {
       data.institution = {
         name: institution_name,
@@ -62,13 +64,23 @@ export const CreateCustomer = (props: createProps) => {
     } else {
       data.customer = listContacts[0]
     }
+    setLoading(true);
     if (item == null) {
-      postCreateCustomer(data);
+      await postCreateCustomer(data).then((res) => {
+        if (res) {
+          handleClose();
+          onResetForm();
+        }
+      })
     } else {
-      patchUpdateCustomer(item.id, data);
+      await patchUpdateCustomer(item.id, data).then((res) => {
+        if (res) {
+          handleClose();
+          onResetForm();
+        }
+      })
     }
-    handleClose();
-    onResetForm();
+    setLoading(false);
   }
 
   const handleModal = useCallback((value: boolean) => setModal(value), [{}]);
@@ -100,6 +112,7 @@ export const CreateCustomer = (props: createProps) => {
   }, [window.innerHeight]);
 
   const handleSearch = async (search: string) => {
+    if (search == '') return;
     const res = await searchAffiliate(search);
     if (res) {
       const newContact = {
@@ -110,13 +123,12 @@ export const CreateCustomer = (props: createProps) => {
         nup: res.id_affiliate,//corregir
         state: false
       };
-
       const updatedList = customer_type.is_institution
         ? [newContact, ...listContacts]
         : [newContact];
-
       setListContacts(updatedList);
     }
+
   };
 
 
@@ -168,7 +180,7 @@ export const CreateCustomer = (props: createProps) => {
                           label="Nombre"
                           name="institution_name"
                           value={institution_name}
-                          onChange={onInputChange}
+                          onChange={(V: any) => onInputChange(V, true)}
                           error={!!institution_nameValid && formSubmitted}
                           helperText={formSubmitted ? institution_nameValid : ''}
                         />
@@ -177,7 +189,7 @@ export const CreateCustomer = (props: createProps) => {
                           label="Nit"
                           name="nit"
                           value={nit}
-                          onChange={(V: any) => onInputChange(V, false, true)}
+                          onChange={(V: any) => onInputChange(V, true, true)}
                           error={!!nitValid && formSubmitted}
                           helperText={formSubmitted ? nitValid : ''}
                         />
@@ -226,10 +238,16 @@ export const CreateCustomer = (props: createProps) => {
             </Grid>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>Cancelar</Button>
-            <Button type="submit">
-              {item == null ? 'CREAR' : 'GUARDAR'}
-            </Button>
+            {
+              loading ?
+                <CircularProgress color="success" size={30} /> :
+                <>
+                  <Button onClick={handleClose}>Cancelar</Button>
+                  <Button type="submit">
+                    {item == null ? 'CREAR' : 'GUARDAR'}
+                  </Button>
+                </>
+            }
           </DialogActions>
         </form>
       </Dialog>

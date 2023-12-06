@@ -1,7 +1,7 @@
 import { useForm, useProductStore, useRentalStore } from "@/hooks";
 import { useEffect, useState } from "react";
 import { ComponentInputSelect, ModalSelectComponent } from "@/components";
-import { EventsCalendarModel, FormRentalModel } from "@/models";
+import { FormRentalModel } from "@/models";
 import { PropertieTable } from "../properties";
 import { CalendarComponent } from "./calendar";
 import { styled } from '@mui/system';
@@ -32,7 +32,6 @@ export const RentalCalendarView = () => {
   const { room, customer, onValueChange } = useForm(formFields);
   const { postLeakedProduct, clearLakedProduct } = useProductStore();
   const { getRentals } = useRentalStore();
-  const [events, setEvents] = useState<EventsCalendarModel[]>([]);
   const [daySelect, setDaySelect] = useState<Date | null>(null);
 
   useEffect(() => {
@@ -50,9 +49,6 @@ export const RentalCalendarView = () => {
     }
   }, [daySelect, room, customer])
 
-  const handleEvents = (value: EventsCalendarModel[]) => {
-    setEvents(value)
-  }
   const [screenHeight, setScreenHeight] = useState(window.innerHeight);
 
   useEffect(() => {
@@ -137,7 +133,6 @@ export const RentalCalendarView = () => {
             </Grid>
           </Grid>
           <CalendarComponent
-            onEvents={(listEvents) => handleEvents(listEvents)}
             daySelect={daySelect}
             onSelectDay={(day) => setDaySelect(day)}
             screenHeight={screenHeight}
@@ -147,7 +142,6 @@ export const RentalCalendarView = () => {
           <RentalSection
             date={daySelect}
             customer={customer}
-            events={events}
             onClose={() => {
               setDaySelect(null);
               getRentals(room.id);

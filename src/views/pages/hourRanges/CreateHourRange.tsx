@@ -1,6 +1,6 @@
 import { ComponentInput } from "@/components"
 import { useHourRangeStore, useForm } from "@/hooks";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material"
+import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material"
 import { FormEvent, useState } from "react";
 import { FormHourRangeModel, FormHourRangeValidations, HourRangeModel } from "@/models";
 
@@ -27,23 +27,34 @@ export const CreateHourRange = (props: createProps) => {
 
   const { postCreateHourRange, patchUpdateHourRange } = useHourRangeStore();
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const {
     time,
     onInputChange, isFormValid, onResetForm,
     nameValid } = useForm(item ?? formFields, formValidations);
 
-  const sendSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const sendSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setFormSubmitted(true);
     if (!isFormValid) return;
+    setLoading(true)
     if (item == null) {
-      postCreateHourRange({ time });
+      await postCreateHourRange({ time }).then((res) => {
+        if (res) {
+          handleClose();
+          onResetForm();
+        }
+      });
     } else {
-      patchUpdateHourRange(item.id, { time });
+      await patchUpdateHourRange(item.id, { time }).then((res) => {
+        if (res) {
+          handleClose();
+          onResetForm();
+        }
+      });
     }
-    handleClose();
-    onResetForm();
+    setLoading(false);
   }
 
   return (
@@ -63,10 +74,16 @@ export const CreateHourRange = (props: createProps) => {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>Cancelar</Button>
-            <Button type="submit">
-              {item == null ? 'CREAR' : 'GUARDAR'}
-            </Button>
+            {
+              loading ?
+                <CircularProgress color="success" size={30} /> :
+                <>
+                  <Button onClick={handleClose}>Cancelar</Button>
+                  <Button type="submit">
+                    {item == null ? 'CREAR' : 'GUARDAR'}
+                  </Button>
+                </>
+            }
           </DialogActions>
         </form>
       </Dialog>

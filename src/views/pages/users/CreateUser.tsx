@@ -1,5 +1,5 @@
 
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { useForm, useUserStore } from "@/hooks";
 import { ComponentInputSelect, ModalSelectComponent } from "@/components";
@@ -25,6 +25,7 @@ export const CreateUser = (props: createProps) => {
   } = props;
 
   const { getUsersLdap, postCreateUser } = useUserStore();
+  const [loading, setLoading] = useState(false);
 
   const [formSubmitted, setFormSubmitted] = useState(false);
   const { user, onValueChange, isFormValid, userValid, onResetForm } = useForm(formFields, formValidations);
@@ -36,6 +37,7 @@ export const CreateUser = (props: createProps) => {
     event.preventDefault();
     setFormSubmitted(true);
     if (!isFormValid) return;
+    setLoading(true)
     await postCreateUser({
       username: user.username,
       first_name: user.first_name,
@@ -45,6 +47,7 @@ export const CreateUser = (props: createProps) => {
       onResetForm();
       handleClose();
     })
+    setLoading(false);
   };
 
 
@@ -96,13 +99,20 @@ export const CreateUser = (props: createProps) => {
             </Box>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => {
-              onResetForm();
-              handleClose()
-            }}>Cancelar</Button>
-            <Button type="submit">
-              CREAR
-            </Button>
+            {
+              loading ?
+                <CircularProgress color="success" size={30} /> :
+                <>
+                  <Button onClick={() => {
+                    onResetForm();
+                    handleClose()
+                  }}>Cancelar</Button>
+                  <Button type="submit">
+                    CREAR
+                  </Button>
+                </>
+            }
+
           </DialogActions>
         </form>
       </Dialog>

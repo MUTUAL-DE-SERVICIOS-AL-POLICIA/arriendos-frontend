@@ -4,22 +4,15 @@ import { Tab, Tabs, Typography } from '@mui/material';
 import { Box, Stack } from "@mui/system"
 import { useEffect, useState } from "react"
 import { FormPayments, Reason } from "."
-import { useExtraHourStore, useForm, usePaymentsStore, useWarrantyStore } from "@/hooks"
-import { EventsCalendarModel } from "@/models";
+import { useExtraHourStore, useForm, usePaymentsStore, useRentalStore, useWarrantyStore } from "@/hooks"
 import { FormWarrantyValidation, WarrantyModel } from "@/models/paymentModel"
-interface Props {
-  selectedEvent: EventsCalendarModel;
-}
 
 const formField: WarrantyModel = {
   amountWarranty: 0,
 }
 
-export const Rented = (props: Props) => {
+export const Rented = () => {
 
-  const {
-    selectedEvent,
-  } = props
 
   const [tabValueRegister, setTabValueRegister] = useState(0)
   const { payments = [], amountTotal, getRegistersPayments } = usePaymentsStore();
@@ -27,6 +20,7 @@ export const Rented = (props: Props) => {
   const { warrantys = [], getListWarranty } = useWarrantyStore()
   const [mountPayment, setMountPayment] = useState(0);
   const [mountExtraHour, setMountExtraHour] = useState(0);
+  const { rentalSelected } = useRentalStore();
   // @ts-expect-error
   const [mountWarranty, setMountWarranty] = useState(0)
   // @ts-expect-error
@@ -43,9 +37,9 @@ export const Rented = (props: Props) => {
   }
 
   useEffect(() => {
-    getRegistersPayments(selectedEvent.rental)
-    getRegisterExtraHours(selectedEvent.rental)
-    getListWarranty(selectedEvent.rental)
+    getRegistersPayments(rentalSelected.rental)
+    getRegisterExtraHours(rentalSelected.rental)
+    getListWarranty(rentalSelected.rental)
   }, []);
 
 
@@ -224,7 +218,7 @@ export const Rented = (props: Props) => {
           open={modal}
           handleClose={() => handleModal(false)}
           tabReason={tabSelect}
-          selectedEvent={selectedEvent}
+          selectedEvent={rentalSelected}
         />
       }
     </>

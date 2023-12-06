@@ -5,6 +5,7 @@ import esES from 'date-fns/locale/es';
 import React, { useState } from "react";
 import { EventDialog } from "./EventDialog";
 import { EventsCalendarModel } from "@/models";
+import { useRentalStore } from "@/hooks";
 // import { EventDialog } from ".";
 
 const dividerStyle = {
@@ -20,7 +21,6 @@ interface cardProps {
   screenHeight: number;
   showGrow: boolean;
   date: Date;
-  events: EventsCalendarModel[]
 }
 
 export const RentalCard = (props: cardProps) => {
@@ -28,16 +28,17 @@ export const RentalCard = (props: cardProps) => {
     screenHeight,
     showGrow,
     date,
-    events,
   } = props;
 
   const [openDialog, setOpenDialog] = useState(false)
-  const [selectedEvent, setSelectedEvent] = useState<EventsCalendarModel | null>(null)
+  // const [selectedEvent, setSelectedEvent] = useState<EventsCalendarModel | null>(null)
+  const { groupRentals, saveRentalSelected } = useRentalStore();
 
   const handleDialog = (value: boolean, event: EventsCalendarModel | null) => {
-    setSelectedEvent(event)
+    saveRentalSelected(event!)
     setOpenDialog(value)
   }
+
 
   return (
     <>
@@ -53,7 +54,7 @@ export const RentalCard = (props: cardProps) => {
           </div>
           <div style={{ maxHeight: `${screenHeight / 3.5}px`, overflowY: 'auto' }}>
             <List sx={{ width: '100%' }}>
-              {events.map((event: EventsCalendarModel, index: number) => (
+              {groupRentals.map((event: EventsCalendarModel, index: number) => (
                 <React.Fragment key={index}>
                   <ListItem
                     sx={{ padding: '0px 10px', cursor: 'pointer' }}
@@ -88,7 +89,7 @@ export const RentalCard = (props: cardProps) => {
                     </ListItemText>
 
                   </ListItem>
-                  {index !== events.length - 1 && <Divider style={dividerStyle} />}
+                  {index !== groupRentals.length - 1 && <Divider style={dividerStyle} />}
                 </React.Fragment>
               ))}
             </List>
@@ -99,7 +100,6 @@ export const RentalCard = (props: cardProps) => {
         openDialog && <EventDialog
           open={openDialog}
           handleClose={() => handleDialog(false, null)}
-          selectedEvent={selectedEvent!}
           date={date}
         />
       }

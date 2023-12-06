@@ -1,7 +1,8 @@
 import { useDispatch, useSelector } from "react-redux"
 import { coffeApi } from "@/services";
-import { setCurrentRentalState, setRentalInformation, setStates } from '@/store';
+import { setCurrentRentalState, setRentalInformation, setStates, setUpdateGroupRental, setUpdateRental, setUpdateRentalSelected } from '@/store';
 import Swal from "sweetalert2";
+import { getDateJSON } from "@/helpers";
 
 const api = coffeApi;
 
@@ -13,7 +14,7 @@ export const useLeasesStates = () => {
     try {
       const { data } = await api.get(`/leases/list_state/`)
       dispatch(setStates({ states: data }))
-    } catch(error: any) {
+    } catch (error: any) {
       if (error.response && error.response.status == 400) {
         const message = error.response.data.error
         Swal.fire('Error', message, 'error')
@@ -33,7 +34,7 @@ export const useLeasesStates = () => {
         }
       });
       dispatch(setRentalInformation({ rentalInformation: data }))
-    } catch(error: any) {
+    } catch (error: any) {
       if (error.response && error.response.status == 400) {
         const message = error.response.data.error
         Swal.fire('Error', message, 'error')
@@ -78,11 +79,18 @@ export const useLeasesStates = () => {
     }
   }
 
-  const patchUpdateTime = async (productId: number, body: object) => {
+  const patchUpdateTime = async (productId: number, body: any) => {
     try {
-      await api.patch(`/leases/selected_product/${productId}`, body);
+      await api.patch(`/leases/selected_product/${productId}`, {
+        start_time: getDateJSON(body.start),
+        end_time: getDateJSON(body.end)
+      });
       Swal.fire('Se edito correctamente la fecha', '', 'success');
+      dispatch(setUpdateRental({ ...body, productId }));
+      dispatch(setUpdateGroupRental({ ...body, productId }))
+      dispatch(setUpdateRentalSelected({ ...body }))
     } catch (error: any) {
+
       if (error.response && error.response.status == 400) {
         const message = error.response.data.error
         Swal.fire('Error', message, 'error')

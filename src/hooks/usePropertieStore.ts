@@ -29,14 +29,16 @@ export const usePropertieStore = () => {
       const { data } = await api.post(`/rooms/properties/`, body);
       dispatch(addPropertie({ propertie: data }));
       Swal.fire('Inmueble creado correctamente', '', 'success');
+      return true;
     } catch (error: any) {
-      if (error.response && error.response.status == 400) {
-        const message = error.response.data.error
-        Swal.fire('Error', message, 'error')
-      } else if (error.response && error.response.status == 403) {
+      if (error.response && error.response.status == 403) {
         const message = error.response.data.detail
         Swal.fire('Acceso denegado', message, 'warning')
-      } else throw new Error('Ocurrió algun error en el backend')
+      } else {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error');
+      }
+      return false;
     }
   }
 
@@ -45,14 +47,16 @@ export const usePropertieStore = () => {
       const { data } = await api.patch(`/rooms/properties/${id}/`, body);
       dispatch(updatePropertie({ propertie: data }));
       Swal.fire('Inmueble editado correctamente', '', 'success');
+      return true;
     } catch (error: any) {
-      if (error.response && error.response.status == 400) {
-        const message = error.response.data.error
-        Swal.fire('Error', message, 'error')
-      } else if (error.response && error.response.status == 403) {
+      if (error.response && error.response.status == 403) {
         const message = error.response.data.detail
         Swal.fire('Acceso denegado', message, 'warning')
-      } else throw new Error('Ocurrió algun error en el backend')
+      } else {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error');
+      }
+      return false;
     }
   }
 

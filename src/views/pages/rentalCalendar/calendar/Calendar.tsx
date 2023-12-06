@@ -27,7 +27,6 @@ const sameDay = (d1: any, d2: any) => {
 }
 
 interface calendarProps {
-  onEvents: (listSelected: EventsCalendarModel[]) => void;
   daySelect: Date | null;
   onSelectDay: (day: Date | null) => void;
   screenHeight: number;
@@ -36,13 +35,12 @@ interface calendarProps {
 
 export const CalendarComponent = (props: calendarProps) => {
   const {
-    onEvents,
     daySelect,
     onSelectDay,
     screenHeight,
   } = props;
 
-  const { rentals = [] } = useRentalStore()
+  const { rentals = [], saveGroupRental } = useRentalStore()
 
   const calendarStyle = (date: any) => {
     if (daySelect != null && sameDay(daySelect, date)) {
@@ -54,14 +52,14 @@ export const CalendarComponent = (props: calendarProps) => {
   const onSelectSlot = async (slotInfo: SlotInfo) => {
     if (daySelect == null) {
       onSelectDay(slotInfo.start)
-      onEvents(groupEventsByDate(rentals, slotInfo.start))
+      saveGroupRental(await groupEventsByDate(rentals, slotInfo.start))
     } else {
       if (sameDay(daySelect, slotInfo.start)) {
         onSelectDay(null);
-        onEvents([])
+        saveGroupRental([]);
       } else {
         onSelectDay(slotInfo.start)
-        onEvents(groupEventsByDate(rentals, slotInfo.start))
+        saveGroupRental(await groupEventsByDate(rentals, slotInfo.start))
       }
     }
   };
@@ -90,9 +88,7 @@ export const CalendarComponent = (props: calendarProps) => {
             },
           };
         }}
-        components={{
-          event: CalendarEvent
-        }}
+        components={{ event: CalendarEvent }}
         onSelectEvent={onSelectSlot}
         onSelectSlot={onSelectSlot}
         selectable={true}

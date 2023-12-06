@@ -1,7 +1,7 @@
 import { ComponentButton, ComponentDate, ItemPaper } from "@/components";
-import { ContactModel, EventsCalendarModel, ProductRentalModel } from "@/models";
+import { ContactModel, ProductRentalModel } from "@/models";
 import { Grid, Typography } from '@mui/material';
-import { formatDate, getDateJSON, virifyDate } from "@/helpers";
+import { formatDate, virifyDate } from "@/helpers";
 import { useLeasesStates, useRentalStore } from "@/hooks";
 import { format } from "date-fns";
 import esES from 'date-fns/locale/es';
@@ -12,26 +12,24 @@ import { Cancel, Print } from "@mui/icons-material";
 
 interface cardProps {
   product: ProductRentalModel;
-  isPlan: boolean;
   showEdit: boolean;
   rental: number;
 }
 export const CardEvent = (props: cardProps) => {
   const {
     product,
-    isPlan,
     showEdit,
-    rental
+    rental,
   } = props;
   const { patchUpdateTime } = useLeasesStates();
   const { postPrintDeliveryForm } = useRentalStore()
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [loadingChangeTime, setLoadingChangeTime] = useState(false);
 
-  const handleUpdateTime = (start: Date, end: Date) => {
-    patchUpdateTime(product.id, {
-      start_time: getDateJSON(start),
-      end_time: getDateJSON(end)
-    });
+  const handleUpdateTime = async (start: Date, end: Date) => {
+    setLoadingChangeTime(true);
+    await patchUpdateTime(product.id, { start, end });
+    setLoadingChangeTime(false);
   }
 
   const printDeliveryForm = async (rental: number, product: number) => {
@@ -47,66 +45,57 @@ export const CardEvent = (props: cardProps) => {
 
   return (
     <ItemPaper key={product.id} elevation={0} sx={{ mx: 0, my: .5, px: 0.5 }}>
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={isPlan ? 12 : 6}>
-          <Typography sx={{ fontSize: '0.8rem' }}>
-            <b>Evento:</b> {`${product.event}`}
-          </Typography>
-          <Typography sx={{ fontSize: '0.8rem' }}>
-            <b>Lugar:</b> {`${product.property}-${product.room}`}
-          </Typography>
-          <Typography sx={{ fontSize: '0.8rem' }}>
-            <b>Fecha inicial:</b> {`${format(formatDate(product.start_time), 'EEEE dd-MMMM-yyyy HH:mm', { locale: esES })}`}
-          </Typography>
-          <Typography sx={{ fontSize: '0.8rem' }}>
-            <b>Fecha Fin:</b> {`${format(formatDate(product.end_time), 'EEEE dd-MMMM-yyyy HH:mm', { locale: esES })}`}
-          </Typography>
-          {
-            product.detail !== '' &&
-            <Typography sx={{ fontSize: '0.8rem' }}>
-              <b>Detalle:</b> {`${product.detail}`}
-            </Typography>
-          }
-        </Grid>
-        <Grid item xs={12} sm={isPlan ? 12 : 6}>
-          {
-            showEdit &&
-            <>
-              <ComponentDate
-                title={'Nueva fecha'}
-                date={formatDate(product.start_time)}
-                timeAdd={product.hour_range}
-                onSave={handleUpdateTime}
-              />
-              <ComponentButton
-                onClick={() => printDeliveryForm(rental, product.id)}
-                text={'Imprimir Acta'}
-                sx={{ height: "35px", width: "90%", margin: "2px 10px" }}
-                loading={loading}
-                startIcon={<Print />}
-              />
-            </>
-          }
-        </Grid>
-      </Grid>
+      <Typography sx={{ fontSize: '0.8rem' }}>
+        <b>Evento:</b> {`${product.event}`}
+      </Typography>
+      <Typography sx={{ fontSize: '0.8rem' }}>
+        <b>Lugar:</b> {`${product.property}-${product.room}`}
+      </Typography>
+      <Typography sx={{ fontSize: '0.8rem' }}>
+        <b>Fecha inicial:</b> {`${format(formatDate(product.start_time), 'EEEE dd-MMMM-yyyy HH:mm', { locale: esES })}`}
+      </Typography>
+      <Typography sx={{ fontSize: '0.8rem' }}>
+        <b>Fecha Fin:</b> {`${format(formatDate(product.end_time), 'EEEE dd-MMMM-yyyy HH:mm', { locale: esES })}`}
+      </Typography>
+      {
+        product.detail !== '' &&
+        <Typography sx={{ fontSize: '0.8rem' }}>
+          <b>Detalle:</b> {`${product.detail}`}
+        </Typography>
+      }
+      {
+        showEdit &&
+        <>
+          <ComponentDate
+            title={'Nueva fecha'}
+            date={formatDate(product.start_time)}
+            timeAdd={product.hour_range}
+            onSave={handleUpdateTime}
+            loading={loadingChangeTime}
+          />
+          <ComponentButton
+            onClick={() => printDeliveryForm(rental, product.id)}
+            text={'Imprimir Acta'}
+            sx={{ height: "35px", width: "90%", margin: "2px 10px" }}
+            loading={loading}
+            startIcon={<Print />}
+          />
+        </>
+      }
     </ItemPaper>
   )
 }
 
 interface infoProps {
   date: Date;
-  productId: number;
-  selectedEvent: EventsCalendarModel;
 }
 export const InfoRental = (props: infoProps) => {
   const {
     date,
-    productId,
-    selectedEvent
   } = props;
 
   const { rentalInformation, currentRentalState, postChangeRentalState } = useLeasesStates();
-
+  const { rentalSelected } = useRentalStore();
   const stoppedAction = async () => {
     const { value: text } = await Swal.fire({
       title: '¿Está seguro de esta acción?',
@@ -131,7 +120,7 @@ export const InfoRental = (props: infoProps) => {
     if (text) {
       try {
         const changeRentalState = {
-          rental: selectedEvent.rental,
+          rental: rentalSelected.rental,
           state: currentRentalState.next_states.find((e: any) => e.id != currentRentalState.current_state.id + 1).id,
           reason: text
         }
@@ -151,6 +140,7 @@ export const InfoRental = (props: infoProps) => {
     <Grid container spacing={2}>
       <Grid item xs={12} sm={4}>
         <Typography ><b>Datos del Alquiler:</b></Typography>
+
         <ItemPaper elevation={0} sx={{ m: 0, p: 0.5 }}>
           <Typography color="text.primary" gutterBottom sx={{ fontSize: '0.8rem' }}>
             <b>Cliente:</b> {`${rentalInformation.customer.institution_name ?? rentalInformation.customer.contacts[0].name}`}
@@ -202,9 +192,8 @@ export const InfoRental = (props: infoProps) => {
       <Grid item xs={12} sm={rentalInformation.products.length == 1 ? 8 : 4} style={{ padding: '5px' }}>
         <Typography><b>Evento seleccionado:</b></Typography>
         <CardEvent
-          rental={selectedEvent.rental}
-          product={rentalInformation.products.filter((product: ProductRentalModel) => product.id == productId)[0]}
-          isPlan={rentalInformation.products.length !== 1}
+          rental={rentalSelected.rental}
+          product={rentalInformation.products.filter((product: ProductRentalModel) => product.id == rentalSelected.product_id)[0]}
           showEdit={virifyDate(date)}
         />
       </Grid>
@@ -215,13 +204,12 @@ export const InfoRental = (props: infoProps) => {
           <div style={{ maxHeight: `${190}px`, overflowY: 'auto' }}>
             {
               rentalInformation.products.map((product: ProductRentalModel) => {
-                if (product.id != productId) {
+                if (product.id != rentalSelected.product_id) {
                   return (
                     <CardEvent
-                      rental={selectedEvent.rental}
+                      rental={rentalSelected.rental}
                       key={product.id}
                       product={product}
-                      isPlan={rentalInformation.products.length !== 1}
                       showEdit={false}
                     />
                   )

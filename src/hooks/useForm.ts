@@ -72,7 +72,6 @@ export const useForm = (initialForm: any = {}, formValidations: any = {}) => {
   }
 
   const onValueChange = (name: string, state: any) => {
-    console.log(name, state)
     setFormState({
       ...formState,
       [name]: state

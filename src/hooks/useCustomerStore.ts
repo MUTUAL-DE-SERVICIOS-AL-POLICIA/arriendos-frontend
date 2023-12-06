@@ -3,6 +3,7 @@ import { coffeApi } from '@/services';
 import { setCustomers, refreshCustomer } from '@/store';
 import Swal from 'sweetalert2';
 import { CustomerModel } from '@/models';
+import { toast } from 'react-toastify';
 
 const api = coffeApi;
 
@@ -28,14 +29,16 @@ export const useCustomerStore = () => {
       await api.post(`/customers/`, body);
       dispatch(refreshCustomer());
       Swal.fire('Cliente creado correctamente', '', 'success');
+      return true;
     } catch (error: any) {
-      if (error.response && error.response.status == 400) {
-        const message = error.response.data.error
-        Swal.fire('Error', message, 'error')
-      } else if (error.response && error.response.status == 403) {
+      if (error.response && error.response.status == 403) {
         const message = error.response.data.detail
         Swal.fire('Acceso denegado', message, 'warning')
-      } else throw new Error('Ocurrió algun error en el backend')
+      } else {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error');
+      }
+      return false;
     }
   }
 
@@ -44,14 +47,16 @@ export const useCustomerStore = () => {
       await api.patch(`/customers/${id}`, body);
       dispatch(refreshCustomer());
       Swal.fire('Cliente editado correctamente', '', 'success');
+      return true;
     } catch (error: any) {
-      if (error.response && error.response.status == 400) {
-        const message = error.response.data.error
-        Swal.fire('Error', message, 'error')
-      } else if (error.response && error.response.status == 403) {
+      if (error.response && error.response.status == 403) {
         const message = error.response.data.detail
         Swal.fire('Acceso denegado', message, 'warning')
-      } else throw new Error('Ocurrió algun error en el backend')
+      } else {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error');
+      }
+      return false;
     }
   }
 
@@ -90,10 +95,20 @@ export const useCustomerStore = () => {
   }
 
   const searchAffiliate = async (ciAffiliate: String) => {
+
     try {
-      const { data } = await api.get(`/customers/identify_police/${ciAffiliate}/`);
-      return data[0]
+      if (ciAffiliate != '') {
+        const { data } = await api.get(`/customers/identify_police/${ciAffiliate}/`);
+        if (data.length > 0) {
+          toast.success(`Afliliado encontrado`);
+          return data[0]
+        } else {
+          toast.error(`${data.message}`);
+        }
+      }
+      return;
     } catch (error: any) {
+      toast("No encontre a nadei");
       return;
     }
   }
