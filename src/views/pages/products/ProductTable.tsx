@@ -55,7 +55,7 @@ export const ProductTable = (props: tableProps) => {
                   quantity={8}
                 /> :
                 products.map((product: ProductModel) => (
-                  <TableRow key={product.id}>
+                  <TableRow key={product.id} sx={{ borderBottom: '2px solid #ccc' }}>
                     <TableCell>{product.id}</TableCell>
                     <TableCell>{product.room.property.name}</TableCell>
                     <TableCell>{product.room.name}</TableCell>

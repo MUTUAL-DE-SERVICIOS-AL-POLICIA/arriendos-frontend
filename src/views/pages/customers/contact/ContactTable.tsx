@@ -28,7 +28,7 @@ export const ContactTable = (props: tableProps) => {
             </TableHead>
             <TableBody>
               {contacts.map((contact) => (
-                <TableRow key={contact.id}>
+                <TableRow key={contact.id} sx={{ borderBottom: '2px solid #ccc' }}>
                   <TableCell>{`${contact.degree ?? ''} ${contact.name}`}</TableCell>
                   <TableCell>{contact.ci_nit}</TableCell>
                   <TableCell>{contact.phone}</TableCell>

@@ -54,7 +54,7 @@ export const RateTable = (props: tableProps) => {
               /> : rates.map((rate: RateModel) => {
                 const isSelected = items.includes(rate.id);
                 return (
-                  <TableRow key={rate.id}>
+                  <TableRow key={rate.id} sx={{ borderBottom: '2px solid #ccc' }}>
                     {
                       stateSelect && <TableCell padding="checkbox">
                         <Checkbox

@@ -68,7 +68,7 @@ export const CustomerTable = (props: tableProps) => {
                   const isSelected = items?.includes(customer.id);
                   return (
                     <React.Fragment key={index} >
-                      <TableRow>
+                      <TableRow sx={{ borderBottom: '2px solid #ccc' }}>
                         {
                           stateSelect && <TableCell padding="checkbox">
                             <Checkbox

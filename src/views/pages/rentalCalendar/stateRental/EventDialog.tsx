@@ -136,7 +136,6 @@ export const EventDialog = (props: elementsProps) => {
               {
                 currentRentalState.current_state.id == 1 &&
                 <Reserver
-                  rentalId={rentalSelected.rental}
                   checkeds={mergeRequirements}
                 />
               }
@@ -146,9 +145,7 @@ export const EventDialog = (props: elementsProps) => {
               }
               {
                 currentRentalState.current_state.id == 3 &&
-                <Concluded
-                  rental={rentalSelected.rental}
-                />
+                <Concluded />
               }
             </>
             <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2, pb: 1 }}>

@@ -52,6 +52,7 @@ export const HourRangeTable = (props: tableProps) => {
                 return (
                   <TableRow
                     key={hourRange.id}
+                    sx={{ borderBottom: '2px solid #ccc' }}
                   >
                     {
                       stateSelect && <TableCell padding="checkbox">
