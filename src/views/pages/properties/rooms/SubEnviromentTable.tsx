@@ -31,7 +31,7 @@ export const SubEnviromentTable = (props: tableProps) => {
             <TableBody>
               {
                 SubRooms.map((SubRooms, index) => (
-                  <TableRow key={index}>
+                  <TableRow key={index} sx={{ borderBottom: '2px solid #ccc' }}>
                     <TableCell>{SubRooms.name}</TableCell>
                     <TableCell>{SubRooms.quantity}</TableCell>
                     <TableCell>

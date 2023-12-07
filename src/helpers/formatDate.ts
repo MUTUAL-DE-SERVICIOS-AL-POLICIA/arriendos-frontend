@@ -18,5 +18,5 @@ export const getDateJSON = (date: Date | null) => {
 export const virifyDate = (dayEvaluation: Date) => {
   const currentDate = new Date()
   currentDate.setHours(0, 0, 0, 0);
-  return dayEvaluation > currentDate;
+  return dayEvaluation >= currentDate;
 }

@@ -33,6 +33,7 @@ export const ComponentDate = (props: dateProps) => {
     dateEnd.setHours(dateStart.getHours() + timeAdd);
     dateEnd.setMinutes(dateStart.getMinutes());
     onSave(dateStart, dateEnd);
+    setNewDate(null)
   };
 
   return (
@@ -84,9 +85,10 @@ export const ComponentDate = (props: dateProps) => {
                 loading ?
                   <CircularProgress color="success" size={30} /> :
                   <>
-                    <Button onClick={() => handleChange()} >
-                      {'GUARDAR'}
-                    </Button>
+                    {date != newDate &&
+                      <Button onClick={() => handleChange()} >
+                        {'GUARDAR'}
+                      </Button>}
                     <IconButton onClick={() => setNewDate(null)} color="error">
                       <CancelOutlined />
                     </IconButton>

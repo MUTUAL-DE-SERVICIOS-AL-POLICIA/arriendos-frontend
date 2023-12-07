@@ -57,8 +57,8 @@ export const RequirementTable = (props: tableProps) => {
                 const isSelected = items.includes(requirement.id);
                 return (
                   <TableRow
-                    hover
                     key={requirement.id}
+                    sx={{ borderBottom: '2px solid #ccc' }}
                   >
                     {
                       stateSelect && <TableCell padding="checkbox">

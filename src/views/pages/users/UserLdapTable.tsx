@@ -80,6 +80,7 @@ export const UserLdapTable = (props: userLdapProps) => {
                   <TableRow
                     hover
                     key={user.username}
+                    sx={{ borderBottom: '2px solid #ccc' }}
                   >
                     {
                       stateSelect && <TableCell padding="checkbox">

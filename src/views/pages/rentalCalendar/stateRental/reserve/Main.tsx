@@ -5,14 +5,12 @@ import { useEffect, useState } from "react"
 import { useRentalStore } from "@/hooks";
 
 interface Props {
-  rentalId: number;
   checkeds: (checked: Array<any>, checkedOptional: Array<any>) => void;
 }
 
 export const Reserver = (props: Props) => {
 
   const {
-    rentalId,
     checkeds
   } = props
 
@@ -22,7 +20,7 @@ export const Reserver = (props: Props) => {
   const [checkedItems, setCheckedItems] = useState<any[]>([])
   const [checkedItemsOptional, setCheckedItemsOptional] = useState<any[]>([])
 
-  const { getRentalRequirements } = useRentalStore()
+  const { rentalSelected, getRentalRequirements } = useRentalStore();
 
 
   const allyProps = (index: number) => {
@@ -38,7 +36,7 @@ export const Reserver = (props: Props) => {
 
   useEffect(() => {
     (async () => {
-      const req = await getRentalRequirements(rentalId)
+      const req = await getRentalRequirements(rentalSelected.rental)
       setRequirements(req.required_requirements)
       setOptionals(req.optional_requirements)
       const requireds = [...req.required_requirements.map((e: any) => {

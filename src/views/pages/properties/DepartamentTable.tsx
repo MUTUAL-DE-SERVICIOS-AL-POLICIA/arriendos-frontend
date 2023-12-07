@@ -29,6 +29,7 @@ export const DepartamentTable = (props: Props) => {
               return (
                 <TableRow
                   key={departament.id}
+                  sx={{ borderBottom: '2px solid #ccc' }}
                 >
                   {stateSelect && <TableCell padding="checkbox">
                     <Checkbox

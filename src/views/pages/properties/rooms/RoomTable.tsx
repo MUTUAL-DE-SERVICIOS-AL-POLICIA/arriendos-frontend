@@ -29,9 +29,9 @@ export const RoomTable = (props: tableProps) => {
       <Typography sx={{ fontWeight: 'bold' }}>Ambientes:</Typography>
       <div style={{ overflowY: 'auto' }}>
         <TableContainer component={Paper} >
-          <Table size="small" stickyHeader  >
+          <Table size="small"  >
             <TableHead>
-              <TableRow >
+              <TableRow>
                 {stateSelect && <TableCell />}
                 <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#E2F6F0' }}>Nombre</TableCell>
                 <TableCell sx={{ fontWeight: 'bold', backgroundColor: '#E2F6F0' }}>Capacidad</TableCell>
@@ -51,6 +51,7 @@ export const RoomTable = (props: tableProps) => {
                       style={{
                         backgroundColor: isSelected ? '#e0e0e0' : 'transparent',
                       }}
+                      sx={{ borderBottom: '2px solid #ccc' }}
                     >
                       {
                         stateSelect && (

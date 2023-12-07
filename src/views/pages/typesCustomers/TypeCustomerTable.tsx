@@ -59,7 +59,7 @@ export const TypeCustomerTable = (props: tableProps) => {
                 const isSelected = items.includes(typeCustomer.id);
                 const isInstitution = typeCustomer.is_institution;
                 return (
-                  <TableRow key={typeCustomer.id} >
+                  <TableRow key={typeCustomer.id} sx={{ borderBottom: '2px solid #ccc' }}>
                     {
                       stateSelect && <TableCell padding="checkbox">
                         <Checkbox

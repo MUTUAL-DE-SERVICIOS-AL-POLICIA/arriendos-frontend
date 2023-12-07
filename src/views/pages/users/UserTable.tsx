@@ -48,14 +48,13 @@ export const UserTable = (props: tableProps) => {
                   quantity={5}
                 /> : users.map((user: UserModel) => {
                   return (
-                    <TableRow key={user.id} >
+                    <TableRow key={user.id} sx={{ borderBottom: '2px solid #ccc' }}>
                       <TableCell>{user.username}</TableCell>
                       <TableCell>{user.first_name}</TableCell>
                       <TableCell>{user.last_name}</TableCell>
                       <TableCell>{user.email}</TableCell>
                       <TableCell>
                         <Switch
-
                           checked={user.is_active}
                           onChange={() => toggleActivation(user)}
                           color="success"
