@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux"
 import { coffeApi } from "@/services";
-import { setCurrentRentalState, setRentalInformation, setStates, setUpdateGroupRental, setUpdateRental, setUpdateRentalSelected } from '@/store';
+import { setAllStates, setCurrentRentalState, setRentalInformation, setStates, setUpdateGroupRental, setUpdateRental, setUpdateRentalSelected } from '@/store';
 import Swal from "sweetalert2";
 import { getDateJSON } from "@/helpers";
 
@@ -14,6 +14,22 @@ export const useLeasesStates = () => {
     try {
       const { data } = await api.get(`/leases/list_state/`)
       dispatch(setStates({ states: data }))
+    } catch (error: any) {
+      if (error.response && error.response.status == 400) {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error')
+      } else if (error.response && error.response.status == 403) {
+        const message = error.response.data.detail
+        Swal.fire('Acceso denegado', message, 'warning')
+      } else throw new Error('Ocurrió algun error en el backend')
+    }
+  }
+
+  const getAllLeaseState = async () => {
+    try {
+      const { data } = await api.get(`/leases/state/`)
+      console.log(data)
+      dispatch(setAllStates({ allStates: data }))
     } catch (error: any) {
       if (error.response && error.response.status == 400) {
         const message = error.response.data.error
@@ -110,6 +126,7 @@ export const useLeasesStates = () => {
     getRental,
     getCurrentLeaseState,
     postChangeRentalState,
-    patchUpdateTime
+    patchUpdateTime,
+    getAllLeaseState
   }
 }

@@ -1,4 +1,4 @@
-import { Bento, CalendarMonth, Group, Home } from "@mui/icons-material"
+import { Assessment, Bento, CalendarMonth, Group, Home } from "@mui/icons-material"
 
 export const menu = () => {
     return [
@@ -37,5 +37,10 @@ export const menu = () => {
             icon: <Group />,
             permission: "show-halls"
         },
+        {
+            path: "/reports",
+            title: "Reportes",
+            icon:<Assessment/>
+        }
     ]
 }

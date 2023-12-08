@@ -38,6 +38,12 @@ export interface FormRentalValidations {
     room: [(value: string) => boolean, string];
 }
 
+export interface RentalStateModel {
+    id: number;
+    name: string;
+    next_state?: object[];
+}
+
 
 
 

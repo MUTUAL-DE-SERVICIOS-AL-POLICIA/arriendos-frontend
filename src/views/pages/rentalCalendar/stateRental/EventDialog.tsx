@@ -10,6 +10,7 @@ import { Reserver } from "./reserve/Main"
 import { Rented } from "./payments/Main"
 import { Concluded } from "./concluded/Main"
 import { ComponentButton } from "@/components"
+import { RentalStateModel } from "@/models"
 
 interface elementsProps {
   open: boolean;
@@ -78,7 +79,7 @@ export const EventDialog = (props: elementsProps) => {
     let estadoSiguienteId = null;
     let diferenciaMinima = Infinity;
 
-    currentRentalState.next_states.forEach((nextState: any) => {
+    currentRentalState.next_states.forEach((nextState: RentalStateModel) => {
       const diferencia = Math.abs(currentRentalState.current_state.id - nextState.id);
       if (diferencia < diferenciaMinima) {
         diferenciaMinima = diferencia;
@@ -123,7 +124,7 @@ export const EventDialog = (props: elementsProps) => {
           }
           {currentRentalState && <Card sx={{ margin: '20px 0px', padding: '10px 10px 0px 10px', borderRadius: '10px' }} variant="outlined">
             <Stepper nonLinear activeStep={currentRentalState.current_state.id} >
-              {states.map((step: any) => (
+              {states.map((step: RentalStateModel) => (
                 <Step key={step.id} completed={step.id - 1 < currentRentalState.current_state.id}>
                   <StepButton color="inherit">
                     {step.name}
@@ -151,13 +152,13 @@ export const EventDialog = (props: elementsProps) => {
             <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2, pb: 1 }}>
               <Box sx={{ flex: '1 1 auto' }} />
               {
-                (currentRentalState.current_state.id + 1) <= states.length &&
+                (currentRentalState.current_state.id) <= states.length &&
                 <ComponentButton
-                  text={(currentRentalState.current_state.id + 1) == states.length ? 'Finalizar' : 'Siguiente'}
+                  text={(currentRentalState.current_state.id) == states.length ? 'Finalizar' : 'Siguiente'}
                   onClick={handleNext}
                   loading={loading}
                   variant={'outlined'}
-                  endIcon={(currentRentalState.current_state.id + 1) == states.length ? <Cancel /> : <ArrowCircleRight />}
+                  endIcon={(currentRentalState.current_state.id) == states.length ? <Cancel /> : <ArrowCircleRight />}
                 />
               }
             </Box>

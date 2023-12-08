@@ -25,6 +25,9 @@ export const rentalSlice = createSlice({
     setStates: (state, action) => {
       state.states = action.payload.states
     },
+    setAllStates: (state, action) => {
+      state.states = action.payload.allStates
+    },
     setRentalInformation: (state, action) => {
       state.rentalInformation = action.payload.rentalInformation
     },
@@ -93,4 +96,5 @@ export const {
   setUpdateRental,
   setUpdateGroupRental,
   setUpdateRentalSelected,
+  setAllStates
 } = rentalSlice.actions;
