@@ -15,6 +15,7 @@ import { RentalView } from '@/views/pages/rental';
 import { HourRangeView } from '@/views/pages/hourRanges';
 import { RequirementsView } from '@/views/pages/requirements';
 import { ProductsView } from '@/views/pages/products';
+import { ReportView } from '@/views/pages/reports'
 
 export const AppRouter = () => {
 
@@ -51,6 +52,8 @@ export const AppRouter = () => {
                     <Route path="/typeCustomersView" element={<TypesCustomersView />} />
                     {/* usuarios */}
                     <Route path="/usersView" element={<UsersView />} />
+                    {/* reportes */}
+                    <Route path="/reports" element={<ReportView />} />
                     {/*  */}
                     <Route path="/*" element={<Navigate to={"/rentalCalendarView"} />} />
                 </Routes>

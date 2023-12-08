@@ -14,7 +14,7 @@ export const Requirement = (props: Props) => {
     setCheckedItems
   } = props
 
-	const handleItemClick = (index:any) => {
+	const handleItemClick = (index: number) => {
 		const newCheckedItems = [...checkedItems]
 		newCheckedItems[index].state = !newCheckedItems[index].state
 		setCheckedItems(newCheckedItems)

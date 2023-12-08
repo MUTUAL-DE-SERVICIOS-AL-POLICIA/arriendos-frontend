@@ -4,7 +4,7 @@ export const formatDate = (isoDate: string): Date => {
   const utcDate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
   return utcDate;
 };
-export const getDateJSON = (date: Date | null) => {
+export const getDateJSON = (date: Date | any) => {
   if (!date) return null;
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
