@@ -65,7 +65,7 @@ export const useHourRangeStore = () => {
 
     Swal.fire({
       title: '¿Estás seguro?',
-      text: `Se eliminará el Rango de hora: ${hourRange.time} hora`,
+      text: `Esta acción no es reversible`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -79,7 +79,7 @@ export const useHourRangeStore = () => {
           dispatch(removeHourRange({ hourRange }));
           Swal.fire(
             `¡Listo!`,
-            `${hourRange.time} hora fue eliminado`,
+            `Se elimino el registro`,
             'success'
           )
         } catch (error: any) {
