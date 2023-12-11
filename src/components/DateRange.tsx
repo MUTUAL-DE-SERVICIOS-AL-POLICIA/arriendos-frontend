@@ -5,13 +5,13 @@ import 'react-calendar/dist/Calendar.css';
 import './styles.css';
 
 export const ComponentDateRange = React.memo(({ value, onChange }: { value: any, onChange: any }) => {
-    return (
-        <DateRangePicker
-            locale='es'
-            rangeDivider='hasta '
-            onChange={onChange}
-            value={value}
-            clearIcon={null}
-        />
-    )
+  return (
+    <DateRangePicker
+      locale='es'
+      rangeDivider='hasta '
+      onChange={onChange}
+      value={value}
+      clearIcon={null}
+    />
+  )
 })

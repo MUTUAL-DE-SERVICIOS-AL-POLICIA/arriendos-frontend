@@ -23,14 +23,19 @@ export const ProductTable = (props: tableProps) => {
   const [limit, setLimit] = useState(limitInit)
 
   useEffect(() => {//escucha si "page", "limit" o "flag" se modifico
-    getProducts(page, limit).then((total) => setTotal(total))
+    getProducts(page, limit, '').then((total) => setTotal(total))
   }, [page, limit, flag]);
 
+  const handleSearch = async (search: string) => {
+    await setPage(0);
+    await setLimit(limitInit);
+    getProducts(0, limitInit, search).then((total) => setTotal(total))
+  }
   return (
     <Stack>
       <ComponentSearch
         title="Buscar Producto"
-        onSearch={() => { }}
+        onSearch={handleSearch}
       />
       <TableContainer>
         <Table sx={{ minWidth: 350 }} size="small">
