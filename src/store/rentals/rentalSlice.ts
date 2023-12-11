@@ -11,6 +11,7 @@ export const rentalSlice = createSlice({
     states: [],
     rentalInformation: <any>null,
     currentRentalState: null,
+    daySelected: null
   },
   reducers: {
     setRentals: (state, action) => {
@@ -79,6 +80,9 @@ export const rentalSlice = createSlice({
 
       }
 
+    },
+    setDaySelected: (state, action) => {
+      state.daySelected = action.payload.daySelected
     }
   }
 });
@@ -96,5 +100,6 @@ export const {
   setUpdateRental,
   setUpdateGroupRental,
   setUpdateRentalSelected,
-  setAllStates
+  setAllStates,
+  setDaySelected
 } = rentalSlice.actions;
