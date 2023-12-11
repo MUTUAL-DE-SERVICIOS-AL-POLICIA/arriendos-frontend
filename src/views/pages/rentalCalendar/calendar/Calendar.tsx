@@ -40,7 +40,7 @@ export const CalendarComponent = (props: calendarProps) => {
     screenHeight,
   } = props;
 
-  const { rentals = [], saveGroupRental } = useRentalStore()
+  const { rentals = [], saveGroupRental, saveDaySelected } = useRentalStore()
 
   const calendarStyle = (date: any) => {
     if (daySelect != null && sameDay(daySelect, date)) {
@@ -50,6 +50,7 @@ export const CalendarComponent = (props: calendarProps) => {
   };
 
   const onSelectSlot = async (slotInfo: SlotInfo) => {
+    saveDaySelected(slotInfo.start)
     if (daySelect == null) {
       onSelectDay(slotInfo.start)
       saveGroupRental(await groupEventsByDate(rentals, slotInfo.start))

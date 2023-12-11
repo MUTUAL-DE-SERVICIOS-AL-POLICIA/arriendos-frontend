@@ -4,6 +4,7 @@ import { Grid, Typography } from '@mui/material';
 import { format } from 'date-fns';
 import esES from 'date-fns/locale/es';
 import dayjs from 'dayjs';
+import { useRentalStore } from '@/hooks';
 interface timeProps {
   date: Date,
   value: Date | string;
@@ -23,6 +24,8 @@ export const ComponentInputTime = (props: timeProps) => {
     helperText,
   } = props;
 
+  const { daySelected } = useRentalStore()
+
   const handleChange = (time: dayjs.Dayjs | null) => {
     if (time == null) return;
     const timeInit: Date = time.toDate();
@@ -34,6 +37,11 @@ export const ComponentInputTime = (props: timeProps) => {
     dateEnd.setMinutes(timeInit.getMinutes());
     onChange(dateStart, dateEnd);
   };
+
+  const isCurrentDate =
+    new Date().setHours(0,0,0,0)
+    ==
+    new Date(daySelected.getFullYear(), daySelected.getMonth(), daySelected.getDate()).getTime()
 
   return (
     <>
@@ -47,7 +55,7 @@ export const ComponentInputTime = (props: timeProps) => {
               label="Hora"
               value={value == null ? null : dayjs(value)}
               onChange={(value) => handleChange(value)}
-              disablePast={true}
+              disablePast={isCurrentDate}
               ampm={false}
               sx={{
                 padding: '2px',

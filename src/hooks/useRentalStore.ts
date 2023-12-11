@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { coffeApi } from '@/services';
 import Swal from 'sweetalert2';
-import { setGroupRentals, setRentalSelected, setRentals } from '@/store';
+import { setDaySelected, setGroupRentals, setRentalSelected, setRentals } from '@/store';
 import printJS from 'print-js';
 import { formatDate } from '@/helpers';
 import { EventsCalendarModel } from '@/models';
@@ -9,7 +9,7 @@ import { EventsCalendarModel } from '@/models';
 const api = coffeApi;
 
 export const useRentalStore = () => {
-  const { rentals = [], groupRentals = [], rentalSelected } = useSelector((state: any) => state.rentals);
+  const { rentals = [], groupRentals = [], rentalSelected, daySelected } = useSelector((state: any) => state.rentals);
   const dispatch = useDispatch();
 
   const getRentals = async (roomId?: number) => {
@@ -258,11 +258,16 @@ export const useRentalStore = () => {
     }
   }
 
+  const saveDaySelected = async (day: Date) => {
+    dispatch(setDaySelected({daySelected: day}))
+  }
+
   return {
     //* Propiedades
     rentals,
     groupRentals,
     rentalSelected,
+    daySelected,
     //* Métodos
     getRentals,
     saveGroupRental,
@@ -274,5 +279,6 @@ export const useRentalStore = () => {
     getPrintWarrantyReturn,
     postPrintDeliveryForm,
     getPrintReturnWarrantyForm,
+    saveDaySelected
   }
 }
