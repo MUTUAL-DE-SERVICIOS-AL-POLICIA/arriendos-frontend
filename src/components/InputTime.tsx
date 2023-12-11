@@ -47,6 +47,8 @@ export const ComponentInputTime = (props: timeProps) => {
               label="Hora"
               value={value == null ? null : dayjs(value)}
               onChange={(value) => handleChange(value)}
+              disablePast={true}
+              ampm={false}
               sx={{
                 padding: '2px',
                 margin: '4px',
