@@ -32,7 +32,7 @@ export const RequirementTable = (props: tableProps) => {
   const [limit, setLimit] = useState(limitInit)
 
   useEffect(() => {//escucha si "page", "limit" o "flag" se modifico
-    getRequirements({ page, limit }).then((total) => setTotal(total))
+    getRequirements(page, limit).then((total) => setTotal(total))
   }, [page, limit, flag]);
 
   return (

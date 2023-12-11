@@ -9,9 +9,11 @@ export const useRateStore = () => {
   const { rates, flag } = useSelector((state: any) => state.rates);
   const dispatch = useDispatch();
 
-  const getRates = async ({ page, limit }: { page: number, limit: number }) => {
+  const getRates = async (page: number, limit: number) => {
     try {
-      const { data } = await api.get(`/requirements/allrates/?page=${page}&limit=${limit}`);
+      let filter: any = { params: { page: page } };
+      if (limit != -1) filter.params.limit = limit;
+      const { data } = await api.get(`/requirements/allrates/`, filter);
       dispatch(setRates({ rates: data.rates }));
       return data.total;
     } catch (error: any) {

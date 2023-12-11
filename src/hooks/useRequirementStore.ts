@@ -10,9 +10,11 @@ export const useRequirementStore = () => {
   const { requirements, flag } = useSelector((state: any) => state.requirements);
   const dispatch = useDispatch();
 
-  const getRequirements = async ({ page, limit }: { page: number, limit: number }) => {
+  const getRequirements = async (page: number, limit: number) => {
     try {
-      const { data } = await api.get(`/requirements/?page=${page}&limit=${limit}`);
+      let filter: any = { params: { page: page } };
+      if (limit != -1) filter.params.limit = limit;
+      const { data } = await api.get(`/requirements/`, filter);
       dispatch(setRequirements({ requirements: data.requirements }));
       return data.total
     } catch (error: any) {
