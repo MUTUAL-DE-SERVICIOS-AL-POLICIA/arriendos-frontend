@@ -46,6 +46,7 @@ export const usePropertieStore = () => {
     try {
       const { data } = await api.patch(`/rooms/properties/${id}/`, body);
       dispatch(updatePropertie({ propertie: data }));
+      getPropertiesRooms()
       Swal.fire('Inmueble editado correctamente', '', 'success');
       return true;
     } catch (error: any) {
