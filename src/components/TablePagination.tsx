@@ -1,43 +1,43 @@
 import { TablePagination } from "@mui/material"
 import { useCallback } from "react";
 interface paginationProps {
-    total: number;
-    onPageChange: (value: number) => void;
-    onRowsPerPageChange: (value: number) => void;
-    page: number;
-    limit: number;
+  total: number;
+  onPageChange: (value: number) => void;
+  onRowsPerPageChange: (value: number) => void;
+  page: number;
+  limit: number;
 }
 
 export const ComponentTablePagination = (props: paginationProps) => {
-    const {
-        total,
-        onPageChange,
-        onRowsPerPageChange,
-        page,
-        limit,
-    } = props;
+  const {
+    total,
+    onPageChange,
+    onRowsPerPageChange,
+    page,
+    limit,
+  } = props;
 
-    /* CONTROLADORES DE LA PAGINACIÓN */
-    const handlePageChange = useCallback((_: any, value: number) => {//cuando se cambia la pagina < o >
-        onPageChange(value)
-    }, []);
+  /* CONTROLADORES DE LA PAGINACIÓN */
+  const handlePageChange = useCallback((_: any, value: number) => {//cuando se cambia la pagina < o >
+    onPageChange(value)
+  }, []);
 
-    const handleRowsPerPageChange = useCallback((event: any) => {//cuando se cambia el limite 
-        onRowsPerPageChange(event.target.value)
-    }, []);
+  const handleRowsPerPageChange = useCallback((event: any) => {//cuando se cambia el limite 
+    onRowsPerPageChange(event.target.value)
+  }, []);
 
 
-    return (
-        <TablePagination
-            component="div"
-            count={total}
-            onPageChange={handlePageChange}
-            onRowsPerPageChange={handleRowsPerPageChange}
-            page={page}
-            rowsPerPage={limit}
-            rowsPerPageOptions={[5, 10, 25]}
-            labelRowsPerPage='Filas por página:'
-            labelDisplayedRows={({ from, to, count }: { from: any, to: any, count: any }) => `${from}-${to} de ${count}`}
-        />
-    );
+  return (
+    <TablePagination
+      component="div"
+      count={total}
+      onPageChange={handlePageChange}
+      onRowsPerPageChange={handleRowsPerPageChange}
+      page={page}
+      rowsPerPage={limit}
+      rowsPerPageOptions={[5, 10, 25, { value: -1, label: 'todos' }]}
+      labelRowsPerPage='Filas por página:'
+      labelDisplayedRows={({ from, to, count }: { from: any, to: any, count: any }) => `${from}-${to} de ${count}`}
+    />
+  );
 }

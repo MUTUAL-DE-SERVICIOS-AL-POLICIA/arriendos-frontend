@@ -31,7 +31,7 @@ export const TypeCustomerTable = (props: tableProps) => {
 
 
   useEffect(() => {//escucha si "page", "limit" o "flag" se modifico
-    getTypesCustomers({ page, limit }).then((total) => setTotal(total))
+    getTypesCustomers(page, limit).then((total) => setTotal(total))
   }, [page, limit, flag]);
 
 

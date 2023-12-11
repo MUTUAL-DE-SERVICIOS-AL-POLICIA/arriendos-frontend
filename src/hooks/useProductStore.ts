@@ -11,17 +11,13 @@ export const useProductStore = () => {
   const { products, flag, leakedProducts } = useSelector((state: any) => state.products);
   const dispatch = useDispatch();
 
-  const getProducts = async ({ page, limit, isFilter }: { page: number, limit: number, isFilter: boolean }) => {
+  const getProducts = async (page: number, limit: number) => {
     try {
-      if (!isFilter) {
-        const { data } = await api.get(`/product/?page=${page}&limit=${limit}`);
-        dispatch(setProducts({ products: data.products }));
-        return data.total
-      } else {
-        const { data } = await api.get(`/product/?page=${page}&limit=${limit}`);
-        dispatch(setProducts({ products: data.products }));
-        return data.total
-      }
+      let filter: any = { params: { page: page } };
+      if (limit != -1) filter.params.limit = limit;
+      const { data } = await api.get(`/product/`, filter);
+      dispatch(setProducts({ products: data.products }));
+      return data.total
     } catch (error: any) {
       if (error.response && error.response.status == 400) {
         const message = error.response.data.error

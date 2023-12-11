@@ -10,9 +10,11 @@ export const useUserStore = () => {
   const { usersLDAP, users, flag } = useSelector((state: any) => state.users);
   const dispatch = useDispatch();
 
-  const getUsers = async ({ page, limit }: { page: number, limit: number }) => {
+  const getUsers = async (page: number, limit: number) => {
     try {
-      const { data } = await api.get(`/users/?page=${page}&limit=${limit}`)
+      let filter: any = { params: { page: page } };
+      if (limit != -1) filter.params.limit = limit;
+      const { data } = await api.get(`/users/`, filter)
       dispatch(setUsers({ users: data.users }));
       return data.total
     } catch (error: any) {

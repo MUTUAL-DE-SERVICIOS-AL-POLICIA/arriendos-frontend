@@ -8,13 +8,11 @@ import { ProductModel } from "@/models";
 interface tableProps {
   handleEdit: (product: ProductModel) => void;
   limitInit?: number;
-  isFilter?: boolean;
 }
 
 export const ProductTable = (props: tableProps) => {
   const {
     limitInit = 10,
-    isFilter = false
   } = props;
 
   /*DATA */
@@ -25,8 +23,8 @@ export const ProductTable = (props: tableProps) => {
   const [limit, setLimit] = useState(limitInit)
 
   useEffect(() => {//escucha si "page", "limit" o "flag" se modifico
-    getProducts({ page, limit, isFilter }).then((total) => setTotal(total))
-  }, [page, limit, flag, isFilter]);
+    getProducts(page, limit).then((total) => setTotal(total))
+  }, [page, limit, flag]);
 
   return (
     <Stack>

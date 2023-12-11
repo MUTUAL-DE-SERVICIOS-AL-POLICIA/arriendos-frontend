@@ -10,9 +10,11 @@ export const useTypeCustomerStore = () => {
   const { typesCustomers, flag } = useSelector((state: any) => state.typesCustomers);
   const dispatch = useDispatch();
 
-  const getTypesCustomers = async ({ page, limit }: { page: number, limit: number }) => {
+  const getTypesCustomers = async (page: number, limit: number) => {
     try {
-      const { data } = await api.get(`/customers/type/?page=${page}&limit=${limit}`)
+      let filter: any = { params: { page: page } };
+      if (limit != -1) filter.params.limit = limit;
+      const { data } = await api.get(`/customers/type/`, filter)
       dispatch(setTypesCustomers({ typesCustomers: data.customer_type }));
       return data.total
     } catch (error: any) {

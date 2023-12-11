@@ -27,7 +27,7 @@ export const RateTable = (props: tableProps) => {
   const [limit, setLimit] = useState(limitInit)
 
   useEffect(() => {//escucha si "page", "limit" o "flag" se modifico
-    getRates({ page, limit }).then((total) => setTotal(total))
+    getRates(page, limit).then((total) => setTotal(total))
   }, [page, limit, flag]);
 
   return (
