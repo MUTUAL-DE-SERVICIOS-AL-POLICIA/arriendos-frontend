@@ -20,7 +20,7 @@ export const useWarrantyStore = () => {
       if (error.response && error.response.status == 400) {
         const message = error.response.data.error
         Swal.fire('Error', message, 'error')
-      } else if(error.response && error.response.status == 403) {
+      } else if (error.response && error.response.status == 403) {
         const message = error.response.data.detail
         Swal.fire('Acceso denegado', message, 'warning')
       } else throw new Error('Ocurrió algun error en el backend')
@@ -55,7 +55,7 @@ export const useWarrantyStore = () => {
       if (error.response && error.response.status == 400) {
         const message = error.response.data.error
         Swal.fire('Error', message, 'error')
-      } else if(error.response && error.response.status == 403) {
+      } else if (error.response && error.response.status == 403) {
         const message = error.response.data.detail
         Swal.fire('Acceso denegado', message, 'warning')
       } else throw new Error('Ocurrió algun error en el backend')
@@ -68,10 +68,11 @@ export const useWarrantyStore = () => {
       text: `Esta acción no es reversible`,
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
+      confirmButtonColor: '#0B815A',
       confirmButtonText: 'Eliminar',
-      cancelButtonText: 'Cancelar'
+      cancelButtonColor: '#F04438',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
@@ -84,7 +85,7 @@ export const useWarrantyStore = () => {
           if (error.response && error.response.status == 400) {
             const message = error.response.data.error
             Swal.fire('Error', message, 'error')
-          } else if(error.response && error.response.status == 403) {
+          } else if (error.response && error.response.status == 403) {
             const message = error.response.data.detail
             Swal.fire('Acceso denegado', message, 'warning')
           } else throw new Error('Ocurrió algun error en el backend')

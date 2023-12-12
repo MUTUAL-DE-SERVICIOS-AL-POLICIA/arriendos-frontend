@@ -1,3 +1,4 @@
+import { DialogComponent } from "@/components";
 import { RateModel } from "@/models";
 import { coffeApi } from "@/services";
 import { refreshRate, setRates } from "@/store";
@@ -46,37 +47,27 @@ export const useRateStore = () => {
   }
 
   const deleteRemoveRate = async (rate: RateModel) => {
-
-    Swal.fire({
-      title: '¿Estás seguro?',
-      text: `Se eliminará ${rate.name}`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Eliminar',
-      cancelButtonText: 'Cancelar'
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await api.delete(`/requirements/rates${rate.id}`)
-          dispatch(refreshRate());
-          Swal.fire(
-            `¡Listo!`,
-            `${rate.name}fue eliminado`,
-            'success'
-          )
-        } catch (error: any) {
-          if (error.response && error.response.status == 400) {
-            const message = error.response.data.error
-            Swal.fire('Error', message, 'error')
-          } else if (error.response && error.response.status == 403) {
-            const message = error.response.data.detail
-            Swal.fire('Acceso denegado', message, 'warning')
-          } else throw new Error('Ocurrió algun error en el backend')
-        }
+    const { dialogDelete } = DialogComponent();
+    const state = await dialogDelete(`Se eliminará la tarifa: ${rate.name}`)
+    if (state) {
+      try {
+        await api.delete(`/requirements/rates${rate.id}`)
+        dispatch(refreshRate());
+        Swal.fire(
+          `¡Listo!`,
+          `${rate.name}fue eliminado`,
+          'success'
+        )
+      } catch (error: any) {
+        if (error.response && error.response.status == 400) {
+          const message = error.response.data.error
+          Swal.fire('Error', message, 'error')
+        } else if (error.response && error.response.status == 403) {
+          const message = error.response.data.detail
+          Swal.fire('Acceso denegado', message, 'warning')
+        } else throw new Error('Ocurrió algun error en el backend')
       }
-    })
+    }
   }
 
   return {

@@ -4,6 +4,7 @@ import { setCustomers, refreshCustomer } from '@/store';
 import Swal from 'sweetalert2';
 import { CustomerModel } from '@/models';
 import { toast } from 'react-toastify';
+import { DialogComponent } from '@/components';
 
 const api = coffeApi;
 
@@ -57,37 +58,27 @@ export const useCustomerStore = () => {
   }
 
   const deleteRemoveCustomer = async (customer: CustomerModel) => {
-
-    Swal.fire({
-      title: '¿Estás seguro?',
-      text: `Se eliminará a ${customer.institution_name ?? customer.contacts[0].name}`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Eliminar',
-      cancelButtonText: 'Cancelar'
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await api.delete(`/customers/${customer.id}`)
-          dispatch(refreshCustomer());
-          Swal.fire(
-            `¡Listo!`,
-            `${customer.institution_name ?? customer.contacts[0].name}fue eliminado`,
-            'success'
-          )
-        } catch (error: any) {
-          if (error.response && error.response.status == 400) {
-            const message = error.response.data.error
-            Swal.fire('Error', message, 'error')
-          } else if (error.response && error.response.status == 403) {
-            const message = error.response.data.detail
-            Swal.fire('Acceso denegado', message, 'warning')
-          } else throw new Error('Ocurrió algun error en el backend')
-        }
+    const { dialogDelete } = DialogComponent();
+    const state = await dialogDelete(`Se eliminará el cliente ${customer.institution_name ?? customer.contacts[0].name}`)
+    if (state) {
+      try {
+        await api.delete(`/customers/${customer.id}`)
+        dispatch(refreshCustomer());
+        Swal.fire(
+          `¡Listo!`,
+          `${customer.institution_name ?? customer.contacts[0].name} fue eliminado`,
+          'success'
+        )
+      } catch (error: any) {
+        if (error.response && error.response.status == 400) {
+          const message = error.response.data.error
+          Swal.fire('Error', message, 'error')
+        } else if (error.response && error.response.status == 403) {
+          const message = error.response.data.detail
+          Swal.fire('Acceso denegado', message, 'warning')
+        } else throw new Error('Ocurrió algun error en el backend')
       }
-    })
+    }
   }
 
   const searchAffiliate = async (ciAffiliate: String) => {

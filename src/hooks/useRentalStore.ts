@@ -53,7 +53,7 @@ export const useRentalStore = () => {
 
   const postCreateRental = async (body: object, setShoppingCart: Function, onClose: Function) => {
     Swal.fire({
-      title: '¿Estás seguro?',
+      title: '¿Está seguro?',
       text: `Se creará un alquiler`,
       icon: 'warning',
       showCancelButton: true,
@@ -259,7 +259,7 @@ export const useRentalStore = () => {
   }
 
   const saveDaySelected = async (day: Date) => {
-    dispatch(setDaySelected({daySelected: day}))
+    dispatch(setDaySelected({ daySelected: day }))
   }
 
   return {
