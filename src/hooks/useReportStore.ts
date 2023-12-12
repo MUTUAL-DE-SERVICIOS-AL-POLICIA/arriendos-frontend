@@ -1,20 +1,17 @@
 import { coffeApi } from '@/services';
 
-const printExcelFile = (fileUrl:any) => {
-  const newWindow = window.open(fileUrl, '_blank')
-
-  if(newWindow)
-  newWindow.onload = () => {
-    newWindow.print()
-    newWindow.close()
-  }
-}
 
 export const useReportStore = () => {
-  const getReportXlsx = async (body: object) => {
+  const getReportXlsx = async (body: any) => {
     try {
-      const { data } = await coffeApi.post('/leases/report', body, {
-        responseType: 'arraybuffer'
+      const { data } = await coffeApi.post('/leases/report', {
+        start_date: body.get('start_date'),
+        end_date: body.get('end_date'),
+        state: parseInt(body.get('state'))
+      }, {
+        responseType: 'arraybuffer',
+        headers: {
+        },
       });
 
       const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
@@ -25,7 +22,6 @@ export const useReportStore = () => {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      printExcelFile(url)
     } catch(error: any) {
       console.log("Error al descargar el archivo: ", error)
     }
