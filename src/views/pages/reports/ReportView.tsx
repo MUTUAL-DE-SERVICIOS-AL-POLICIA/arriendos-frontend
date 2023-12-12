@@ -1,12 +1,12 @@
 import { ComponentInputSelect, ModalSelectComponent } from "@/components"
-import { ComponentDateRange } from "@/components/DateRange"
 import { useReportStore } from "@/hooks/useReportStore"
 import { Download } from "@mui/icons-material"
 import { Button, Grid, Stack, SvgIcon } from "@mui/material"
 import { useCallback,  useState } from "react"
 import { StateTable } from "."
 import { useForm } from "@/hooks"
-import { getDateJSON } from "@/helpers";
+import { ComponentDateWithoutTime } from "@/components/DateWithoutTime"
+import dayjs from 'dayjs';
 
 const formFields = {
   state: null,
@@ -21,17 +21,19 @@ export const ReportView = () => {
 
   var bodyFormData = new FormData();
 
-  const [ dateRange, onChangeDateRange ] = useState([])
   const [ modalState, setModalState ] = useState(false)
   const { getReportXlsx } = useReportStore()
+
+  const [ since, setSince ] = useState(null)
+  const [ until, setUntil ] = useState(null)
 
   const handleModalStateType = useCallback((value: boolean) => {
     setModalState(value)
   }, [])
 
   const getDocument = () => {
-    const start_date = getDateJSON(dateRange[0])
-    const end_date = getDateJSON(dateRange[1])
+    const start_date = dayjs(since).toISOString()
+    const end_date = dayjs(until).toISOString()
     bodyFormData.append("start_date", start_date!)
     bodyFormData.append("end_date", end_date!)
     bodyFormData.append("state", state.id)
@@ -39,7 +41,7 @@ export const ReportView = () => {
   }
 
   const exists = () => {
-    return !( state && Object.keys(state).length != 0 && dateRange.length != 0)
+    return !( state && Object.keys(state).length != 0 && since && until)
   }
 
   return (
@@ -75,7 +77,7 @@ export const ReportView = () => {
         </Button>
       </Stack>
       <Grid container justifyContent="center">
-        <Grid item xs={12} sm={6} sx={{ padding: '5px' }}>
+        <Grid item xs={12} sm={4} sx={{ padding: '5px' }}>
           <ComponentInputSelect
             label={state != null ? 'Estado' : ''}
             title={state != null ? state.name : 'Estado'}
@@ -84,10 +86,18 @@ export const ReportView = () => {
             helperText={formSubmitted ? stateValid : ''}
           />
         </Grid>
-        <Grid item xs={12} sm={6} sx={{ padding: '5px' }}>
-          <ComponentDateRange
-            value={dateRange}
-            onChange={onChangeDateRange}
+        <Grid item xs={12} sm={4} sx={{ padding: '5px' }}>
+          <ComponentDateWithoutTime
+            label="desde"
+            value={since}
+            onChange={setSince}
+          />
+        </Grid>
+        <Grid item xs={12} sm={4} sx={{ padding: '5px' }}>
+          <ComponentDateWithoutTime
+            label="hasta"
+            value={until}
+            onChange={setUntil}
           />
         </Grid>
       </Grid>
