@@ -21,28 +21,28 @@ export const CartView = (props: cartProps) => {
     onClose,
     screenHeight,
   } = props;
-  const [shoppingCart, setShoppingCart] = useState<any[]>([]);
+
   const [formSubmitted, setFormSubmitted] = useState(false);
   const { plans = [], getPlans } = usePlanStore();
   const [planSelect, setPlanSelect] = useState<number>(0);
   const { leakedProducts = [] } = useProductStore();
-  const { postCreateRental } = useRentalStore();
+  const { shoppingCart, setUpdateShoppingCart, postCreateRental } = useRentalStore();
 
   useEffect(() => {
     getPlans();
   }, [])
 
   const handleAddProduct = (value: any) => {
-    setShoppingCart([...shoppingCart, { productSelect: leakedProducts.find((product: ProductModel) => product.id == value), date, state: false }])
+    setUpdateShoppingCart([...shoppingCart, { productSelect: leakedProducts.find((product: ProductModel) => product.id == value), date, state: false }])
   }
 
   const handlePlan = (value: any) => {
-    setShoppingCart([])
+    setUpdateShoppingCart([])
     setPlanSelect(value)
   }
 
   const handleRemoveProduct = (index: number) => {
-    setShoppingCart(shoppingCart.filter((_, i) => i !== index));
+    setUpdateShoppingCart(shoppingCart.filter((_: any, i: number) => i !== index));
   }
 
   const changeValues = (formState: any, state: boolean, index: number) => {
@@ -56,7 +56,7 @@ export const CartView = (props: cartProps) => {
       product: updateShopping[index].productSelect.id,
       state,
     };
-    setShoppingCart(updateShopping);
+    setUpdateShoppingCart(updateShopping);
   }
   const sendSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -66,7 +66,7 @@ export const CartView = (props: cartProps) => {
     request.customer = customer.id;
     if (planSelect !== 0) request.plan = planSelect
     request.selected_products = shoppingCart;
-    postCreateRental(request, setShoppingCart, onClose)
+    postCreateRental(request, onClose)
   }
 
   return (
@@ -89,7 +89,7 @@ export const CartView = (props: cartProps) => {
           />
           <div style={{ maxHeight: `${screenHeight / 3.5}px`, overflowY: 'auto' }}>
             <TransitionGroup >
-              {shoppingCart.map((item: any, index) => (
+              {shoppingCart.map((item: any, index: number) => (
                 <Collapse key={index} >
                   <CardEvent
                     item={item}

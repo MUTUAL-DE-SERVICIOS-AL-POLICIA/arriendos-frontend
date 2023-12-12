@@ -5,7 +5,7 @@ import { FormRentalModel } from "@/models";
 import { PropertieTable } from "../properties";
 import { CalendarComponent } from "./calendar";
 import { styled } from '@mui/system';
-import { Grid } from "@mui/material";
+import { Drawer, Grid, useMediaQuery, useTheme } from "@mui/material";
 import { CustomerTable } from "../customers";
 import { RentalSection } from ".";
 import { virifyDate } from "@/helpers";
@@ -19,16 +19,18 @@ const formFields: FormRentalModel = {
 
 const SliderCalendar = styled('div')`
   transition: width 0.5s ease-in;
-  padding: 8px;
+  padding: 5px;
 `;
 
 const SliderContent = styled('div')`
-  transition: widtH 0.5s ease-in;
-  width: 0%;
+  transition: width 0.5s ease-in;
+  padding: 5px;
 `;
 
 export const RentalCalendarView = () => {
-
+  const theme = useTheme();
+  const lgUp = useMediaQuery(theme.breakpoints.up('sm'));
+  const [openNav, setOpenNav] = useState(false);
   const { room, customer, onValueChange } = useForm(formFields);
   const { postLeakedProduct, clearLakedProduct } = useProductStore();
   const { getRentals } = useRentalStore();
@@ -68,7 +70,8 @@ export const RentalCalendarView = () => {
   const handleModalClient = (value: boolean) => {
     setModalClient(value);
   };
-  return (
+
+  const contentCalendar = (
     <>
       {modalRoom && <ModalSelectComponent
         stateSelect={true}
@@ -114,40 +117,76 @@ export const RentalCalendarView = () => {
           />
         </ModalSelectComponent>
       }
+      <Grid container>
+        <Grid item xs={12} sm={6} sx={{ px: .5 }}>
+          <ComponentInputSelect
+            title={customer != null ? (customer.institution_name ?? customer.contacts[0].name) : 'Cliente'}
+            label={customer == null ? '' : 'Cliente'}
+            onPressed={() => handleModalClient(true)}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} sx={{ px: .5 }}>
+          <ComponentInputSelect
+            title={room != null ? room.name : 'Ambiente'}
+            label={room == null ? '' : 'Ambiente'}
+            onPressed={() => handleModalRoom(true)}
+          />
+        </Grid>
+      </Grid>
+      <CalendarComponent
+        daySelect={daySelect}
+        onSelectDay={(day) => {
+          setDaySelect(day);
+          setOpenNav(true);
+        }}
+        screenHeight={screenHeight}
+      />
+    </>
+  )
+  const contentRental = (
+    <RentalSection
+      date={daySelect}
+      customer={customer}
+      onClose={() => {
+        setDaySelect(null);
+        getRentals(room.id);
+      }}
+      screenHeight={screenHeight}
+    />
+  )
+
+  if (!lgUp) {
+    return (
+      <>
+        {contentCalendar}
+        <Drawer
+          anchor="right"
+          onClose={() => { setOpenNav(false) }}
+          open={openNav && daySelect ? true : false}
+          PaperProps={{
+            sx: {
+              width: 250
+            }
+          }}
+          sx={{ zIndex: (theme) => theme.zIndex.appBar + 100 }}
+          variant="temporary"
+        >
+          {contentRental}
+        </Drawer>
+      </>
+    );
+  }
+
+  return (
+    <>
+
       <div style={{ display: 'flex' }}>
         <SliderCalendar style={{ width: daySelect ? '60%' : '100%' }}>
-          <Grid container>
-            <Grid item xs={12} sm={6} sx={{ px: .5 }}>
-              <ComponentInputSelect
-                title={customer != null ? (customer.institution_name ?? customer.contacts[0].name) : 'Cliente'}
-                label={customer == null ? '' : 'Cliente'}
-                onPressed={() => handleModalClient(true)}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} sx={{ px: .5 }}>
-              <ComponentInputSelect
-                title={room != null ? room.name : 'Ambiente'}
-                label={room == null ? '' : 'Ambiente'}
-                onPressed={() => handleModalRoom(true)}
-              />
-            </Grid>
-          </Grid>
-          <CalendarComponent
-            daySelect={daySelect}
-            onSelectDay={(day) => setDaySelect(day)}
-            screenHeight={screenHeight}
-          />
+          {contentCalendar}
         </SliderCalendar>
+
         <SliderContent style={{ width: daySelect ? '40%' : '0%' }}>
-          <RentalSection
-            date={daySelect}
-            customer={customer}
-            onClose={() => {
-              setDaySelect(null);
-              getRentals(room.id);
-            }}
-            screenHeight={screenHeight}
-          />
+          {contentRental}
         </SliderContent>
       </div>
     </>

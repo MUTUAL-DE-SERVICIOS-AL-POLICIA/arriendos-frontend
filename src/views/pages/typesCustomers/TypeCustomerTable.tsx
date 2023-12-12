@@ -31,15 +31,20 @@ export const TypeCustomerTable = (props: tableProps) => {
 
 
   useEffect(() => {//escucha si "page", "limit" o "flag" se modifico
-    getTypesCustomers(page, limit).then((total) => setTotal(total))
+    getTypesCustomers(page, limit, '').then((total) => setTotal(total))
   }, [page, limit, flag]);
 
+  const handleSearch = async (search: string) => {
+    await setPage(0);
+    await setLimit(limitInit);
+    getTypesCustomers(0, limitInit, search).then((total) => setTotal(total))
+  }
 
   return (
     <Stack sx={{ paddingRight: '10px' }}>
       <ComponentSearch
         title="Buscar Tipo de cliente"
-        onSearch={() => { }}
+        onSearch={handleSearch}
       />
       <TableContainer>
         <Table sx={{ minWidth: 350 }} size="small">

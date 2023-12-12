@@ -7,6 +7,7 @@ export interface EventsCalendarModel {
     product_id: number;
     rental: number
     title: string;
+    name_state: string;
 }
 
 export interface ProductRentalModel {

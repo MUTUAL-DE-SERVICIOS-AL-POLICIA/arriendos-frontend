@@ -21,8 +21,9 @@ export const CardEvent = (props: cardProps) => {
     showEdit,
     rental,
   } = props;
-  const { patchUpdateTime } = useLeasesStates();
-  const { postPrintDeliveryForm } = useRentalStore()
+  const { currentRentalState, patchUpdateTime } = useLeasesStates();
+  const { postPrintDeliveryForm } = useRentalStore();
+
   const [loading, setLoading] = useState(false);
   const [loadingChangeTime, setLoadingChangeTime] = useState(false);
 
@@ -66,20 +67,22 @@ export const CardEvent = (props: cardProps) => {
       {
         showEdit &&
         <>
-          <ComponentDate
-            title={'Nueva fecha'}
-            date={formatDate(product.start_time)}
-            timeAdd={product.hour_range}
-            onSave={handleUpdateTime}
-            loading={loadingChangeTime}
-          />
-          <ComponentButton
-            onClick={() => printDeliveryForm(rental, product.id)}
-            text={'Imprimir Acta'}
-            sx={{ height: "35px", width: "90%", margin: "2px 10px" }}
-            loading={loading}
-            startIcon={<Print />}
-          />
+          {
+            (currentRentalState.current_state.id == 1 || currentRentalState.current_state.id == 2) && <ComponentDate
+              title={'Nueva fecha'}
+              date={formatDate(product.start_time)}
+              timeAdd={product.hour_range}
+              onSave={handleUpdateTime}
+              loading={loadingChangeTime}
+            />}
+          {
+            currentRentalState.current_state.id == 2 && <ComponentButton
+              onClick={() => printDeliveryForm(rental, product.id)}
+              text={'Imprimir Acta'}
+              sx={{ height: "35px", width: "90%", margin: "2px 10px" }}
+              loading={loading}
+              startIcon={<Print />}
+            />}
         </>
       }
     </ItemPaper>
@@ -176,19 +179,14 @@ export const InfoRental = (props: infoProps) => {
               </>
           }
         </ItemPaper>
-        {/* {currentState &&
-          currentState.next_states.length != 0 &&
-          activeStep < leaseStates.length && */}
-
-        {/* text={stopAction !== null ? stopAction.name : ''} */}
-        <ComponentButton
+        {(currentRentalState.current_state.id == 1 || currentRentalState.current_state.id == 2) && <ComponentButton
           text={'ANULAR'}
           onClick={stoppedAction}
           variant={'outlined'}
           endIcon={<Cancel />}
           sx={{ mr: 1, color: 'red', borderColor: 'red', '&:hover': { backgroundColor: '#fadad9', borderColor: 'red' } }}
         />
-        {/* } */}
+        }
       </Grid>
       <Grid item xs={12} sm={rentalInformation.products.length == 1 ? 8 : 4} style={{ padding: '5px' }}>
         <Typography><b>Evento seleccionado:</b></Typography>
