@@ -20,6 +20,7 @@ export const ComponentDateWithoutTime = React.memo((props: Props) => {
         label={label}
         value={value}
         onChange={onChange}
+        sx={{ width: '100%' }}
       />
     </LocalizationProvider>
   )
