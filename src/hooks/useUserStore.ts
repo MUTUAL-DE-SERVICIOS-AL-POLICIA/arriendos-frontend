@@ -3,6 +3,7 @@ import { coffeApi } from '@/services';
 import { setUsers, refreshUsers, setUsersLdap } from '@/store';
 import Swal from 'sweetalert2';
 import { UserModel } from '@/models';
+import { DialogComponent } from '@/components';
 
 const api = coffeApi;
 
@@ -63,37 +64,30 @@ export const useUserStore = () => {
   }
 
   const toggleActivation = async (user: UserModel) => {
-
-    Swal.fire({
-      title: '¿Estás seguro?',
-      text: `Se ${user.is_active ? 'inactivará' : 'activará'} a ${user.username}`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: `${user.is_active ? 'Inactivar' : 'activar'}`,
-      cancelButtonText: 'Cancelar'
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await api.delete(`/users/state/${user.id}`)
-          dispatch(refreshUsers());
-          Swal.fire(
-            `${user.is_active ? '¡Desactivado!' : '¡Activado!'}`,
-            `${user.username} fue ${user.is_active ? 'inactivado' : 'activado'}`,
-            'success'
-          )
-        } catch (error: any) {
-          if (error.response && error.response.status == 400) {
-            const message = error.response.data.error
-            Swal.fire('Error', message, 'error')
-          } else if (error.response && error.response.status == 403) {
-            const message = error.response.data.detail
-            Swal.fire('Acceso denegado', message, 'warning')
-          } else throw new Error('Ocurrió algun error en el backend')
-        }
+    const { dialogDelete } = DialogComponent();
+    const state = await dialogDelete(
+      `Se ${user.is_active ? 'inactivará' : 'activará'} a ${user.username}`,
+      `${user.is_active ? 'Inactivar' : 'activar'}`
+    )
+    if (state) {
+      try {
+        await api.delete(`/users/state/${user.id}`)
+        dispatch(refreshUsers());
+        Swal.fire(
+          `${user.is_active ? '¡Desactivado!' : '¡Activado!'}`,
+          `${user.username} fue ${user.is_active ? 'inactivado' : 'activado'}`,
+          'success'
+        )
+      } catch (error: any) {
+        if (error.response && error.response.status == 400) {
+          const message = error.response.data.error
+          Swal.fire('Error', message, 'error')
+        } else if (error.response && error.response.status == 403) {
+          const message = error.response.data.detail
+          Swal.fire('Acceso denegado', message, 'warning')
+        } else throw new Error('Ocurrió algun error en el backend')
       }
-    })
+    }
   }
 
   return {

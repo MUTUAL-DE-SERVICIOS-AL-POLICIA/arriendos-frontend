@@ -218,7 +218,7 @@ export const CreateProduct = (props: createProps) => {
                   label="Precio"
                   name="mount"
                   value={mount}
-                  onChange={onInputChange}
+                  onChange={(V: any) => onInputChange(V, false, true)}
                   error={!!mountValid && formSubmitted}
                   helperText={formSubmitted ? mountValid : ''}
                 />

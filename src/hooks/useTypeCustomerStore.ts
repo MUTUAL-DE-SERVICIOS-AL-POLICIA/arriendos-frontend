@@ -3,6 +3,7 @@ import { coffeApi } from '@/services';
 import { refreshTypesCustomers, setTypesCustomers } from '@/store';
 import Swal from 'sweetalert2';
 import { TypeCustomerModel } from '@/models';
+import { DialogComponent } from '@/components';
 
 const api = coffeApi;
 
@@ -65,36 +66,27 @@ export const useTypeCustomerStore = () => {
 
   const deleteRemoveTypeCustomer = async (typeCustomer: TypeCustomerModel) => {
 
-    Swal.fire({
-      title: '¿Estás seguro?',
-      text: `Se eliminará el tipo de cliente: ${typeCustomer.name}`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Eliminar',
-      cancelButtonText: 'Cancelar'
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await api.delete(`/customers/type/${typeCustomer.id}`)
-          dispatch(refreshTypesCustomers());
-          Swal.fire(
-            `¡Listo!`,
-            `${typeCustomer.name} fue eliminado`,
-            'success'
-          )
-        } catch (error: any) {
-          if (error.response && error.response.status == 400) {
-            const message = error.response.data.error
-            Swal.fire('Error', message, 'error')
-          } else if (error.response && error.response.status == 403) {
-            const message = error.response.data.detail
-            Swal.fire('Acceso denegado', message, 'warning')
-          } else throw new Error('Ocurrió algun error en el backend')
-        }
+    const { dialogDelete } = DialogComponent();
+    const state = await dialogDelete(`Se eliminará el tipo de cliente: ${typeCustomer.name}`)
+    if (state) {
+      try {
+        await api.delete(`/customers/type/${typeCustomer.id}`)
+        dispatch(refreshTypesCustomers());
+        Swal.fire(
+          `¡Listo!`,
+          `${typeCustomer.name} fue eliminado`,
+          'success'
+        )
+      } catch (error: any) {
+        if (error.response && error.response.status == 400) {
+          const message = error.response.data.error
+          Swal.fire('Error', message, 'error')
+        } else if (error.response && error.response.status == 403) {
+          const message = error.response.data.detail
+          Swal.fire('Acceso denegado', message, 'warning')
+        } else throw new Error('Ocurrió algun error en el backend')
       }
-    })
+    }
   }
 
   return {

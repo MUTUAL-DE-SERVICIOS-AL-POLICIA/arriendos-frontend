@@ -63,12 +63,13 @@ export const usePaymentsStore = () => {
       text: `Esta acción no es reversible`,
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
+      confirmButtonColor: '#0B815A',
       confirmButtonText: 'Eliminar',
-      cancelButtonText: 'Cancelar'
+      cancelButtonColor: '#F04438',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true
     }).then(async (result) => {
-      if(result.isConfirmed) {
+      if (result.isConfirmed) {
         try {
           const res = await api.delete(`/financials/register_payment/${rental}/`)
           if (res.status == 200) {

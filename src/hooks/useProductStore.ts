@@ -4,6 +4,7 @@ import { refreshProduct, setProducts, setLeakedProducts, setClearLakedProducts }
 import Swal from 'sweetalert2';
 import { ProductModel } from '@/models';
 import days from '@/models/days.json';
+import { DialogComponent } from '@/components';
 
 const api = coffeApi;
 
@@ -67,37 +68,27 @@ export const useProductStore = () => {
   }
 
   const deleteRemoveProduct = async (product: ProductModel) => {
-
-    Swal.fire({
-      title: '¿Estás seguro?',
-      text: `Se eliminará el producto: ${product.room.name} - ${product.rate.name}`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Eliminar',
-      cancelButtonText: 'Cancelar'
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await api.delete(`/product/${product.id}`)
-          dispatch(refreshProduct());
-          Swal.fire(
-            `¡Listo!`,
-            `${product.room.name} - ${product.rate.name} fue eliminado`,
-            'success'
-          )
-        } catch (error: any) {
-          if (error.response && error.response.status == 400) {
-            const message = error.response.data.error
-            Swal.fire('Error', message, 'error')
-          } else if (error.response && error.response.status == 403) {
-            const message = error.response.data.detail
-            Swal.fire('Acceso denegado', message, 'warning')
-          } else throw new Error('Ocurrió algun error en el backend')
-        }
+    const { dialogDelete } = DialogComponent();
+    const state = await dialogDelete(`Se eliminará el producto: ${product.room.name} - ${product.rate.name}`)
+    if (state) {
+      try {
+        await api.delete(`/product/${product.id}`)
+        dispatch(refreshProduct());
+        Swal.fire(
+          `¡Listo!`,
+          `${product.room.name} - ${product.rate.name} fue eliminado`,
+          'success'
+        )
+      } catch (error: any) {
+        if (error.response && error.response.status == 400) {
+          const message = error.response.data.error
+          Swal.fire('Error', message, 'error')
+        } else if (error.response && error.response.status == 403) {
+          const message = error.response.data.detail
+          Swal.fire('Acceso denegado', message, 'warning')
+        } else throw new Error('Ocurrió algun error en el backend')
       }
-    })
+    }
   }
 
   const postLeakedProduct = async (day: Date, body: object) => {

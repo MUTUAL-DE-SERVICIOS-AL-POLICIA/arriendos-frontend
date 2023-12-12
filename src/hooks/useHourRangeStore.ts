@@ -3,6 +3,7 @@ import { coffeApi } from '@/services';
 import { addHourRanges, removeHourRange, setHourRanges, updateHourRanges } from '@/store';
 import Swal from 'sweetalert2';
 import { HourRangeModel } from '@/models';
+import { DialogComponent } from '@/components';
 
 const api = coffeApi;
 
@@ -62,37 +63,27 @@ export const useHourRangeStore = () => {
   }
 
   const deleteRemoveHourRange = async (hourRange: HourRangeModel) => {
-
-    Swal.fire({
-      title: '¿Estás seguro?',
-      text: `Esta acción no es reversible`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Eliminar',
-      cancelButtonText: 'Cancelar'
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await api.delete(`/product/hour-range/${hourRange.id}`)
-          dispatch(removeHourRange({ hourRange }));
-          Swal.fire(
-            `¡Listo!`,
-            `Se elimino el registro`,
-            'success'
-          )
-        } catch (error: any) {
-          if (error.response && error.response.status == 400) {
-            const message = error.response.data.error
-            Swal.fire('Error', message, 'error')
-          } else if (error.response && error.response.status == 403) {
-            const message = error.response.data.detail
-            Swal.fire('Acceso denegado', message, 'warning')
-          } else throw new Error('Ocurrió algun error en el backend')
-        }
+    const { dialogDelete } = DialogComponent();
+    const state = await dialogDelete(`Esta acción no es reversible`)
+    if (state) {
+      try {
+        await api.delete(`/product/hour-range/${hourRange.id}`)
+        dispatch(removeHourRange({ hourRange }));
+        Swal.fire(
+          `¡Listo!`,
+          `Se elimino el registro`,
+          'success'
+        )
+      } catch (error: any) {
+        if (error.response && error.response.status == 400) {
+          const message = error.response.data.error
+          Swal.fire('Error', message, 'error')
+        } else if (error.response && error.response.status == 403) {
+          const message = error.response.data.detail
+          Swal.fire('Acceso denegado', message, 'warning')
+        } else throw new Error('Ocurrió algun error en el backend')
       }
-    })
+    }
   }
 
   return {
