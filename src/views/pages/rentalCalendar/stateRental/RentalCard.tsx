@@ -1,21 +1,11 @@
-import { Chip, Divider, Grow, List, ListItem, ListItemText, Paper, Typography } from "@mui/material"
+import { Chip, Grid, Grow, List, Paper, Stack, Typography } from "@mui/material"
 import { CalendarIcon } from "@mui/x-date-pickers"
 import { format } from "date-fns";
 import esES from 'date-fns/locale/es';
-import React, { useState } from "react";
+import { useState } from "react";
 import { EventDialog } from "./EventDialog";
 import { EventsCalendarModel } from "@/models";
 import { useRentalStore } from "@/hooks";
-// import { EventDialog } from ".";
-
-const dividerStyle = {
-  height: '1px',
-  width: '90%',
-  marginTop: '5px',
-  marginBottom: '5px',
-  backgroundColor: '#085139',
-  marginLeft: '15px'
-}
 
 interface cardProps {
   screenHeight: number;
@@ -55,42 +45,42 @@ export const RentalCard = (props: cardProps) => {
           <div style={{ maxHeight: `${screenHeight / 3.5}px`, overflowY: 'auto' }}>
             <List sx={{ width: '100%' }}>
               {groupRentals.map((event: EventsCalendarModel, index: number) => (
-                <React.Fragment key={index}>
-                  <ListItem
-                    sx={{ padding: '0px 10px', cursor: 'pointer' }}
-                    onClick={() => handleDialog(true, event)}
-                  >
-                    <ListItemText
-                      primary={event.title}
-                      secondary={
-                        <>
-                          <Typography
-                            sx={{ display: 'inline' }}
-                            component="span"
-                            variant="body2"
-                            color="text.primary"
-                          >
-                            Inicio:
-                          </Typography>
-                          {` ${format(event.start, 'EEEE dd-MMMM-yyyy HH:mm', { locale: esES })}`}
-                          <br />
-                          <Typography
-                            sx={{ display: 'inline' }}
-                            component="span"
-                            variant="body2"
-                            color="text.primary"
-                          >
-                            Fin:
-                          </Typography>
-                          {` ${format(event.end, 'EEEE dd-MMMM-yyyy HH:mm', { locale: esES })}`}
-                        </>
-                      }
+                <Paper
+                  key={index}
+                  elevation={5}
+                  sx={{ marginBottom: 1, mx: 2, cursor: 'pointer' }}
+                  onClick={() => handleDialog(true, event)}>
+                  <Stack
+                    sx={{ p: 1.5 }}
+                    direction="column">
+                    <Grid container justifyContent="space-between">
+                      <Grid item xs={12} sm={6}>
+                        <Typography sx={{ fontWeight: 900 }}>
+                          {event.title}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={6} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                        <Typography sx={{ fontWeight: 550 }}>
+                          {event.name_state}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                    <Typography
+                      sx={{ display: 'inline' }}
+                      component="span"
+                      variant="body2"
                     >
-                    </ListItemText>
-
-                  </ListItem>
-                  {index !== groupRentals.length - 1 && <Divider style={dividerStyle} />}
-                </React.Fragment>
+                      {`Inicio: ${format(event.start, 'EEEE dd-MMMM-yyyy HH:mm', { locale: esES })}`}
+                    </Typography>
+                    <Typography
+                      sx={{ display: 'inline' }}
+                      component="span"
+                      variant="body2"
+                    >
+                      {`Fin: ${format(event.end, 'EEEE dd-MMMM-yyyy HH:mm', { locale: esES })}`}
+                    </Typography>
+                  </Stack>
+                </Paper>
               ))}
             </List>
           </div>

@@ -28,7 +28,6 @@ export const useLeasesStates = () => {
   const getAllLeaseState = async () => {
     try {
       const { data } = await api.get(`/leases/state/`)
-      console.log(data)
       dispatch(setAllStates({ allStates: data }))
     } catch (error: any) {
       if (error.response && error.response.status == 400) {
@@ -82,7 +81,10 @@ export const useLeasesStates = () => {
   }
   const postChangeRentalState = async (body: any) => {
     try {
-      await api.post('/leases/change_state/', body)
+      const { data } = await api.post('/leases/change_state/', body)
+      dispatch(setUpdateRental({ ...data, productId: body.rental }));
+      dispatch(setUpdateGroupRental({ ...data, productId: body.rental }))
+      dispatch(setUpdateRentalSelected({ ...data, productId: body.rental }))
       getCurrentLeaseState(body.rental)
     } catch (error: any) {
       if (error.response && error.response.status == 400) {

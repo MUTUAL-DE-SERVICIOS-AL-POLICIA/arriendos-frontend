@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { coffeApi } from '@/services';
 import Swal from 'sweetalert2';
-import { setDaySelected, setGroupRentals, setRentalSelected, setRentals } from '@/store';
+import { setDaySelected, setGroupRentals, setRentalSelected, setRentals, setShoppingCart } from '@/store';
 import printJS from 'print-js';
 import { formatDate } from '@/helpers';
 import { EventsCalendarModel } from '@/models';
@@ -9,9 +9,12 @@ import { EventsCalendarModel } from '@/models';
 const api = coffeApi;
 
 export const useRentalStore = () => {
-  const { rentals = [], groupRentals = [], rentalSelected, daySelected } = useSelector((state: any) => state.rentals);
+  const { rentals = [], groupRentals = [], shoppingCart = [], rentalSelected, daySelected } = useSelector((state: any) => state.rentals);
   const dispatch = useDispatch();
 
+  const setUpdateShoppingCart = async (items: any) => {
+    dispatch(setShoppingCart({ shoppingCart: items }))
+  }
   const getRentals = async (roomId?: number) => {
     try {
       const { data } = await api.get(`/leases/calendar/`, {
@@ -29,6 +32,7 @@ export const useRentalStore = () => {
         event.rental = element.rental
         event.end = formatDate(element.end_time)
         event.product_id = element.selected_product_id
+        event.name_state = element.name_state
         events.push(event)
         i++
       });
@@ -51,22 +55,23 @@ export const useRentalStore = () => {
     dispatch(setRentalSelected({ rentalSelected: rental }))
   }
 
-  const postCreateRental = async (body: object, setShoppingCart: Function, onClose: Function) => {
+  const postCreateRental = async (body: object, onClose: Function) => {
     Swal.fire({
       title: '¿Está seguro?',
       text: `Se creará un alquiler`,
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
+      confirmButtonColor: '#0B815A',
       confirmButtonText: 'Crear',
-      cancelButtonText: 'Cancelar'
+      cancelButtonColor: '#F04438',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
           await api.post('/leases/', body)
           Swal.fire('¡Prereserva exitoso!', '', 'success');
-          setShoppingCart([])
+          setShoppingCart({ shoppingCart: [] })
           onClose()
         } catch (error: any) {
           if (error.response && error.response.status == 400) {
@@ -268,7 +273,9 @@ export const useRentalStore = () => {
     groupRentals,
     rentalSelected,
     daySelected,
+    shoppingCart,
     //* Métodos
+    setUpdateShoppingCart,
     getRentals,
     saveGroupRental,
     saveRentalSelected,

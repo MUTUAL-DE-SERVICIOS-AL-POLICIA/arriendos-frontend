@@ -1,4 +1,4 @@
-import { Card, Dialog, DialogTitle, Divider, IconButton, Step, StepButton, Stepper } from "@mui/material"
+import { Card, Dialog, DialogTitle, Divider, Grid, IconButton, Step, StepButton, Stepper } from "@mui/material"
 import { Box } from "@mui/system"
 import { useEffect, useState } from "react"
 import { ArrowCircleRight, Cancel, Close } from "@mui/icons-material"
@@ -104,21 +104,30 @@ export const EventDialog = (props: elementsProps) => {
         disableEnforceFocus
       >
         <Box sx={{ width: '95%', padding: '0px 20px', marginBottom: '0px', backgroundColor: '#f7f4f4', zIndex: 'tooltip' }}>
-          <DialogTitle sx={{ marginBottom: '0px' }}>Estado del alquiler</DialogTitle>
+          <DialogTitle sx={{ fontWeight: 500, marginLeft: -3 }}>
+            <Grid container alignItems="center" justifyContent="space-between">
+              <Grid item>
+                {`Evento: ${rentalSelected.title}`}
+              </Grid>
+              <Grid item>
+                {rentalSelected.name_state}
+              </Grid>
+            </Grid>
+          </DialogTitle>
           <IconButton
             aria-label="close"
             onClick={handleClose}
             sx={{
               position: 'absolute',
               right: 8,
-              top: 8,
+              top: 8, // Ajusta la posición según tus necesidades
               color: (theme) => theme.palette.grey[500]
             }}
           >
             <Close />
           </IconButton>
           {
-            rentalInformation && <InfoRental
+            rentalInformation && currentRentalState && <InfoRental
               date={date}
             />
           }

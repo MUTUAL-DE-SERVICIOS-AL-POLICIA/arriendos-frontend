@@ -6,70 +6,70 @@ import { SettingsNav, SideNav, TopNav } from '.';
 const SIDE_NAV_WIDTH = 65;
 
 const LayoutRoot = styled('div')(({ theme }) => ({
-    display: 'flex',
-    flex: '1 1 auto',
-    maxWidth: '100%',
-    [theme.breakpoints.up('md')]: {
-        paddingLeft: SIDE_NAV_WIDTH
-    }
+  display: 'flex',
+  flex: '1 1 auto',
+  maxWidth: '100%',
+  [theme.breakpoints.up('md')]: {
+    paddingLeft: SIDE_NAV_WIDTH
+  }
 }));
 
 const LayoutContainer = styled('div')({
-    display: 'flex',
-    flex: '1 1 auto',
-    flexDirection: 'column',
-    width: '100%'
+  display: 'flex',
+  flex: '1 1 auto',
+  flexDirection: 'column',
+  width: '100%'
 });
 interface Props {
-    children: any;
+  children: any;
 }
 export const Layout = (props: Props) => {
 
-    const {
-        children,
-    } = props
+  const {
+    children,
+  } = props
 
-    const { pathname } = useLocation();
-    const [openNav, setOpenNav] = useState(false);
-    const [settingsOpenNav, setSettingsOpenNav] = useState(false)
-    const [title, setTitle] = useState('');
-    const handlePathnameChange = useCallback(
-        () => {
+  const { pathname } = useLocation();
+  const [openNav, setOpenNav] = useState(false);
+  const [settingsOpenNav, setSettingsOpenNav] = useState(false)
+  const [title, setTitle] = useState('');
+  const handlePathnameChange = useCallback(
+    () => {
 
-            if (settingsOpenNav) setSettingsOpenNav(false)
-            if (openNav) setOpenNav(false)
-        },
-        [openNav, settingsOpenNav]
-    );
+      if (settingsOpenNav) setSettingsOpenNav(false)
+      if (openNav) setOpenNav(false)
+    },
+    [openNav, settingsOpenNav]
+  );
 
-    useEffect(
-        () => {
-            handlePathnameChange();
-        },
-        [pathname]
-    );
-    return (
-        <>
-            <TopNav
-                onNavOpen={() => setOpenNav(true)}
-                onTapSettings={() => setSettingsOpenNav(true)}
-                title={title}
-            />
-            <SideNav
-                onClose={() => setOpenNav(false)}
-                open={openNav}
-                onPress={(title) => setTitle(title)}
-            />
-            <SettingsNav
-                onClose={() => { setSettingsOpenNav(false) }}
-                open={settingsOpenNav}
-                onPress={(title) => setTitle(title)}
-            />
-            <LayoutRoot>
-                <LayoutContainer>
-                    {children}
-                </LayoutContainer>
-            </LayoutRoot>
-        </>
-    );
+  useEffect(
+    () => {
+      handlePathnameChange();
+    },
+    [pathname]
+  );
+  return (
+    <>
+      <TopNav
+        onNavOpen={() => setOpenNav(true)}
+        onTapSettings={() => setSettingsOpenNav(true)}
+        title={title}
+      />
+      <SideNav
+        onClose={() => setOpenNav(false)}
+        open={openNav}
+        onPress={(title) => setTitle(title)}
+      />
+      <SettingsNav
+        onClose={() => { setSettingsOpenNav(false) }}
+        open={settingsOpenNav}
+        onPress={(title) => setTitle(title)}
+      />
+      <LayoutRoot>
+        <LayoutContainer>
+          {children}
+        </LayoutContainer>
+      </LayoutRoot>
+    </>
+  );
 };
