@@ -13,18 +13,21 @@ const formField: WarrantyModel = {
 
 export const Rented = () => {
 
+  const [ tabValueRegister, setTabValueRegister ] = useState(0)
+  const [ mountPayment, setMountPayment ] = useState(0);
+  const [ mountExtraHour, setMountExtraHour ] = useState(0);
+  // @ts-expect-error
+  const [ mountWarranty, setMountWarranty ] = useState(0)
+  // @ts-expect-error
+  const [ eventSelect, setEventSelect ] = useState<any>('');
+  const [ tabSelect, setTabSelect ] = useState<Reason>(Reason.payment);
+  const [ modal, setModal ] = useState(false);
 
-  const [tabValueRegister, setTabValueRegister] = useState(0)
   const { payments = [], amountTotal, getRegistersPayments } = usePaymentsStore();
   const { extraHours = [], getRegisterExtraHours, getExtraHour } = useExtraHourStore();
   const { warrantys = [], getListWarranty } = useWarrantyStore()
-  const [mountPayment, setMountPayment] = useState(0);
-  const [mountExtraHour, setMountExtraHour] = useState(0);
   const { rentalSelected } = useRentalStore();
-  // @ts-expect-error
-  const [mountWarranty, setMountWarranty] = useState(0)
-  // @ts-expect-error
-  const [eventSelect, setEventSelect] = useState<any>('');
+
   const properties = (index: number) => {
     return {
       id: `register-tab-${index}`,
@@ -41,11 +44,6 @@ export const Rented = () => {
     getRegisterExtraHours(rentalSelected.rental)
     getListWarranty(rentalSelected.rental)
   }, []);
-
-
-  const [tabSelect, setTabSelect] = useState<Reason>(Reason.payment);
-  const [modal, setModal] = useState(false);
-  // const [ active, setActive ] = useState(true)
 
   const formValidation: FormWarrantyValidation = {
     amountWarranty: [(value: number) => value > 0 && value <= parseFloat(`${amountWarranty}`), `Debe ingresar el monto de la garantía`],
@@ -83,12 +81,6 @@ export const Rented = () => {
     setEventSelect(value)
   }
 
-  // const changeWarranty = async () => {
-  //   alert(`${amountWarranty}`)
-  // }
-  // const activeChangeWarranty = () => {
-  //   setActive(!active)
-  // }
   return (
     <>
       <Box>
@@ -142,27 +134,6 @@ export const Rented = () => {
                   justifyContent: 'left',
                 }}
               >
-                {/* <Typography sx={{pr: 1}} >El monto de la garantía es: </Typography>
-                <ComponentInput
-                  type="text"
-                  name="amountWarranty"
-                  label=""
-                  value={amountWarranty}
-                  size="small"
-                  width='25%'
-                  height='35px'
-                  disabled={active}
-                  onChange={onInputChange}
-                  error={!!amountWarrantyValid}
-                />
-                <IconButton color="success">
-                  <Edit
-                    onClick={activeChangeWarranty}
-                  />
-                </IconButton>
-                <IconButton color="warning">
-                  <SaveAs onClick={changeWarranty}/>
-                </IconButton> */}
               </Stack>
               <Stack spacing={1} direction="row">
                 <ComponentButton text={`Registro de daños`}

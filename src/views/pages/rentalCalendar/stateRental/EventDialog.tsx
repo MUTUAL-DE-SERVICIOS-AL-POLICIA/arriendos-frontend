@@ -105,7 +105,7 @@ export const EventDialog = (props: elementsProps) => {
       >
         <Box sx={{ width: '95%', padding: '0px 20px', marginBottom: '0px', backgroundColor: '#f7f4f4', zIndex: 'tooltip' }}>
           <DialogTitle sx={{ fontWeight: 500, marginLeft: -3 }}>
-            <Grid container alignItems="center" justifyContent="space-between">
+            { rentalSelected && <Grid container alignItems="center" justifyContent="space-between">
               <Grid item>
                 {`Evento: ${rentalSelected.title}`}
               </Grid>
@@ -113,6 +113,7 @@ export const EventDialog = (props: elementsProps) => {
                 {rentalSelected.name_state}
               </Grid>
             </Grid>
+            }
           </DialogTitle>
           <IconButton
             aria-label="close"
@@ -155,13 +156,16 @@ export const EventDialog = (props: elementsProps) => {
               }
               {
                 currentRentalState.current_state.id == 3 &&
-                <Concluded />
+                <Concluded
+                  rental={rentalSelected.rental}
+                  handleClose={handleClose}
+                />
               }
             </>
             <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2, pb: 1 }}>
               <Box sx={{ flex: '1 1 auto' }} />
               {
-                (currentRentalState.current_state.id) <= states.length &&
+                (currentRentalState.current_state.id) <= states.length - 1 &&
                 <ComponentButton
                   text={(currentRentalState.current_state.id) == states.length ? 'Finalizar' : 'Siguiente'}
                   onClick={handleNext}

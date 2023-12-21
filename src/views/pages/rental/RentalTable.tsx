@@ -1,7 +1,10 @@
 import { ComponentSearch, ComponentTablePagination } from "@/components";
-import { useRateStore } from "@/hooks/useRateStore";
-import { Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { Stack } from "@mui/material";
+import { ComponentTableContent } from "@/components/TableContent";
 import { useEffect, useState } from "react";
+import { useRentalStore } from "@/hooks";
+import { EditRental } from ".";
+// import { Steps } from "@/components/Steps";
 
 interface tableProps {
   limitInit?: number;
@@ -13,53 +16,58 @@ export const RentalTable = (props: tableProps) => {
   } = props;
 
   /*DATA */
-  const { flag, getRates } = useRateStore();
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(limitInit)
 
-  useEffect(() => {//escucha si "page", "limit" o "flag" se modifico
-    getRates({ page, limit }).then((total) => setTotal(total))
-  }, [page, limit, flag]);
+  const { allRentals = [], allRentalsWithProducts = [], getAllRentals} = useRentalStore()
+  const [ open, setOpen ] = useState(false)
+  const [ rentalSelected, setRentalSelected ] = useState(null)
+
+  const handleDialog = (value: boolean, rental: any) => {
+    setOpen(value)
+    setRentalSelected(rental)
+  }
+
+  useEffect(() => {
+      getAllRentals(page, limit, handleDialog).then((total) => setTotal(total))
+  },[page, limit])
+
+  const handleSearch = async(search: string) => {
+    setPage(0)
+    setLimit(limitInit)
+    getAllRentals(0, limitInit, handleDialog, search).then((total) => setTotal(total))
+  }
 
   return (
-    <Stack sx={{ paddingRight: '10px' }}>
-      <ComponentSearch
-        title="Buscar Alquiler"
-        onSearch={() => { }}
-      />
-      <TableContainer>
-        <Table sx={{ minWidth: 350 }} size="small">
-          <TableHead>
-            <TableRow sx={{ backgroundColor: '#E2F6F0' }}>
-              <TableCell sx={{ fontWeight: 'bold' }}>Cliente</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Propiedad</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Ambiente</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Tarifa</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Deudas</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Contrato</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Garantía</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {/* {
-            rates.map((rate: RateModel) => (
-                <TableRow key={rate.id}>
-                  <TableCell>{rate.name}</TableCell>
-                  <TableCell>{rate.customer_type.map((e) => (<Typography key={e.id}>-{e.name}</Typography>))}</TableCell>
-                </TableRow>
-              ))
-            } */}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <ComponentTablePagination
-        total={total}
-        onPageChange={(value) => setPage(value)}
-        onRowsPerPageChange={(value) => setLimit(value)}
-        page={page}
-        limit={limit}
-      />
-    </Stack>
+    <>
+      <Stack sx={{ paddingRight: '10px' }}>
+        <ComponentSearch
+          title="Buscar Alquiler"
+          onSearch={handleSearch}
+        />
+        { allRentals.length !== 0 && allRentalsWithProducts !== 0 && <ComponentTableContent
+          headers={['N°', 'N° trámite', 'Cliente', 'Estado', 'Fecha', 'Acción' ]}
+          data={allRentals}
+          sxHeader={{fontWeight: 'bold', backgroundColor: '#E2F6F0'}}
+          useCollapse={true}
+          subTableTitle="Producto"
+          subTableHeaders={['N° producto', 'Evento', 'Fecha inicio', 'Fecha Final', 'Acción']}
+          subTableData={allRentalsWithProducts}
+        /> }
+        <ComponentTablePagination
+          total={total}
+          onPageChange={(value) => setPage(value)}
+          onRowsPerPageChange={(value) => setLimit(value)}
+          page={page}
+          limit={limit}
+        />
+        { open && <EditRental
+          open={open}
+          onClose={() => handleDialog(false, null)}
+          rental={rentalSelected}
+        />}
+      </Stack>
+    </>
   );
 }

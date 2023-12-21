@@ -1,8 +1,8 @@
 import { ComponentInput, SelectComponent } from "@/components"
-import { useForm } from "@/hooks"
+import { useDamageStore, useForm, useLeasesStates, useWarrantyStore } from "@/hooks"
 import { FormDamageModel, FormDamageValidations, ProductRentalModel, RentalModel } from "@/models"
 import { Button, Grid, Typography } from "@mui/material"
-import { FormEvent, useState } from "react"
+import { FormEvent, useEffect, useState } from "react"
 import { format } from "date-fns";
 import esES from 'date-fns/locale/es';
 import { formatDate } from "@/helpers";
@@ -20,14 +20,14 @@ const formValidations: FormDamageValidations = {
 
 interface elementsProps {
   handleClose: () => void;
-  sendData: (data: object) => void;
-  rental: RentalModel;
+//   sendData: (data: object) => void;
+  rental: any;
 }
 
-export const ComponentDamage = (props: elementsProps) => {
+export const ComponentDamageRectify = (props: elementsProps) => {
   const {
     handleClose,
-    sendData,
+    // sendData,
     rental,
   } = props;
 
@@ -38,28 +38,44 @@ export const ComponentDamage = (props: elementsProps) => {
     isFormValid, detailValid, discountValid, eventSelectValid,
     onResetForm, onValueChange } = useForm(formFields, formValidations);
 
-  const sendSubmit = (event: FormEvent<HTMLFormElement>) => {
+
+    const { getRental } = useLeasesStates()
+    const [ lease, setLease ] = useState<RentalModel>()
+
+    const { postRegisterDiscountWarranty } = useDamageStore()
+    const { getListWarranty } = useWarrantyStore()
+
+  const sendSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setFormSubmitted(true);
     if (!isFormValid) return;
-    //ENVIAR DAÑO
-    sendData({
-      detail,
-      discount
-    })
+    // //ENVIAR DAÑO
+    const body = {
+        rental: rental.rental,
+        detail: detail,
+        discount: parseFloat(discount),
+        product: eventSelect
+    }
+    await postRegisterDiscountWarranty(body)
+    await getListWarranty(rental.rental)
     handleClose();
     onResetForm();
   }
+
+  useEffect(() => {
+    getRental(rental.rental).then(data => setLease(data))
+  }, [])
+
   return (
     <>
       <Typography variant="h6">{'Registro de daños'}</Typography>
       <form onSubmit={sendSubmit}>
         <Grid container>
           <Grid item xs={12} sm={12} sx={{ padding: '5px', paddingTop: '20px' }}>
-            { rental && <SelectComponent
+            { lease && <SelectComponent
               handleSelect={(value: any) => onValueChange('eventSelect', value)}
               label={`Seleccionar Evento`}
-              options={[...rental.products.map((item: ProductRentalModel) => ({ id: item.id, name: `${item.id} ${format(formatDate(item.start_time), 'EEEE dd-MMMM HH:mm', { locale: esES })} ${item.event} ${item.property}-${item.room}` }))]}
+              options={[...lease.products.map((item: ProductRentalModel) => ({ id: item.id, name: `${item.id} ${format(formatDate(item.start_time), 'EEEE dd-MMMM HH:mm', { locale: esES })} ${item.event} ${item.property}-${item.room}` }))]}
               value={eventSelect}
               error={!!eventSelectValid && formSubmitted}
               helperText={formSubmitted ? eventSelectValid : ''}
@@ -97,3 +113,4 @@ export const ComponentDamage = (props: elementsProps) => {
     </>
   )
 }
+

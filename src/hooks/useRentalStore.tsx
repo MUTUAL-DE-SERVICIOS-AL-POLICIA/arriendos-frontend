@@ -1,15 +1,18 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { coffeApi } from '@/services';
 import Swal from 'sweetalert2';
-import { setDaySelected, setGroupRentals, setRentalSelected, setRentals, setShoppingCart } from '@/store';
+import { setDaySelected, setGroupRentals, setRentalSelected, setRentals, setShoppingCart, setAllRentals, setAllRentalsWithProducts } from '@/store';
 import printJS from 'print-js';
 import { formatDate } from '@/helpers';
 import { EventsCalendarModel } from '@/models';
+import {  Edit } from '@mui/icons-material';
+import { Stack } from '@mui/system';
+import { MenuComponent } from '@/components/Menu';
 
 const api = coffeApi;
 
 export const useRentalStore = () => {
-  const { rentals = [], groupRentals = [], shoppingCart = [], rentalSelected, daySelected } = useSelector((state: any) => state.rentals);
+  const { rentals = [], groupRentals = [], shoppingCart = [], rentalSelected, daySelected, allRentals, allRentalsWithProducts } = useSelector((state: any) => state.rentals);
   const dispatch = useDispatch();
 
   const setUpdateShoppingCart = async (items: any) => {
@@ -267,9 +270,80 @@ export const useRentalStore = () => {
     dispatch(setDaySelected({ daySelected: day }))
   }
 
+  const getAllRentals = async (page: number, limit: number, handleDialog: Function, search: string|null = null) => {
+    try {
+      let filter: any = { params: { page: page, search }}
+      if(limit != -1) filter.params.limit = limit
+      const { data } = await api.get('/leases/rental_list/', filter)
+      const rentals: any = []
+      data.rentals.forEach((element: any) => {
+        const rental: any = {}
+        rental.id = element.correlative
+        rental.contract_number = element.contract_number
+        rental.customer_name = element.customer_name
+        rental.state_name = element.state_name
+        rental.date = element.date
+        rental.action = element.can_edit ?
+        <Stack direction="row" spacing={1} alignItems="center">
+          <Edit
+            onClick={() => handleDialog(true, element.id)}
+            color="success"
+            sx={{cursor: 'pointer'}}
+          />
+          <MenuComponent
+            options={[
+              {id: 1, name: 'Reserva efectiva'},
+              {id: 2, name: 'Conformidad garantía'},
+              {id: 3, name: 'Sol. dev. garantía'},
+            ]}
+            rental={element.id}
+          />
+        </Stack> : null
+        rentals.push(rental)
+      });
+      dispatch(setAllRentals({allRentals: rentals}))
+      data.rentals.forEach((element:any) => {
+        let allProducts:any = []
+        element.selected_product.forEach((product:any) => {
+            let newProduct: any = []
+            newProduct.id = product.id
+            newProduct.start_time = product.start_time
+            newProduct.end_time = product.end_time
+            newProduct.event = product.event
+            newProduct.action = <MenuComponent
+              options = {[
+                {id: 4, name: 'Entrega y recep. Ambientes'},
+                {id: 5, name: 'Form. horas extras'},
+                {id: 6, name: 'Ejecución garantía'}
+              ]}
+              rental={element.id}
+              event={newProduct.id}
+            />
+            allProducts.push(newProduct)
+        })
+        element.selected_product = allProducts
+      });
+      dispatch(setAllRentalsWithProducts({allRentalsWithProducts: data.rentals}))
+      return data.total
+    } catch(error:any) {
+      if (error.response && error.response.status == 400) {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error')
+      } else if (error.response && error.response.status == 403) {
+        const message = error.response.data.detail
+        Swal.fire('Acceso denegado', message, 'warning')
+      } else {
+        console.log(error)
+        throw new Error('Ocurrió algun error en el backend')
+      }
+    }
+  }
+
   return {
     //* Propiedades
     rentals,
+    allRentals,
+    allRentalsWithProducts,
     groupRentals,
     rentalSelected,
     daySelected,
@@ -286,6 +360,7 @@ export const useRentalStore = () => {
     getPrintWarrantyReturn,
     postPrintDeliveryForm,
     getPrintReturnWarrantyForm,
-    saveDaySelected
+    saveDaySelected,
+    getAllRentals
   }
 }

@@ -3,7 +3,9 @@ import { setExtraHours } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import printJS from 'print-js';
-import { DeleteForever } from "@mui/icons-material";
+import { DeleteForever, Edit } from "@mui/icons-material";
+import { Stack } from "@mui/system";
+import { Reason } from "@/views/pages/rentalCalendar/stateRental/payments";
 
 const api = coffeApi;
 
@@ -12,7 +14,7 @@ export const useExtraHourStore = () => {
   const { extraHours = [] } = useSelector((state: any) => state.extraHours);
   const dispatch = useDispatch();
 
-  const getRegisterExtraHours = async (rental: number) => {
+  const getRegisterExtraHours = async (rental: number, canEdit: boolean = false, handleModal?: Function) => {
     try {
       const { data } = await api.get('/leases/list_additional_hour_applied/', {
         params: {
@@ -27,11 +29,24 @@ export const useExtraHourStore = () => {
         total: e.total,
         detail: e.description,
         action: index == data.length - 1 ?
-          <DeleteForever
-            onClick={() => deleteLastRegisteredExtraHour(data[index].selected_product, rental)}
-            color="error"
-            sx={{ cursor: 'pointer' }}
-          /> : ''
+          <Stack>
+            <DeleteForever
+              onClick={() => deleteLastRegisteredExtraHour(data[index].selected_product, rental)}
+              color="error"
+              sx={{ cursor: 'pointer' }}
+            />
+            { canEdit &&
+              <Edit
+                onClick={() => handleModal!(true, Reason.extraHour)}
+                color="success"
+                sx={{cursor: 'pointer'}}
+              />
+            }
+          </Stack>  : canEdit && <Edit
+            onClick={() => handleModal!(true, Reason.extraHour)}
+            color="success"
+            sx={{ cursor: 'pointer'}}
+          />
       }))];
       dispatch(setExtraHours({ extraHours: extraHours }));
     } catch (error: any) {

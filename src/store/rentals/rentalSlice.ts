@@ -12,7 +12,9 @@ export const rentalSlice = createSlice({
     rentalInformation: <any>null,
     currentRentalState: null,
     daySelected: null,
-    shoppingCart: <any>[]
+    shoppingCart: <any>[],
+    allRentals: [],
+    allRentalsWithProducts: []
   },
   reducers: {
     setShoppingCart: (state, action) => {
@@ -91,6 +93,12 @@ export const rentalSlice = createSlice({
     },
     setDaySelected: (state, action) => {
       state.daySelected = action.payload.daySelected
+    },
+    setAllRentals: (state, action) => {
+      state.allRentals = action.payload.allRentals
+    },
+    setAllRentalsWithProducts: (state, action) => {
+      state.allRentalsWithProducts = action.payload.allRentalsWithProducts
     }
   }
 });
@@ -110,5 +118,7 @@ export const {
   setUpdateGroupRental,
   setUpdateRentalSelected,
   setAllStates,
-  setDaySelected
+  setDaySelected,
+  setAllRentals,
+  setAllRentalsWithProducts
 } = rentalSlice.actions;

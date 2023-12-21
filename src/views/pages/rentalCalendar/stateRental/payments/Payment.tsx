@@ -15,37 +15,71 @@ interface elementsProps {
   sendData: (data: object) => void;
   amountRecomend?: number;
   disalbleMount?: boolean;
+  voucher?: string;
+  detail?: string;
+  edit?: boolean
 }
 
 export const ComponentPayment = (props: elementsProps) => {
   const {
     handleClose,
     sendData,
-    amountRecomend,
+    amountRecomend = 1111,
     disalbleMount = false,
+    voucher,
+    detail,
+    edit
   } = props;
   const formValidations: FormPaymentValidations = {
     amount: [(value: number) =>
       {
-        if(amountRecomend != 0 && value > 0 && value <= parseFloat(`${amountRecomend}`)){
-          return true
-        }
-        else if(amountRecomend == 0 && value > 0) {
-          return true
+        if(!edit) {
+          if(amountRecomend != 0 && value > 0 && value <= parseFloat(`${amountRecomend}`)){
+            return true
+          }
+          else if(amountRecomend == 0 && value > 0) {
+            return true
+          }
+        } else {
+          if(amountRecomend != 0 && value > 0) {
+            return true
+          }
         }
         return false
       },
       'Debe ingresar el monto del pago'],
-    voucherNumber: [(value: number) => value > 0, 'Debe ingresar el número de comprobante'],
+    voucherNumber: [(value: number) =>
+      {
+        if(value > 0) {
+          return true
+        } else if (edit) {
+          return true
+        } else return false
+      },
+      'Debe ingresar el número  de comprobante'],
   }
   const [formSubmitted, setFormSubmitted] = useState(false);
   const { amount, voucherNumber, paymentDetail,
-    onInputChange, isFormValid, onValueChange,
-    amountValid, voucherNumberValid,
+    onInputChange, isFormValid,
+    amountValid, voucherNumberValid, onListValuesChange,
     onResetForm } = useForm(formFields, formValidations);
 
   useEffect(() => {
-    if (amountRecomend) onValueChange('amount', amountRecomend)
+    let names = []
+    let states = []
+    if(amountRecomend) {
+      names.push('amount')
+      states.push(amountRecomend)
+    }
+    if(voucher) {
+      names.push('voucherNumber')
+      states.push(voucher)
+    }
+    if(detail) {
+      names.push('paymentDetail')
+      states.push(detail)
+    }
+    onListValuesChange(names, states)
   }, [])
 
   const sendSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -85,7 +119,7 @@ export const ComponentPayment = (props: elementsProps) => {
               name="voucherNumber"
               value={voucherNumber}
               onChange={(V: any) => onInputChange(V, false, true)}
-              error={!!voucherNumberValid && formSubmitted}
+              error={!!voucherNumberValid && formSubmitted }
               helperText={formSubmitted ? voucherNumberValid : ''}
             />
           </Grid>

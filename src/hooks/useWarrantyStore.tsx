@@ -2,7 +2,9 @@ import { coffeApi } from "@/services";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import { setWarrantys } from "@/store";
-import { DeleteForever } from "@mui/icons-material";
+import { DeleteForever, Edit } from "@mui/icons-material";
+import { Stack } from "@mui/system";
+import { Reason } from "@/views/pages/rentalCalendar/stateRental/payments";
 
 
 const api = coffeApi;
@@ -27,14 +29,14 @@ export const useWarrantyStore = () => {
     }
   }
 
-  const getListWarranty = async (rental: number) => {
+  const getListWarranty = async (rental: number, canEdit: boolean = false, handleModal?: Function) => {
     try {
       const { data } = await api.get('/financials/register_warranty/', {
         params: {
           rental: rental
         }
       });
-      const warrantys = [...data.map((e: any, index: number) => ({
+      const warrantys = [...data.warranty_movements.map((e: any, index: number) => ({
         id: e.correlative,
         type: e.type,
         voucher: e.voucher,
@@ -43,13 +45,28 @@ export const useWarrantyStore = () => {
         returned: e.returned,
         balance: e.balance,
         detail: e.detail,
-        action: index === data.length - 1 ?
-          <DeleteForever
-            onClick={() => deleteLastRegisteredWarranty(rental)}
-            color="error"
-            sx={{ cursor: 'pointer' }}
-          /> : ''
+        action: index == data.warranty_movements.length - 1 ?
+          <Stack direction="row" alignItems="center">
+            <DeleteForever
+              onClick={() => deleteLastRegisteredWarranty(rental, canEdit, handleModal)}
+              color="error"
+              sx={{ cursor: 'pointer' }}
+            />
+            { canEdit &&
+              <Edit
+                onClick={() => handleModal!(true, e.id, Reason.warranty)}
+                color="success"
+                sx={{cursor: 'pointer'}}
+              />
+            }
+          </Stack> : ''
+            // canEdit && <Edit
+            //   onClick={() => handleModal!(true, e.id, Reason.warranty)}
+            //   color="success"
+            //   sx={{cursor: 'pointer'}}
+            // />
       }))];
+
       dispatch(setWarrantys({ warrantys: warrantys }));
     } catch (error: any) {
       if (error.response && error.response.status == 400) {
@@ -62,7 +79,7 @@ export const useWarrantyStore = () => {
     }
   }
 
-  const deleteLastRegisteredWarranty = async (rental: number) => {
+  const deleteLastRegisteredWarranty = async (rental: number, canEdit?: boolean, handleModal?: Function) => {
     Swal.fire({
       title: '¿Está seguro de esta acción?',
       text: `Esta acción no es reversible`,
@@ -79,7 +96,7 @@ export const useWarrantyStore = () => {
           const res = await api.delete(`/financials/register_warranty/${rental}/`)
           if (res.status == 200) {
             Swal.fire('Registro eliminado', res.data.message, 'success')
-            getListWarranty(rental);
+            getListWarranty(rental, canEdit, handleModal);
           }
         } catch (error: any) {
           if (error.response && error.response.status == 400) {
@@ -94,11 +111,43 @@ export const useWarrantyStore = () => {
     })
   }
 
+  const getDetailWarranty = async (warranty: number) => {
+    try {
+      const { data } = await api.get(`/financials/edit_warranty/${warranty}/`)
+      return data
+    } catch(error: any) {
+      if (error.response && error.response.status == 400) {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error')
+      } else if (error.response && error.response.status == 403) {
+        const message = error.response.data.detail
+        Swal.fire('Acceso denegado', message, 'warning')
+      } else throw new Error('Ocurrió algun error en el backend')
+    }
+  }
+
+  const patchRegisterWarranty = async (body: object, warranty: number) => {
+    try {
+      const { data } = await api.patch(`/financials/edit_warranty/${warranty}/`, body)
+      Swal.fire(data.message, '', 'success')
+    } catch(error: any) {
+      if (error.response && error.response.status == 400) {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error')
+      } else if (error.response && error.response.status == 403) {
+        const message = error.response.data.detail
+        Swal.fire('Acceso denegado', message, 'warning')
+      } else throw new Error('Ocurrió algun error en el backend')
+    }
+  }
+
   return {
     //* Propiedades
     warrantys,
     //* Métodos
     postRegisterWarranty,
     getListWarranty,
+    getDetailWarranty,
+    patchRegisterWarranty
   }
 }
