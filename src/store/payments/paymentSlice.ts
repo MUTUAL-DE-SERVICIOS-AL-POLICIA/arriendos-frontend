@@ -5,6 +5,7 @@ export const paymentSlice = createSlice({
   initialState: {
     payments: [],
     amountTotal: 0,
+    detailPayment: {}
   },
   reducers: {
     setPayments: (state, action) => {
@@ -13,10 +14,13 @@ export const paymentSlice = createSlice({
     },
     clearPayments: (state,/* action*/) => {
       state.payments = []
-    }
+    },
+    // setPayment: (state, action) => {
+    //   state.detailPayment = action.payload.payment
+    // }
   }
 });
 
 
 // Action creators are generated for each case reducer function
-export const { setPayments, clearPayments } = paymentSlice.actions;
+export const { setPayments, clearPayments, /*setPayment*/ } = paymentSlice.actions;

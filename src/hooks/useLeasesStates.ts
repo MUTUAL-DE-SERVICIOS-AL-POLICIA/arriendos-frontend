@@ -49,6 +49,7 @@ export const useLeasesStates = () => {
         }
       });
       dispatch(setRentalInformation({ rentalInformation: data }))
+      return data
     } catch (error: any) {
       if (error.response && error.response.status == 400) {
         const message = error.response.data.error

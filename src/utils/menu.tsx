@@ -1,4 +1,4 @@
-import { Assessment, Bento, CalendarMonth, Group, Home } from "@mui/icons-material"
+import { Assessment, Bento, CalendarMonth, Group, Home, Receipt } from "@mui/icons-material"
 
 export const menu = () => {
     return [
@@ -25,12 +25,12 @@ export const menu = () => {
             icon: <Home />,
             permission: "show-halls"
         },
-        // {
-        //     path: "/rentalView",
-        //     title: "Alquileres",
-        //     icon: <Receipt />,
-        //     permission: "show-rates"
-        // },
+        {
+            path: "/rentalView",
+            title: "Alquileres",
+            icon: <Receipt />,
+            permission: "show-rates"
+        },
         {
             path: "/customersView",
             title: "Clientes",

@@ -1,9 +1,12 @@
 import { ComponentButton } from "@/components";
-import { useRentalStore } from "@/hooks"
+import { useLeasesStates, useRentalStore } from "@/hooks"
 import { KeyboardReturn, Print } from "@mui/icons-material";
 import { Divider, Grid, Typography } from "@mui/material"
-import { Box } from "@mui/system"
+import { Box, Stack } from "@mui/system"
+import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { useState } from "react";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from 'dayjs';
 
 const dividerStyle = {
   height: '2px',
@@ -12,20 +15,49 @@ const dividerStyle = {
   backgroundColor: '#085',
 }
 
-export const Concluded = () => {
+interface Props {
+  rental: number,
+  handleClose: () => void
+}
+
+export const Concluded = (props: Props) => {
+  const { rental, handleClose } = props
   const { rentalSelected, postWarrantyReturn, getPrintWarrantyReturn, getPrintReturnWarrantyForm } = useRentalStore()
   const [disabled, setDisabled] = useState(true)
   const [loadingPrint, setLoadingPrint] = useState(false)
   const [loadingWarrantyReturn, setLoadingWarrantyReturn] = useState(false)
   const [loadingPrintReturn, setLoadingPrintReturn] = useState(false)
+  const [newDate, setNewDate] = useState<Date | null>(null);
+
+  const { currentRentalState, postChangeRentalState } = useLeasesStates()
 
   const warrantyReturn = async () => {
     setLoadingWarrantyReturn(true)
+    const date = dayjs(newDate)
+    const formatDate = date.toISOString()
     const body = {
+      return_date: formatDate,
       rental: rentalSelected.rental,
     }
     await postWarrantyReturn(body)
     setLoadingWarrantyReturn(false)
+
+    let nextStateId = null;
+    let minimumDifference = Infinity;
+    currentRentalState.next_states.forEach((nextState: any) => {
+      const difference = Math.abs(currentRentalState.current_state.id - nextState.id);
+      if (difference < minimumDifference) {
+        minimumDifference = difference;
+        nextStateId = nextState.id;
+      }
+    });
+    console.log(currentRentalState)
+    const changeRentalState = {
+      rental: rental,
+      state:  nextStateId
+    }
+    await postChangeRentalState(changeRentalState)
+    handleClose()
   }
 
   const printWarrantyRequest = async () => {
@@ -71,18 +103,52 @@ export const Concluded = () => {
           />
         </Grid>
         <Divider style={dividerStyle} />
-        <Grid item xs={12} sm={7}>
+        <Grid item xs={12} sm={4}>
           <Typography>Devolver garantía:</Typography>
         </Grid>
-        <Grid item xs={12} sm={5}>
-          <ComponentButton
-            onClick={warrantyReturn}
-            text="DEVOLVER"
-            startIcon={<KeyboardReturn />}
-            disable={disabled}
-            loading={loadingWarrantyReturn}
-            color={`warning`}
-          />
+        <Grid item xs={12} sm={6}>
+          <Stack direction="row" alignContent="right" alignItems="right">
+            <LocalizationProvider adapterLocale="es" dateAdapter={AdapterDayjs}>
+              <DateTimePicker
+                value={newDate}
+                label={"Fecha de devolución"}
+                ampm={false}
+                onChange={setNewDate}
+                slotProps={{
+                  popper: {
+                    sx: {
+                      zIndex: 9999
+                    }
+                  },
+                }}
+                sx={{
+                  display: 'flex',
+                  padding: '2px',
+                  margin: '4px',
+                  '& label.Mui-focused': {
+                    color: 'black',
+                  },
+                  '& label:not(.Mui-focused)': {
+                    color: 'black',
+                  },
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '10px',
+                    height: 'fit-content',
+                    '& fieldset': { borderColor: '#2F3746' },
+                    '&:hover fieldset': { borderColor: '#0B815A' },
+                  },
+                }}
+              />
+            </LocalizationProvider>
+            <ComponentButton
+              onClick={warrantyReturn}
+              text="DEVOLVER"
+              startIcon={<KeyboardReturn />}
+              disable={disabled}
+              loading={loadingWarrantyReturn}
+              color={`warning`}
+            />
+          </Stack>
         </Grid>
       </Grid>
     </Box>

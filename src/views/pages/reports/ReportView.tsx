@@ -32,8 +32,8 @@ export const ReportView = () => {
   }, [])
 
   const getDocument = () => {
-    const start_date = dayjs(since).toISOString()
-    const end_date = dayjs(until).toISOString()
+    const start_date = dayjs(since).startOf('day').hour(0).minute(0).second(0).toISOString();
+    const end_date = dayjs(until).endOf('day').hour(23).minute(59).second(59).toISOString();
     bodyFormData.append("start_date", start_date!)
     bodyFormData.append("end_date", end_date!)
     bodyFormData.append("state", state.id)
