@@ -1,9 +1,7 @@
 import { Card, Dialog, Divider, Step, StepButton, Stepper } from "@mui/material"
 import { RentalStateModel } from "@/models"
-import { useEffect, useState } from "react"
-import { Reserver } from "@/views/pages/rentalCalendar/stateRental/reserve"
-import { Rented } from "@/views/pages/rentalCalendar/stateRental/payments/Main"
-import { Box, width } from "@mui/system"
+import { useState } from "react"
+import { Box } from "@mui/system"
 import { ComponentButton } from "."
 
 interface Props {
@@ -19,9 +17,6 @@ export const Steps = (props: Props) => {
     handleClose
   } = props
 
-  useEffect(() => {
-    console.log(states)
-  })
 
   const [ activeStep, setActiveStep ] = useState(0)
 
