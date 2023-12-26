@@ -51,19 +51,19 @@ export const ComponentDamageRectify = (props: elementsProps) => {
     if (!isFormValid) return;
     // //ENVIAR DAÑO
     const body = {
-        rental: rental.rental,
+        rental: rental,
         detail: detail,
         discount: parseFloat(discount),
         product: eventSelect
     }
     await postRegisterDiscountWarranty(body)
-    await getListWarranty(rental.rental)
+    await getListWarranty(rental)
     handleClose();
     onResetForm();
   }
 
   useEffect(() => {
-    getRental(rental.rental).then(data => setLease(data))
+    getRental(rental).then(data => setLease(data))
   }, [])
 
   return (

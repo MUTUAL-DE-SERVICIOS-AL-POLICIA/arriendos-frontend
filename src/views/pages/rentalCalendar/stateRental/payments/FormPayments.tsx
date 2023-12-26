@@ -55,17 +55,27 @@ export const FormPayments = (props: elementsProps) => {
   const { rentalInformation, getRental } = useLeasesStates();
 
   const registerPayment = async (data: any) => {
-    if(!edit) {
+    if(!edit) { // creación
+      console.log("creación, pago")
+      let body = null
       if(selectedEvent) {
-        const body = {
+        body = {
           rental: selectedEvent.rental,
           mount: parseFloat(data.amount),
           voucher_number: parseFloat(data.voucherNumber),
           detail: data.paymentDetail || null
         }
-        await postRegisterPayment(body)
-        await getRegistersPayments(selectedEvent.rental)
+      } else {
+        body = {
+          rental: rental,
+          mount: parseFloat(data.amount),
+          voucher_number: parseFloat(data.voucherNumber),
+          detail: data.paymentDetail || null
+        }
       }
+      await postRegisterPayment(body)
+      if(selectedEvent) await getRegistersPayments(selectedEvent.rental)
+      else if(rental) await getRegistersPayments(rental)
     } else {
       const body = {
         rental: rental,
@@ -79,21 +89,32 @@ export const FormPayments = (props: elementsProps) => {
   }
   const registerWarranty = async (data: any) => {
     if(!edit) {
+      console.log("creación, garantía")
+      let body = null
       if(selectedEvent) {
-        const body = {
+        body = {
           rental: selectedEvent.rental,
           income: parseFloat(data.amount),
           voucher_number: parseFloat(data.voucherNumber),
           detail: data.paymentDetail || null
         }
-        await postRegisterWarranty(body)
-        await getListWarranty(selectedEvent.rental)
+      } else {
+        body = {
+          rental: rental,
+          income: parseFloat(data.amount),
+          voucher_number: parseFloat(data.voucherNumber),
+          detail: data.paymentDetail || null
+        }
       }
+        await postRegisterWarranty(body)
+      if(selectedEvent) await getListWarranty(selectedEvent.rental)
+      else if(rental) await getListWarranty(rental)
     } else {
+      console.log("edición, garantía")
       const body:any = {
         rental: rental,
         voucher_number: parseFloat(data.voucherNumber),
-        detail: data.paymentDetail
+        detail: data.paymentDetail || null
       }
       switch(label) {
         case 'income':
@@ -111,36 +132,30 @@ export const FormPayments = (props: elementsProps) => {
     }
   }
   const registerExtraHour = async (data: any) => {
-    if(!edit) {
-      if(selectedEvent) {
-        const body = {
-          selected_product: data.eventSelect,
-          number: parseInt(data.quantity),
-          description: data.detail || null,
-          voucher_number: parseFloat(data.voucherNumber),
-          price: parseFloat(data.amount)
-        };
-        await postRegisterExtraHour(selectedEvent.rental, body);
-      }
-    } else {
-
+    if(selectedEvent) {
+      const body = {
+        selected_product: data.eventSelect,
+        number: parseInt(data.quantity),
+        description: data.detail || null,
+        voucher_number: parseFloat(data.voucherNumber),
+        price: parseFloat(data.amount)
+      };
+      await postRegisterExtraHour(selectedEvent.rental, body);
     }
   }
   const registerDamage = async (data: any) => {
-      if(selectedEvent) {
-        const body = {
-          rental: selectedEvent.rental,
-          detail: data.detail,
-          discount: parseFloat(data.discount),
-          product: rentalInformation.products.filter((product: ProductRentalModel) => product.id == selectedEvent.product_id)[0].id
-        }
-        await postRegisterDiscountWarranty(body)
-        await getListWarranty(selectedEvent.rental)
+    if(selectedEvent) {
+      const body = {
+        rental: selectedEvent.rental,
+        detail: data.detail,
+        discount: parseFloat(data.discount),
+        product: rentalInformation.products.filter((product: ProductRentalModel) => product.id == selectedEvent.product_id)[0].id
       }
+      await postRegisterDiscountWarranty(body)
+      await getListWarranty(selectedEvent.rental)
+    }
   }
   useEffect(() => {
-    console.log("selectedEvent", selectedEvent)
-    console.log("rentalInformation", rentalInformation)
     if(rental) getRental(rental)
   }, [])
   return (
@@ -199,10 +214,10 @@ export const FormPayments = (props: elementsProps) => {
             handleClose={handleClose}
             sendData={(data) => registerDamage(data)}
           />
-          : <ComponentDamageRectify
-            rental={selectedEvent}
+          : rectify && tabReason == Reason.damage && <ComponentDamageRectify
+            // rental={selectedEvent}
+            rental={rental}
             handleClose={handleClose}
-
           />
         }
       </Stack>

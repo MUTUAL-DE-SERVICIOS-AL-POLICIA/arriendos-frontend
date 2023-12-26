@@ -41,7 +41,7 @@ export const EditRental = (props: Props) => {
   }
 
   const handleModal = async (value: boolean, payment?: number | null, reason?: Reason) => {
-    if(payment) {
+    if(payment) { // si existe el pago es edición
       setEdit(true)
       if(reason) {
         setPayment(payment)
@@ -72,12 +72,14 @@ export const EditRental = (props: Props) => {
             break;
         }
       }
-    } else {
-      setTabSelected(reason!);
+    } else { // si existe es creación
+      setEdit(false)
+      setTabSelected(reason!)
       switch (reason!) {
         case Reason.payment:
           if (payments.length == 0) {
-            setMountPayment(mountPayment);
+            // setMountPayment(mountPayment);
+            setMountPayment(10);
           } else {
             setMountPayment(payments[payments.length - 1].payable_mount)
           }
@@ -186,7 +188,7 @@ export const EditRental = (props: Props) => {
         open={modal}
         handleClose={() => handleModal(false)}
         tabReason={tabSelected}
-        selectedEvent={edit ? null : {rental: rental}}
+        selectedEvent={!edit ? null : {rental: rental}}
         edit={edit}
         editedObject={payment}
         rental={rental}
