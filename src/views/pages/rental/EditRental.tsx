@@ -78,8 +78,7 @@ export const EditRental = (props: Props) => {
       switch (reason!) {
         case Reason.payment:
           if (payments.length == 0) {
-            // setMountPayment(mountPayment);
-            setMountPayment(10);
+            setMountPayment(mountPayment);
           } else {
             setMountPayment(payments[payments.length - 1].payable_mount)
           }

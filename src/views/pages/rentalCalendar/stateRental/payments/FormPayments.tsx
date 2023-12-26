@@ -193,6 +193,7 @@ export const FormPayments = (props: elementsProps) => {
             handleClose={handleClose}
             sendData={(data) => registerWarranty(data)}
             amountRecomend={amountTotal}
+            disalbleMount={!!amountTotal}
             voucher={voucher}
             detail={detail}
             edit={edit}
