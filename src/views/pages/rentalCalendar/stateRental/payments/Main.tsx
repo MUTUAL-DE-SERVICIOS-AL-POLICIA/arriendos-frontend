@@ -25,7 +25,7 @@ export const Rented = () => {
 
   const { payments = [], amountTotal, getRegistersPayments } = usePaymentsStore();
   const { extraHours = [], getRegisterExtraHours, getExtraHour } = useExtraHourStore();
-  const { warrantys = [], getListWarranty } = useWarrantyStore()
+  const { warrantys = [], totalWarranty, getListWarranty } = useWarrantyStore()
   const { rentalSelected } = useRentalStore();
 
   const properties = (index: number) => {
@@ -66,7 +66,11 @@ export const Rented = () => {
           setMountPayment(mountExtraHour);
           break;
         case Reason.warranty:
-          setMountPayment(mountWarranty)
+          if(warrantys.length == 0) {
+            setMountPayment(totalWarranty)
+          } else {
+            setMountPayment(mountWarranty)
+          }
           break
       }
     }

@@ -10,7 +10,7 @@ import { Reason } from "@/views/pages/rentalCalendar/stateRental/payments";
 const api = coffeApi;
 export const useWarrantyStore = () => {
 
-  const { warrantys } = useSelector((state: any) => state.warrantys)
+  const { warrantys = [], totalWarranty } = useSelector((state: any) => state.warrantys)
   const dispatch = useDispatch();
   const postRegisterWarranty = async (body: object) => {
     try {
@@ -67,7 +67,7 @@ export const useWarrantyStore = () => {
             // />
       }))];
 
-      dispatch(setWarrantys({ warrantys: warrantys }));
+      dispatch(setWarrantys({ warrantys: warrantys, totalWarranty: data.total_warranty }));
     } catch (error: any) {
       if (error.response && error.response.status == 400) {
         const message = error.response.data.error
@@ -144,6 +144,7 @@ export const useWarrantyStore = () => {
   return {
     //* Propiedades
     warrantys,
+    totalWarranty,
     //* Métodos
     postRegisterWarranty,
     getListWarranty,
