@@ -1,4 +1,4 @@
-import { ComponentSearch, ComponentTablePagination, SkeletonComponent } from "@/components";
+import { /*ComponentSearch,*/ ComponentTablePagination, SkeletonComponent } from "@/components";
 import { useRateStore } from "@/hooks/useRateStore";
 import { RateModel } from "@/models";
 import { DeleteOutline } from "@mui/icons-material";
@@ -32,10 +32,10 @@ export const RateTable = (props: tableProps) => {
 
   return (
     <Stack sx={{ paddingRight: '10px' }}>
-      <ComponentSearch
+      {/* <ComponentSearch
         title="Buscar Tarifa"
         onSearch={() => { }}
-      />
+      /> */}
       <TableContainer>
         <Table sx={{ minWidth: 350 }} size="small">
           <TableHead>

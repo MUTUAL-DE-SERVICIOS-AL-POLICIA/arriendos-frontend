@@ -1,6 +1,6 @@
 
 import { Stack, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, } from '@mui/material';
-import { ComponentSearch, ComponentTablePagination, SkeletonComponent } from '@/components';
+import { /*ComponentSearch, */ ComponentTablePagination, SkeletonComponent } from '@/components';
 import { useEffect, useState } from 'react';
 import { useUserStore } from '@/hooks';
 import { UserModel } from '@/models';
@@ -26,10 +26,10 @@ export const UserTable = (props: tableProps) => {
 
   return (
     <>
-      <ComponentSearch
+      {/* <ComponentSearch
         title="Buscar Usuario"
         onSearch={() => { }}
-      />
+      /> */}
       <Stack sx={{ paddingRight: '10px' }}>
         <TableContainer>
           <Table sx={{ minWidth: 350 }} size="small">
