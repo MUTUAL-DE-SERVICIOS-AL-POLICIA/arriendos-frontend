@@ -22,6 +22,7 @@ interface elementsProps {
   handleClose: () => void;
 //   sendData: (data: object) => void;
   rental: any;
+  func?: (value:boolean) => void
 }
 
 export const ComponentDamageRectify = (props: elementsProps) => {
@@ -29,6 +30,7 @@ export const ComponentDamageRectify = (props: elementsProps) => {
     handleClose,
     // sendData,
     rental,
+    func
   } = props;
 
 
@@ -57,7 +59,7 @@ export const ComponentDamageRectify = (props: elementsProps) => {
         product: eventSelect
     }
     await postRegisterDiscountWarranty(body)
-    await getListWarranty(rental)
+    await getListWarranty(rental, true, func)
     handleClose();
     onResetForm();
   }

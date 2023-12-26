@@ -51,7 +51,6 @@ export const Concluded = (props: Props) => {
         nextStateId = nextState.id;
       }
     });
-    console.log(currentRentalState)
     const changeRentalState = {
       rental: rental,
       state:  nextStateId

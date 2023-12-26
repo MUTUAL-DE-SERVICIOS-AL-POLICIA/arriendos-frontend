@@ -56,7 +56,6 @@ export const FormPayments = (props: elementsProps) => {
 
   const registerPayment = async (data: any) => {
     if(!edit) { // creación
-      console.log("creación, pago")
       let body = null
       if(selectedEvent) {
         body = {
@@ -75,7 +74,7 @@ export const FormPayments = (props: elementsProps) => {
       }
       await postRegisterPayment(body)
       if(selectedEvent) await getRegistersPayments(selectedEvent.rental)
-      else if(rental) await getRegistersPayments(rental)
+      else if(rental) await getRegistersPayments(rental, true, func)
     } else {
       const body = {
         rental: rental,
@@ -89,7 +88,6 @@ export const FormPayments = (props: elementsProps) => {
   }
   const registerWarranty = async (data: any) => {
     if(!edit) {
-      console.log("creación, garantía")
       let body = null
       if(selectedEvent) {
         body = {
@@ -108,9 +106,8 @@ export const FormPayments = (props: elementsProps) => {
       }
         await postRegisterWarranty(body)
       if(selectedEvent) await getListWarranty(selectedEvent.rental)
-      else if(rental) await getListWarranty(rental)
+      else if(rental) await getListWarranty(rental, true, func)
     } else {
-      console.log("edición, garantía")
       const body:any = {
         rental: rental,
         voucher_number: parseFloat(data.voucherNumber),
@@ -193,7 +190,7 @@ export const FormPayments = (props: elementsProps) => {
             handleClose={handleClose}
             sendData={(data) => registerWarranty(data)}
             amountRecomend={amountTotal}
-            disalbleMount={!!amountTotal}
+            disalbleMount={!edit && !!amountTotal}
             voucher={voucher}
             detail={detail}
             edit={edit}
@@ -216,9 +213,9 @@ export const FormPayments = (props: elementsProps) => {
             sendData={(data) => registerDamage(data)}
           />
           : rectify && tabReason == Reason.damage && <ComponentDamageRectify
-            // rental={selectedEvent}
             rental={rental}
             handleClose={handleClose}
+            func={func}
           />
         }
       </Stack>
