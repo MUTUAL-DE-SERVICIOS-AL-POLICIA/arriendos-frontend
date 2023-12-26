@@ -77,7 +77,7 @@ export const CustomerTable = (props: tableProps) => {
                             />
                           </TableCell>
                         }
-                        <TableCell>{customer.nit ?? customer.contacts.length > 0 ? customer.contacts[0].ci_nit : ''} </TableCell>
+                        <TableCell>{customer.nit ?? (customer.contacts.length > 0 ? customer.contacts[0].ci_nit : '')} </TableCell>
                         <TableCell>{customer.institution_name ?? (customer.contacts.length > 0 ? customer.contacts[0].name : '')}</TableCell>
                         <TableCell>{customer.customer_type.name}</TableCell>
                         {
