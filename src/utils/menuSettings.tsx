@@ -1,4 +1,4 @@
-import { DocumentScanner, HourglassBottom, Person, Wifi } from "@mui/icons-material"
+import { DocumentScanner, Home, HourglassBottom, Person, Wifi } from "@mui/icons-material"
 
 export const menuSettings = () => {
     return [
@@ -55,5 +55,17 @@ export const menuSettings = () => {
                 // }
             ]
         },
+        {
+            title: "Gestion de Inmuebles",
+            permission: "show-rent",
+            group: [
+                {
+                    path: "/propertiesView",
+                    title: "Inmuebles",
+                    icon: <Home />,
+                    permission: "show-halls"
+                },
+            ]
+        }
     ]
 }
