@@ -190,11 +190,12 @@ export const InfoRental = (props: infoProps) => {
       </Grid>
       <Grid item xs={12} sm={rentalInformation.products.length == 1 ? 8 : 4} style={{ padding: '5px' }}>
         <Typography><b>Evento seleccionado:</b></Typography>
-        <CardEvent
+        {rentalSelected && <CardEvent
           rental={rentalSelected.rental}
           product={rentalInformation.products.filter((product: ProductRentalModel) => product.id == rentalSelected.product_id)[0]}
           showEdit={virifyDate(date)}
         />
+        }
       </Grid>
       {
         rentalInformation.products.length > 1 &&

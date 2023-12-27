@@ -78,7 +78,8 @@ export const EditRental = (props: Props) => {
       switch (reason!) {
         case Reason.payment:
           if (payments.length == 0) {
-            setMountPayment(mountPayment);
+            // setMountPayment(mountPayment);
+            setMountPayment(amountTotal)
           } else {
             setMountPayment(payments[payments.length - 1].payable_mount)
           }
@@ -107,7 +108,7 @@ export const EditRental = (props: Props) => {
     }
   }
 
-  const { payments = [], getRegistersPayments, getDetailPayment } = usePaymentsStore()
+  const { payments = [], amountTotal, getRegistersPayments, getDetailPayment } = usePaymentsStore()
   const { warrantys = [], getListWarranty, getDetailWarranty } = useWarrantyStore()
   const { getRentals } = useRentalStore()
 

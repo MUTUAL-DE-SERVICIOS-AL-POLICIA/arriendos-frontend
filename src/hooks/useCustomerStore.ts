@@ -87,7 +87,7 @@ export const useCustomerStore = () => {
       if (ciAffiliate != '') {
         const { data } = await api.get(`/customers/identify_police/${ciAffiliate}/`);
         if (data.length > 0) {
-          toast.success(`Afliliado encontrado`);
+          toast.success(`Afiliado encontrado`);
           return data[0]
         } else {
           toast.error(`${data.message}`);
@@ -95,7 +95,7 @@ export const useCustomerStore = () => {
       }
       return;
     } catch (error: any) {
-      toast("No encontre a nadei");
+      toast("No se encontró al afiliado");
       return;
     }
   }
