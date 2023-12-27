@@ -78,11 +78,18 @@ export const CalendarComponent = (props: calendarProps) => {
         dayPropGetter={(date: any) => {
           return { className: calendarStyle(date) as string };
         }}
-        eventPropGetter={() => {
+        eventPropGetter={(event: any) => {
+          let backgroundColor = '#F79009'
+          let textColor = '#000'
+          if (event.name_state == 'Pre-reserva') backgroundColor = '#FFDD33'
+          if (event.name_state == 'Concluido') {
+            backgroundColor = '#134E48'
+            textColor = '#f2f2f2'
+          }
           return {
             style: {
-              backgroundColor: '#a7e8d8',
-              color: '#000',
+              backgroundColor: backgroundColor,
+              color: textColor,
               opacity: 0.6,
               display: 'block',
               fontSize: '0.9rem'
