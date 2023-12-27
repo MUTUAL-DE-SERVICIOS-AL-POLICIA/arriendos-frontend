@@ -1,7 +1,7 @@
 import { Card, Dialog, DialogTitle, Divider, Grid, IconButton, Step, StepButton, Stepper } from "@mui/material"
 import { Box } from "@mui/system"
 import { useEffect, useState } from "react"
-import { ArrowCircleRight, Cancel, Close } from "@mui/icons-material"
+import { ArrowCircleRight, Close, KeyboardReturn } from "@mui/icons-material"
 import { useLeasesStates } from "@/hooks/useLeasesStates"
 import { useRentalStore } from "@/hooks"
 import Swal from "sweetalert2"
@@ -11,6 +11,7 @@ import { Rented } from "./payments/Main"
 import { Concluded } from "./concluded/Main"
 import { ComponentButton } from "@/components"
 import { RentalStateModel } from "@/models"
+import dayjs from 'dayjs';
 
 interface elementsProps {
   open: boolean;
@@ -27,7 +28,7 @@ export const EventDialog = (props: elementsProps) => {
   } = props
 
   //INFORMACIÓN DEL ALQUILER
-  const { rentalSelected, postSendRequirements } = useRentalStore();
+  const { rentalSelected, postSendRequirements, postWarrantyReturn } = useRentalStore();
 
 
   const { states, rentalInformation, currentRentalState, getLeaseState, getRental, getCurrentLeaseState, postChangeRentalState } = useLeasesStates();
@@ -35,6 +36,9 @@ export const EventDialog = (props: elementsProps) => {
   const [checked, setChecked] = useState<Array<any>>([])
   const [checkedOptional, setCheckedOptional] = useState<Array<any>>([])
   const [loading, setLoading] = useState(false)
+
+  const [ newDate, setNewDate ] = useState<Date | null>(null)
+
 
   useEffect(() => {
     getRental(rentalSelected.rental);
@@ -69,8 +73,7 @@ export const EventDialog = (props: elementsProps) => {
     } else if (currentRentalState.current_state.id == 2) {
       nextStep()
     } else if (currentRentalState.current_state.id == 3) {
-      nextStep()
-      handleClose()
+      warrantyReturn()
     }
     setLoading(false)
   }
@@ -91,6 +94,38 @@ export const EventDialog = (props: elementsProps) => {
       state: estadoSiguienteId
     }
     await postChangeRentalState(changeRentalState)
+  }
+
+  const warrantyReturn = async () => {
+    Swal.fire({
+      title: '¿Esta seguro de realizar la devolución de la garantía?',
+      text: 'Esta acción no es reversible',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#0B815A',
+      confirmButtonText: 'Devolver',
+      cancelButtonColor: '#F04438',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true
+    }).then(async (result) => {
+      if(result.isConfirmed) {
+        try {
+          setLoading(true)
+          const date = dayjs(newDate)
+          const formatDate = date.toISOString()
+          const body = {
+            return_date: formatDate,
+            rental: rentalSelected.rental
+          }
+          await postWarrantyReturn(body)
+          setLoading(false)
+          nextStep()
+          handleClose()
+        } catch(error: any) {
+          throw new Error('Ocurrió algun error')
+        }
+      }
+    })
   }
 
   return (
@@ -121,7 +156,7 @@ export const EventDialog = (props: elementsProps) => {
             sx={{
               position: 'absolute',
               right: 8,
-              top: 8, // Ajusta la posición según tus necesidades
+              top: 8,
               color: (theme) => theme.palette.grey[500]
             }}
           >
@@ -155,23 +190,26 @@ export const EventDialog = (props: elementsProps) => {
                 <Rented />
               }
               {
-                currentRentalState.current_state.id == 3 &&
+                currentRentalState.current_state.id == 3 && rentalSelected &&
                 <Concluded
                   rental={rentalSelected.rental}
                   handleClose={handleClose}
+                  dateSelected={setNewDate}
+                  newDate={newDate}
                 />
               }
             </>
             <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2, pb: 1 }}>
               <Box sx={{ flex: '1 1 auto' }} />
               {
-                (currentRentalState.current_state.id) <= states.length - 1 &&
+                (currentRentalState.current_state.id) <= states.length &&
                 <ComponentButton
-                  text={(currentRentalState.current_state.id) == states.length ? 'Finalizar' : 'Siguiente'}
+                  text={(currentRentalState.current_state.id) == states.length ? 'Devolver' : 'Siguiente'}
                   onClick={handleNext}
                   loading={loading}
                   variant={'outlined'}
-                  endIcon={(currentRentalState.current_state.id) == states.length ? <Cancel /> : <ArrowCircleRight />}
+                  endIcon={(currentRentalState.current_state.id) == states.length ? <KeyboardReturn /> : <ArrowCircleRight />}
+                  disable={currentRentalState.current_state.id == states.length && newDate == null}
                 />
               }
             </Box>
