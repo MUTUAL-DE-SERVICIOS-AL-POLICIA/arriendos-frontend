@@ -32,6 +32,12 @@ export const CartView = (props: cartProps) => {
     getPlans();
   }, [])
 
+  useEffect(() => {
+    if(planSelect == 0) {
+      setUpdateShoppingCart([])
+    }
+  }, [date])
+
   const handleAddProduct = (value: any) => {
     setUpdateShoppingCart([...shoppingCart, { productSelect: leakedProducts.find((product: ProductModel) => product.id == value), date, state: false }])
   }
@@ -64,8 +70,8 @@ export const CartView = (props: cartProps) => {
     if (shoppingCart.filter((e: any) => !e.state).length > 0) return;
     const request: any = new Object();
     request.customer = customer.id;
-    if (planSelect !== 0) request.plan = planSelect
     request.selected_products = shoppingCart;
+    if (planSelect !== 0) request.plan = planSelect
     postCreateRental(request, onClose)
   }
 
