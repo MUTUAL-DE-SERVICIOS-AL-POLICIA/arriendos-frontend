@@ -1,10 +1,11 @@
 import { coffeApi } from "@/services";
 import { setPayments } from "@/store";
 import { Reason } from "@/views/pages/rentalCalendar/stateRental/payments";
-import { DeleteForever, Edit } from "@mui/icons-material";
+import { DeleteForever, Edit, Print } from "@mui/icons-material";
 import { Stack } from "@mui/system";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
+import { printDocument as printAccountingRecordForm } from "@/utils/helper";
 
 const api = coffeApi;
 
@@ -37,12 +38,12 @@ export const usePaymentsStore = () => {
                 sx={{cursor: 'pointer'}}
               />
             }
+            <Print
+              onClick={() => alert("se muestra el registro contable")}
+              color="warning"
+              sx={{cursor: 'pointer'}}
+            />
           </Stack> : ''
-            // canEdit && <Edit
-            //   onClick={() => handleModal!(true, e.id, Reason.payment)}
-            //   color="success"
-            //   sx={{cursor: 'pointer'}}
-            // />
       }))];
       dispatch(setPayments({ payments: payments, amountTotal: data.total_mount }));
     } catch (error: any) {
@@ -59,8 +60,10 @@ export const usePaymentsStore = () => {
   const postRegisterPayment = async (body: object) => {
     try {
       const res = await api.post('/financials/register_payment/', body)
-      if (res.status == 201) {
+      if (res.status == 201 || res.status == 200) {
         Swal.fire('Registro exitoso', res.data.message, 'success')
+        // Impresión de Formulario de registro contable de pago
+        printAccountingRecordForm(res)
       }
     } catch (error: any) {
       if (error.response && error.response.status == 400) {
@@ -122,8 +125,10 @@ export const usePaymentsStore = () => {
 
   const patchRegisterPayment = async (body: object, payment: number) => {
     try {
-      const { data } = await api.patch(`/financials/edit_payment/${payment}/`, body)
-      Swal.fire(data.message, '', 'success');
+      const res = await api.patch(`/financials/edit_payment/${payment}/`, body)
+      // Impresión de Formulario de registro contable de pago
+      printAccountingRecordForm(res)
+      Swal.fire(res.data.message, '', 'success');
     } catch(error: any) {
       if (error.response && error.response.status == 400) {
         const message = error.response.data.error
