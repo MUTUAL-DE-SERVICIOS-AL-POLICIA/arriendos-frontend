@@ -4,11 +4,12 @@ import { ComponentInputSelect, ModalSelectComponent } from "@/components";
 import { FormRentalModel } from "@/models";
 import { PropertieTable } from "../properties";
 import { CalendarComponent } from "./calendar";
-import { styled } from '@mui/system';
-import { Drawer, Grid, useMediaQuery, useTheme } from "@mui/material";
+import { Box, styled } from '@mui/system';
+import { Drawer, Grid, IconButton, Menu, MenuItem, useMediaQuery, useTheme } from "@mui/material";
 import { CustomerTable } from "../customers";
 import { RentalSection } from ".";
 import { virifyDate } from "@/helpers";
+import { InfoOutlined } from '@mui/icons-material';
 
 const formFields: FormRentalModel = {
   room: null,
@@ -35,6 +36,8 @@ export const RentalCalendarView = () => {
   const { postLeakedProduct, clearLakedProduct } = useProductStore();
   const { getRentals } = useRentalStore();
   const [daySelect, setDaySelect] = useState<Date | null>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
 
   useEffect(() => {
     getRentals(room == null ? null : room.id);
@@ -70,6 +73,14 @@ export const RentalCalendarView = () => {
   const handleModalClient = (value: boolean) => {
     setModalClient(value);
   };
+
+  const handleInfoClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  }
+
+  const handleCloseInfo = () => {
+    setAnchorEl(null)
+  }
 
   const contentCalendar = (
     <>
@@ -118,7 +129,7 @@ export const RentalCalendarView = () => {
         </ModalSelectComponent>
       }
       <Grid container>
-        <Grid item xs={12} sm={6} sx={{ px: .5 }}>
+        <Grid item xs={12} sm={5} sx={{ px: .5 }}>
           <ComponentInputSelect
             title={customer != null ? (customer.institution_name ?? customer.contacts[0].name) : 'Cliente'}
             label={customer == null ? '' : 'Cliente'}
@@ -131,6 +142,43 @@ export const RentalCalendarView = () => {
             label={room == null ? '' : 'Ambiente'}
             onPressed={() => handleModalRoom(true)}
           />
+        </Grid>
+        <Grid item xs={12} sm={1}>
+          <Box display="flex" alignItems="center" height="100%">
+            <IconButton
+              id="basic-button"
+              aria-controls={ open ? 'basic-menu': undefined }
+              aria-haspopup="true"
+              aria-expanded={ open ? 'true' : undefined }
+              onClick={handleInfoClick}
+            >
+              <InfoOutlined color="primary" fontSize="large" sx={{ml: 3}} />
+            </IconButton>
+          </Box>
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleCloseInfo}
+            MenuListProps={{
+              sx: {
+                '& .MuiMenuItem-root:': {
+                  '&:hover': {
+                    backgroundColor: 'inherit',
+                    color: 'inherit',
+                    cursor: 'default'
+                  }
+                },
+              },
+              'aria-labelledby': 'basic-button',
+            }}
+          >
+            <div style={{marginLeft: '6px', marginRight: '6px'}}>
+              <MenuItem onClick={handleCloseInfo} sx={{backgroundColor: '#FFDD33', fontWeight: 700}}>Pre reserva</MenuItem>
+              <MenuItem onClick={handleCloseInfo} sx={{backgroundColor: '#1E9E85', fontWeight: 700}}>Reserva</MenuItem>
+              <MenuItem onClick={handleCloseInfo} sx={{backgroundColor: '#F79009', fontWeight: 700}}>Concluido</MenuItem>
+            </div>
+          </Menu>
         </Grid>
       </Grid>
       <CalendarComponent
