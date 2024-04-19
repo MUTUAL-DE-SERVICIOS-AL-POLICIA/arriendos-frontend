@@ -2,9 +2,10 @@ import { coffeApi } from "@/services";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import { setWarrantys } from "@/store";
-import { DeleteForever, Edit } from "@mui/icons-material";
+import { DeleteForever, Edit, Print } from "@mui/icons-material";
 import { Stack } from "@mui/system";
 import { Reason } from "@/views/pages/rentalCalendar/stateRental/payments";
+import { printDocument as printAccountingRecordForm } from "@/utils/helper";
 
 
 const api = coffeApi;
@@ -12,11 +13,12 @@ export const useWarrantyStore = () => {
 
   const { warrantys = [], totalWarranty } = useSelector((state: any) => state.warrantys)
   const dispatch = useDispatch();
-  const postRegisterWarranty = async (body: object) => {
+  const postRegisterWarranty = async (body: object | any) => {
     try {
       const res = await api.post('/financials/register_warranty/', body)
-      if (res.status == 201) {
+      if (res.status == 201 || res.status == 200) {
         Swal.fire('Registro exitoso', res.data.message, 'success')
+        printWarrantyForm(body.rental)
       }
     } catch (error: any) {
       if (error.response && error.response.status == 400) {
@@ -59,12 +61,12 @@ export const useWarrantyStore = () => {
                 sx={{cursor: 'pointer'}}
               />
             }
+            <Print
+              onClick={() => printWarrantyForm(rental)}
+              color="warning"
+              sx={{cursor: 'pointer'}}
+            />
           </Stack> : ''
-            // canEdit && <Edit
-            //   onClick={() => handleModal!(true, e.id, Reason.warranty)}
-            //   color="success"
-            //   sx={{cursor: 'pointer'}}
-            // />
       }))];
 
       dispatch(setWarrantys({ warrantys: warrantys, totalWarranty: data.total_warranty }));
@@ -126,10 +128,29 @@ export const useWarrantyStore = () => {
     }
   }
 
-  const patchRegisterWarranty = async (body: object, warranty: number) => {
+  const patchRegisterWarranty = async (body: object | any, warranty: number) => {
     try {
-      const { data } = await api.patch(`/financials/edit_warranty/${warranty}/`, body)
-      Swal.fire(data.message, '', 'success')
+      const res = await api.patch(`/financials/edit_warranty/${warranty}/`, body)
+      Swal.fire(res.data.message, '', 'success')
+      // printAccountingRecordForm(res)
+      printWarrantyForm(body.rental)
+    } catch(error: any) {
+      if (error.response && error.response.status == 400) {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error')
+      } else if (error.response && error.response.status == 403) {
+        const message = error.response.data.detail
+        Swal.fire('Acceso denegado', message, 'warning')
+      } else throw new Error('Ocurrió algun error en el backend')
+    }
+  }
+
+  const printWarrantyForm = async (rentalId: number) => {
+    try {
+      const print = await api.get(`/financials/print_warranties/${rentalId}/`, {
+        responseType: 'arraybuffer'
+      })
+      printAccountingRecordForm(print)
     } catch(error: any) {
       if (error.response && error.response.status == 400) {
         const message = error.response.data.error

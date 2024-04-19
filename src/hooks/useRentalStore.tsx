@@ -2,12 +2,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { coffeApi } from '@/services';
 import Swal from 'sweetalert2';
 import { setDaySelected, setGroupRentals, setRentalSelected, setRentals, setShoppingCart, setAllRentals, setAllRentalsWithProducts } from '@/store';
-import printJS from 'print-js';
 import { formatDate } from '@/helpers';
 import { EventsCalendarModel } from '@/models';
 import {  Edit } from '@mui/icons-material';
 import { Stack } from '@mui/system';
 import { MenuComponent } from '@/components/Menu';
+import { printDocument } from '@/utils/helper';
 
 const api = coffeApi;
 
@@ -116,15 +116,7 @@ export const useRentalStore = () => {
       if (res.status != 200 && res.status != 404) {
         return false
       }
-      const contentType = res.headers['content-type']
-      if (contentType != 'application/pdf') {
-        return false
-      }
-      const blob = new Blob([res.data], {
-        type: "application/pdf"
-      })
-      const pdfURL = window.URL.createObjectURL(blob)
-      printJS(pdfURL)
+      printDocument(res)
       return true
     } catch (error: any) {
       if (error.response.data instanceof ArrayBuffer) {
@@ -170,15 +162,7 @@ export const useRentalStore = () => {
       if (res.status != 200 && res.status != 404) {
         return false
       }
-      const contentType = res.headers['content-type']
-      if (contentType != 'application/pdf') {
-        return false
-      }
-      const blob = new Blob([res.data], {
-        type: "application/pdf"
-      })
-      const pdfURL = window.URL.createObjectURL(blob)
-      printJS(pdfURL)
+      printDocument(res)
       return true
     } catch (error: any) {
       if (error.response.data instanceof ArrayBuffer) {
@@ -204,15 +188,7 @@ export const useRentalStore = () => {
       if (res.status != 200 && res.status != 404) {
         return false
       }
-      const contentType = res.headers['content-type']
-      if (contentType != 'application/pdf') {
-        return false
-      }
-      const blob = new Blob([res.data], {
-        type: "application/pdf"
-      })
-      const pdfURL = window.URL.createObjectURL(blob)
-      printJS(pdfURL)
+      printDocument(res)
       return true
     } catch (error: any) {
       if (error.response.data instanceof ArrayBuffer) {
@@ -241,15 +217,7 @@ export const useRentalStore = () => {
       if (res.status != 200 && res.status != 404) {
         return false
       }
-      const contentType = res.headers['content-type']
-      if (contentType != 'application/pdf') {
-        return false
-      }
-      const blob = new Blob([res.data], {
-        type: "application/pdf"
-      })
-      const pdfURL = window.URL.createObjectURL(blob)
-      printJS(pdfURL)
+      printDocument(res)
       return true
     } catch (error: any) {
       if (error.response.data instanceof ArrayBuffer) {

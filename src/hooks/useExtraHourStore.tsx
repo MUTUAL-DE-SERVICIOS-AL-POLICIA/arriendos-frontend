@@ -2,10 +2,10 @@ import { coffeApi } from "@/services";
 import { setExtraHours } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
-import printJS from 'print-js';
 import { DeleteForever, Edit } from "@mui/icons-material";
 import { Stack } from "@mui/system";
 import { Reason } from "@/views/pages/rentalCalendar/stateRental/payments";
+import { printDocument } from "@/utils/helper";
 
 const api = coffeApi;
 
@@ -80,14 +80,10 @@ export const useExtraHourStore = () => {
 
   const postRegisterExtraHour = async (rental: number, body: any) => {
     try {
-      const { data } = await api.post('/leases/register_additional_hour_applied/', body, {
+      const res = await api.post('/leases/register_additional_hour_applied/', body, {
         responseType: 'arraybuffer'
       });
-      const blob = new Blob([data], {
-        type: "application/pdf"
-      })
-      const pdfURL = window.URL.createObjectURL(blob)
-      printJS(pdfURL)
+      printDocument(res)
       getRegisterExtraHours(rental)
       return true
     } catch (error: any) {
