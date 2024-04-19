@@ -13,12 +13,12 @@ export const useWarrantyStore = () => {
 
   const { warrantys = [], totalWarranty } = useSelector((state: any) => state.warrantys)
   const dispatch = useDispatch();
-  const postRegisterWarranty = async (body: object) => {
+  const postRegisterWarranty = async (body: object | any) => {
     try {
       const res = await api.post('/financials/register_warranty/', body)
       if (res.status == 201 || res.status == 200) {
-        printAccountingRecordForm(res)
         Swal.fire('Registro exitoso', res.data.message, 'success')
+        printWarrantyForm(body.rental)
       }
     } catch (error: any) {
       if (error.response && error.response.status == 400) {
@@ -62,7 +62,7 @@ export const useWarrantyStore = () => {
               />
             }
             <Print
-              onClick={() => alert("se muestra el registro contable")}
+              onClick={() => printWarrantyForm(rental)}
               color="warning"
               sx={{cursor: 'pointer'}}
             />
@@ -128,11 +128,29 @@ export const useWarrantyStore = () => {
     }
   }
 
-  const patchRegisterWarranty = async (body: object, warranty: number) => {
+  const patchRegisterWarranty = async (body: object | any, warranty: number) => {
     try {
       const res = await api.patch(`/financials/edit_warranty/${warranty}/`, body)
       Swal.fire(res.data.message, '', 'success')
-      printAccountingRecordForm(res)
+      // printAccountingRecordForm(res)
+      printWarrantyForm(body.rental)
+    } catch(error: any) {
+      if (error.response && error.response.status == 400) {
+        const message = error.response.data.error
+        Swal.fire('Error', message, 'error')
+      } else if (error.response && error.response.status == 403) {
+        const message = error.response.data.detail
+        Swal.fire('Acceso denegado', message, 'warning')
+      } else throw new Error('Ocurrió algun error en el backend')
+    }
+  }
+
+  const printWarrantyForm = async (rentalId: number) => {
+    try {
+      const print = await api.get(`/financials/print_warranties/${rentalId}/`, {
+        responseType: 'arraybuffer'
+      })
+      printAccountingRecordForm(print)
     } catch(error: any) {
       if (error.response && error.response.status == 400) {
         const message = error.response.data.error
