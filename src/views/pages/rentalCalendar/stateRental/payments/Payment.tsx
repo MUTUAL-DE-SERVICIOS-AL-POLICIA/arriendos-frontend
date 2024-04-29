@@ -67,6 +67,8 @@ export const ComponentPayment = (props: elementsProps) => {
           return true
         } else if(edit) {
           return true
+        } else if (warranty) {
+          return true
         } else {
           return false
         }
@@ -78,9 +80,9 @@ export const ComponentPayment = (props: elementsProps) => {
           return true
         } else if(edit) {
           return true
-        } else {
-          return false
-        }
+        } else if(warranty) {
+          return true
+        } else return false
       },
       'Debe ingresar el número del NIT'
     ]
@@ -107,11 +109,11 @@ export const ComponentPayment = (props: elementsProps) => {
       names.push('paymentDetail')
       states.push(detail)
     }
-    if(businessName) {
+    if(!warranty && businessName) {
       names.push('businessName')
       states.push(businessName)
     }
-    if(nit) {
+    if(!warranty && nit) {
       names.push('nit')
       states.push(nit)
     }
