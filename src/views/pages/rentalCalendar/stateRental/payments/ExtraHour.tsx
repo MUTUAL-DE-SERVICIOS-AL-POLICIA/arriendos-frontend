@@ -13,11 +13,26 @@ const formFields: FormExtraHourModel = {
   voucherNumber: 0,
   detail: '',
   eventSelect: '',
+  businessName: '',
+  nit: 0
 }
 const formValidations: FormExtraHourValidations = {
   quantity: [(value: number) => value > 0, 'Debe ingresar la cantidad de horas'],
   voucherNumber: [(value: number) => value > 0, 'Debe ingresar el número de comprobante'],
   eventSelect: [(value: string) => value.length !== 0, 'Debe seleccionar un evento'],
+  businessName: [(value: string) => {
+    console.log(value)
+    if(value !== undefined && value !== '') {
+      return true
+    } else {
+      return false
+    }
+  }, 'Debe ingresar la razón social'],
+  nit: [(value: number) => {
+    if(value > 0) {
+      return true
+    } else return false
+  }, 'Debe ingresar el NIT']
 }
 
 interface elementsProps {
@@ -39,9 +54,9 @@ export const ComponentExtraHour = (props: elementsProps) => {
   const { getExtraHour } = useExtraHourStore();
 
   const { amount, quantity, voucherNumber, detail, eventSelect,
-    onInputChange, isFormValid, onListValuesChange,
+    businessName, nit, onInputChange, isFormValid, onListValuesChange,
     amountValid, quantityValid, voucherNumberValid, eventSelectValid,
-    onResetForm } = useForm(formFields, formValidations);
+    businessNameValid, nitValid, onResetForm } = useForm(formFields, formValidations);
 
   const sendSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -54,6 +69,8 @@ export const ComponentExtraHour = (props: elementsProps) => {
       voucherNumber,
       detail,
       eventSelect,
+      businessName,
+      nit
     });
     handleClose();
     onResetForm();
@@ -90,7 +107,7 @@ export const ComponentExtraHour = (props: elementsProps) => {
               disabled={amountRecomend != null}
             />
           </Grid>
-          <Grid item xs={12} sm={2} sx={{ padding: '5px' }}>
+          <Grid item xs={12} sm={1.5} sx={{ padding: '5px' }}>
             <ComponentInput
               type="text"
               label="Cantidad de horas"
@@ -101,7 +118,7 @@ export const ComponentExtraHour = (props: elementsProps) => {
               helperText={formSubmitted ? quantityValid : ''}
             />
           </Grid>
-          <Grid item xs={12} sm={3.5} sx={{ padding: '5px' }}>
+          <Grid item xs={12} sm={2} sx={{ padding: '5px' }}>
             <ComponentInput
               type="text"
               label="Número de comprobante"
@@ -112,7 +129,29 @@ export const ComponentExtraHour = (props: elementsProps) => {
               helperText={formSubmitted ? voucherNumberValid : ''}
             />
           </Grid>
-          <Grid item xs={12} sm={5} sx={{ padding: '5px' }}>
+          <Grid item xs={12} sm={3} sx={{ padding: '5px'}}>
+            <ComponentInput
+              type="text"
+              label="Razón social"
+              name="businessName"
+              value={businessName}
+              onChange={onInputChange}
+              error={!!businessNameValid && formSubmitted}
+              helperText={formSubmitted ? businessNameValid : ''}
+            />
+          </Grid>
+          <Grid item xs={12} sm={2} sx={{ padding: '5px'}}>
+            <ComponentInput
+              type="text"
+              label="NIT"
+              name="nit"
+              value={nit}
+              onChange={onInputChange}
+              error={!!nitValid && formSubmitted}
+              helperText={formSubmitted ? nitValid : ''}
+            />
+          </Grid>
+          <Grid item xs={12} sm={2} sx={{ padding: '5px' }}>
             <ComponentInput
               type="text"
               label="Detalle"
