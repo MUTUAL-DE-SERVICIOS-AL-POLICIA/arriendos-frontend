@@ -63,12 +63,16 @@ export interface FormPayment {
     amount: number;
     voucherNumber: number;
     paymentDetail: string;
+    businessName: string;
+    nit: number;
 }
 
 /*FORM PAYMENT VALIDATIONS */
 export interface FormPaymentValidations {
     amount: [(value: number) => boolean, string];
     voucherNumber: [(value: number) => boolean, string];
+    businessName: [(value: string) => boolean, string];
+    nit: [(value: number) => boolean, string]
 }
 
 /*FORM EXTRA HOUR */
@@ -78,6 +82,8 @@ export interface FormExtraHourModel {
     voucherNumber: number;
     detail: string;
     eventSelect: string | number;
+    businessName: string;
+    nit: number;
 }
 
 /*FORM EXTRA HOUR VALIDATIONS */
@@ -85,6 +91,8 @@ export interface FormExtraHourValidations {
     quantity: [(value: number) => boolean, string];
     voucherNumber: [(value: number) => boolean, string];
     eventSelect: [(value: string) => boolean, string];
+    businessName: [(value: string) => boolean, string];
+    nit: [(value: number) => boolean, string]
 }
 
 

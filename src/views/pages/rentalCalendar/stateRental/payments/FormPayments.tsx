@@ -62,14 +62,18 @@ export const FormPayments = (props: elementsProps) => {
           rental: selectedEvent.rental,
           mount: parseFloat(data.amount),
           voucher_number: parseFloat(data.voucherNumber),
-          detail: data.paymentDetail || null
+          detail: data.paymentDetail || null,
+          business_name: data.businessName,
+          nit: data.nit
         }
       } else {
         body = {
           rental: rental,
           mount: parseFloat(data.amount),
           voucher_number: parseFloat(data.voucherNumber),
-          detail: data.paymentDetail || null
+          detail: data.paymentDetail || null,
+          business_name: data.businessName,
+          nit: data.nit
         }
       }
       await postRegisterPayment(body)
@@ -80,7 +84,9 @@ export const FormPayments = (props: elementsProps) => {
         rental: rental,
         amount_paid: parseFloat(data.amount),
         voucher_number: parseFloat(data.voucherNumber),
-        detail: data.paymentDetail || null
+        detail: data.paymentDetail || null,
+        business_name: data.businessName,
+        nit: data.nit
       }
       await patchRegisterPayment(body, editedObject!)
       if(rental)await getRegistersPayments(rental, true, func)
@@ -135,7 +141,9 @@ export const FormPayments = (props: elementsProps) => {
         number: parseInt(data.quantity),
         description: data.detail || null,
         voucher_number: parseFloat(data.voucherNumber),
-        price: parseFloat(data.amount)
+        price: parseFloat(data.amount),
+        business_name: data.businessName,
+        nit: data.nit
       };
       await postRegisterExtraHour(selectedEvent.rental, body);
     }
@@ -194,6 +202,7 @@ export const FormPayments = (props: elementsProps) => {
             voucher={voucher}
             detail={detail}
             edit={edit}
+            warranty={true}
           />
         }
         {
