@@ -41,15 +41,38 @@ export const useAuthStore = () => {
 
   const checkAuthToken = async () => {
     const token = localStorage.getItem('token');
-
     if (token) {
       const user = localStorage.getItem('user')
-      return dispatch(onLogin(user));
+      const decodedToken = decodeToken(token)
+      if(isTokenExpired(decodedToken)) {
+        localStorage.clear();
+        return dispatch(onLogout());
+      } else {
+        return dispatch(onLogin(user))
+      }
     } else {
       localStorage.clear();
       dispatch(onLogout());
     }
   }
+
+  const isTokenExpired = (decodeToken:any) => {
+    if(!decodeToken || !decodeToken.exp) {
+      return true
+    }
+    return decodeToken.exp * 1000 < Date.now();
+  }
+
+  const decodeToken = (token:any) => {
+    console.log(token)
+    try {
+      const payload = token.split('.')[1]
+      return JSON.parse(atob(payload))
+    } catch(e) {
+      console.error('Failed to decode token: ', e)
+      return null
+    }
+  };
 
   const startLogout = () => {
     localStorage.clear();
