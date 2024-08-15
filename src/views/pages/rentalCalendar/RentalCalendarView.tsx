@@ -175,8 +175,8 @@ export const RentalCalendarView = () => {
           >
             <div style={{marginLeft: '6px', marginRight: '6px'}}>
               <MenuItem onClick={handleCloseInfo} sx={{backgroundColor: '#FFDD33', fontWeight: 700}}>Pre reserva</MenuItem>
-              <MenuItem onClick={handleCloseInfo} sx={{backgroundColor: '#1E9E85', fontWeight: 700}}>Reserva</MenuItem>
-              <MenuItem onClick={handleCloseInfo} sx={{backgroundColor: '#F79009', fontWeight: 700}}>Concluido</MenuItem>
+              <MenuItem onClick={handleCloseInfo} sx={{backgroundColor: '#F79009', fontWeight: 700}}>Reserva</MenuItem>
+              <MenuItem onClick={handleCloseInfo} sx={{backgroundColor: '#134E48', fontWeight: 700, textColor: '#f2f2f2'}}>Concluido</MenuItem>
             </div>
           </Menu>
         </Grid>
