@@ -129,11 +129,6 @@ export const InfoRental = (props: infoProps) => {
           reason: text
         }
         await postChangeRentalState(changeRentalState)
-        Swal.fire(
-          `¡Listo!`,
-          'Acción realizada con exito',
-          'success'
-        )
         // handleClose()
       } catch (error: any) {
         throw Swal.fire('Oops ocurrio algo', error.response.data.detail, 'error');

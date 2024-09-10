@@ -87,6 +87,11 @@ export const useLeasesStates = () => {
       dispatch(setUpdateGroupRental({ ...data, productId: body.rental }))
       dispatch(setUpdateRentalSelected({ ...data, productId: body.rental }))
       getCurrentLeaseState(body.rental)
+      Swal.fire(
+        `¡Listo!`,
+        'Acción realizada con exito',
+        'success'
+      )
     } catch (error: any) {
       if (error.response && error.response.status == 400) {
         const message = error.response.data.error
