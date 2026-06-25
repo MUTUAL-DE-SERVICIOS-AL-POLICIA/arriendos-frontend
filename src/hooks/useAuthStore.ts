@@ -21,7 +21,7 @@ import {
 } from "@/store";
 
 export const useAuthStore = () => {
-  const { status, user } = useSelector((state: any) => state.auth);
+  const { status, user, permissions, role } = useSelector((state: any) => state.auth);
   const dispatch = useDispatch();
 
   const startLogin = async ({ username, password }: { username: string, password: string }) => {
@@ -29,9 +29,15 @@ export const useAuthStore = () => {
       const { data } = await coffeApi.post('/login/auth/', { username, password });
       localStorage.setItem('token', data.access);
       localStorage.setItem('refresh', data.refresh);
-      const user = `${data.first_name} ${data.last_name}`;
-      localStorage.setItem('user', user);
-      dispatch(onLogin(user));
+      const userName = `${data.first_name} ${data.last_name}`;
+      localStorage.setItem('user', userName);
+      localStorage.setItem('permissions', JSON.stringify(data.permissions || []));
+      localStorage.setItem('role', data.role || '');
+      dispatch(onLogin({
+        user: userName,
+        permissions: data.permissions || [],
+        role: data.role || null,
+      }));
     } catch (error: any) {
       dispatch(onLogout());
       const message = error.response.data.error
@@ -43,12 +49,14 @@ export const useAuthStore = () => {
     const token = localStorage.getItem('token');
     if (token) {
       const user = localStorage.getItem('user')
+      const permissions = JSON.parse(localStorage.getItem('permissions') || '[]');
+      const role = localStorage.getItem('role') || null;
       const decodedToken = decodeToken(token)
       if(isTokenExpired(decodedToken)) {
         localStorage.clear();
         return dispatch(onLogout());
       } else {
-        return dispatch(onLogin(user))
+        return dispatch(onLogin({ user, permissions, role }))
       }
     } else {
       localStorage.clear();
@@ -64,7 +72,6 @@ export const useAuthStore = () => {
   }
 
   const decodeToken = (token:any) => {
-    console.log(token)
     try {
       const payload = token.split('.')[1]
       return JSON.parse(atob(payload))
@@ -72,6 +79,16 @@ export const useAuthStore = () => {
       console.error('Failed to decode token: ', e)
       return null
     }
+  };
+
+  const hasPermission = (permission: string): boolean => {
+    if (role === 'Administrador') return true;
+    return permissions.includes(permission);
+  };
+
+  const hasAnyPermission = (perms: string[]): boolean => {
+    if (role === 'Administrador') return true;
+    return perms.some(p => permissions.includes(p));
   };
 
   const startLogout = () => {
@@ -93,17 +110,15 @@ export const useAuthStore = () => {
     dispatch(onLogout());
   }
 
-
-
   return {
-    //* Propiedades
     status,
     user,
-
-    //* Métodos
+    permissions,
+    role,
     startLogin,
     checkAuthToken,
     startLogout,
+    hasPermission,
+    hasAnyPermission,
   }
-
 }

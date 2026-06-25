@@ -1,5 +1,6 @@
 import { SideNavItem } from "@/components";
 import { menuSettings } from "@/utils/menuSettings";
+import { useAuthStore } from "@/hooks";
 import { Box, Drawer, Typography } from "@mui/material";
 import { useLocation } from "react-router-dom";
 
@@ -16,12 +17,31 @@ export const SettingsNav = (props: navProps) => {
     onPress
   } = props;
   const { pathname } = useLocation();
+  const { hasPermission } = useAuthStore();
 
+  const filteredMenu = menuSettings().filter((item) => {
+    if (!item.permission) return true;
+    return hasPermission(item.permission);
+  }).map((item) => {
+    if (item.group) {
+      return {
+        ...item,
+        group: item.group.filter((g: any) => {
+          if (!g.permission) return true;
+          return hasPermission(g.permission);
+        })
+      };
+    }
+    return item;
+  }).filter((item) => {
+    if (item.group && item.group.length === 0) return false;
+    return true;
+  });
 
   const content = (
     <Box sx={{ py: 3 }} >
       {
-        menuSettings().map((item: any) => (
+        filteredMenu.map((item: any) => (
           <Box key={item.title} >
             {
               item.path ?

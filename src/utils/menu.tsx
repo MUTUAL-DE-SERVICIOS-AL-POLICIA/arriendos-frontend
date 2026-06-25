@@ -2,39 +2,34 @@ import { Assessment, Bento, CalendarMonth, Group, Receipt } from "@mui/icons-mat
 
 export const menu = () => {
     return [
-        // {
-        //     path: "/dashboardView",
-        //     title: "Inicio",
-        //     icon: <Home />
-        // },
         {
             path: "/rentalCalendarView",
             title: "Calendario",
             icon: <CalendarMonth />,
-            permission: "show-rates"
+            permission: "leases.view"
         },
         {
             path: "/customersView",
             title: "Clientes",
             icon: <Group />,
-            permission: "show-halls"
+            permission: "customers.view"
         },
         {
             path: "/rentalView",
             title: "Alquileres",
             icon: <Receipt />,
-            permission: "show-rates"
+            permission: "leases.view"
         },
         {
             path: "/productsView",
             title: "Productos",
             icon: <Bento />,
-            permission: "show-rates"
+            permission: "products.view"
         },
         {
             path: "/reports",
             title: "Reportes",
-            icon:<Assessment/>
+            icon: <Assessment />
         }
     ]
 }

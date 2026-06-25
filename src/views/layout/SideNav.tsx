@@ -7,6 +7,7 @@ import { menu } from '@/utils/menu';
 import { SideNavItem } from '@/components';
 import logo from '@/assets/images/muserpol-logo.png';
 import logoWithOutText from '@/assets/images/muserpol-logo-without-text.png';
+import { useAuthStore } from '@/hooks';
 import React from 'react';
 
 const drawerWidth = 190;
@@ -69,6 +70,12 @@ export const SideNav = (props: navProps) => {
   const { pathname } = useLocation();
   const theme = useTheme();
   const lgUp = useMediaQuery(theme.breakpoints.up('md'));
+  const { hasPermission } = useAuthStore();
+
+  const filteredMenu = menu().filter((item) => {
+    if (!item.permission) return true;
+    return hasPermission(item.permission);
+  });
 
   const content = (
     <Box sx={{ py: 3 }}>
@@ -83,7 +90,7 @@ export const SideNav = (props: navProps) => {
         }}
       />
       {
-        menu().map((item, index) => (
+        filteredMenu.map((item, index) => (
           <React.Fragment key={index}>
             <SideNavItem
               key={item.title}
