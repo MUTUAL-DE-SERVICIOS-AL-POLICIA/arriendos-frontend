@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { coffeApi } from '@/services';
-import { refreshProduct, setProducts, setLeakedProducts, setClearLakedProducts } from '@/store';
+import { refreshProduct, setProducts, setLeakedProducts, setClearLakProducts } from '@/store';
 import Swal from 'sweetalert2';
 import { ProductModel } from '@/models';
 import days from '@/models/days.json';
@@ -11,6 +11,21 @@ const api = coffeApi;
 export const useProductStore = () => {
   const { products, flag, leakedProducts } = useSelector((state: any) => state.products);
   const dispatch = useDispatch();
+
+  const getPriceHistory = async (productId: number) => {
+    try {
+      const { data } = await api.get(`/product/price_history/`, { params: { product: productId } });
+      return data.prices;
+    } catch (error: any) {
+      if (error.response && error.response.status == 403) {
+        const message = error.response.data.detail
+        Swal.fire('Acceso denegado', message, 'warning')
+      } else {
+        Swal.fire('Error', 'No se pudo obtener el historial de precios', 'error');
+      }
+      return [];
+    }
+  }
 
   const getProducts = async (page: number, limit: number, search: string) => {
     try {
@@ -121,6 +136,7 @@ export const useProductStore = () => {
     postCreateProduct,
     patchUpdateProduct,
     deleteRemoveProduct,
+    getPriceHistory,
     //* Métodos filtro de productos
     postLeakedProduct,
     clearLakedProduct,

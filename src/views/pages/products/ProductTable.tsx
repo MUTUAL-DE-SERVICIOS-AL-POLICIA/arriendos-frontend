@@ -1,9 +1,10 @@
 import { IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { DeleteOutline } from "@mui/icons-material";
+import { DeleteOutline, EditOutlined, History } from "@mui/icons-material";
 import { ComponentSearch, ComponentTablePagination, SkeletonComponent } from "@/components";
 import { useProductStore } from "@/hooks";
 import { ProductModel } from "@/models";
+import { PriceHistory } from ".";
 
 interface tableProps {
   handleEdit: (product: ProductModel) => void;
@@ -13,6 +14,7 @@ interface tableProps {
 export const ProductTable = (props: tableProps) => {
   const {
     limitInit = 10,
+    handleEdit,
   } = props;
 
   /*DATA */
@@ -21,6 +23,8 @@ export const ProductTable = (props: tableProps) => {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(limitInit)
+  const [openHistory, setOpenHistory] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<ProductModel | null>(null);
 
   useEffect(() => {//escucha si "page", "limit" o "flag" se modifico
     getProducts(page, limit, '').then((total) => setTotal(total))
@@ -31,6 +35,16 @@ export const ProductTable = (props: tableProps) => {
     await setLimit(limitInit);
     getProducts(0, limitInit, search).then((total) => setTotal(total))
   }
+  const handleOpenHistory = (product: ProductModel) => {
+    setSelectedProduct(product);
+    setOpenHistory(true);
+  };
+
+  const handleCloseHistory = () => {
+    setOpenHistory(false);
+    setSelectedProduct(null);
+  };
+
   return (
     <Stack>
       <ComponentSearch
@@ -73,6 +87,20 @@ export const ProductTable = (props: tableProps) => {
                       >
                         <IconButton
                           sx={{ p: 0 }}
+                          onClick={() => handleEdit(product)}
+                          title="Editar producto"
+                        >
+                          <EditOutlined color="warning" />
+                        </IconButton>
+                        <IconButton
+                          sx={{ p: 0 }}
+                          onClick={() => handleOpenHistory(product)}
+                          title="Historial de precios"
+                        >
+                          <History color="primary" />
+                        </IconButton>
+                        <IconButton
+                          sx={{ p: 0 }}
                           onClick={() => deleteRemoveProduct(product)}>
                           <DeleteOutline color="error" />
                         </IconButton>
@@ -91,6 +119,14 @@ export const ProductTable = (props: tableProps) => {
         page={page}
         limit={limit}
       />
+      {selectedProduct && (
+        <PriceHistory
+          open={openHistory}
+          handleClose={handleCloseHistory}
+          productId={selectedProduct.id}
+          productName={`${selectedProduct.room.name} - ${selectedProduct.rate.name}`}
+        />
+      )}
     </Stack>
   );
 }
