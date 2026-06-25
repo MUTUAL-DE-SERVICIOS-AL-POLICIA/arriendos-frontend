@@ -1,5 +1,5 @@
 
-import { Stack, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, } from '@mui/material';
+import { Stack, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { /*ComponentSearch, */ ComponentTablePagination, SkeletonComponent } from '@/components';
 import { useEffect, useState } from 'react';
 import { useUserStore } from '@/hooks';
@@ -39,6 +39,7 @@ export const UserTable = (props: tableProps) => {
                 <TableCell sx={{ fontWeight: 'bold' }}>Nombre</TableCell>
                 <TableCell sx={{ fontWeight: 'bold' }}>Apellido</TableCell>
                 <TableCell sx={{ fontWeight: 'bold' }}>Correo</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Rol</TableCell>
                 <TableCell sx={{ fontWeight: 'bold' }}>Acciones</TableCell>
               </TableRow>
             </TableHead>
@@ -53,6 +54,16 @@ export const UserTable = (props: tableProps) => {
                       <TableCell>{user.first_name}</TableCell>
                       <TableCell>{user.last_name}</TableCell>
                       <TableCell>{user.email}</TableCell>
+                      <TableCell>
+                        <Typography
+                          sx={{
+                            color: user.role ? 'success.main' : 'text.secondary',
+                            fontWeight: user.role ? 'bold' : 'normal',
+                          }}
+                        >
+                          {user.role?.name || 'Sin rol'}
+                        </Typography>
+                      </TableCell>
                       <TableCell>
                         <Switch
                           checked={user.is_active}

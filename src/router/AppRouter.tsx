@@ -59,7 +59,11 @@ export const AppRouter = () => {
                         </ProtectedRoute>
                     } />
                     {/* arriendos con calendario */}
-                    <Route path="/rentalCalendarView" element={<RentalCalendarView />} />
+                    <Route path="/rentalCalendarView" element={
+                        <ProtectedRoute permission="leases.view">
+                            <RentalCalendarView />
+                        </ProtectedRoute>
+                    } />
                     {/* arriendos */}
                     <Route path="/rentalView" element={
                         <ProtectedRoute permission="leases.view">
@@ -109,7 +113,11 @@ export const AppRouter = () => {
                         </ProtectedRoute>
                     } />
                     {/* reportes */}
-                    <Route path="/reports" element={<ReportView />} />
+                    <Route path="/reports" element={
+                        <ProtectedRoute permission="leases.view">
+                            <ReportView />
+                        </ProtectedRoute>
+                    } />
                     {/*  */}
                     <Route path="/*" element={<Navigate to={"/rentalCalendarView"} />} />
                 </Routes>
