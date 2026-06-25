@@ -1,9 +1,11 @@
 
-import { Stack, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Stack, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, IconButton, Tooltip } from '@mui/material';
 import { /*ComponentSearch, */ ComponentTablePagination, SkeletonComponent } from '@/components';
 import { useEffect, useState } from 'react';
-import { useUserStore } from '@/hooks';
+import { useUserStore, useAuthStore } from '@/hooks';
 import { UserModel } from '@/models';
+import { AdminPanelSettings } from '@mui/icons-material';
+import { AssignRoleDialog } from '.';
 
 interface tableProps {
   limitInit?: number;
@@ -16,13 +18,28 @@ export const UserTable = (props: tableProps) => {
 
   /*DATA */
   const { users, flag, getUsers, toggleActivation } = useUserStore();
+  const { hasPermission } = useAuthStore();
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(limitInit)
 
+  const [openAssignDialog, setOpenAssignDialog] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<UserModel | null>(null);
+
   useEffect(() => {//escucha si "page", "limit" o "flag" se modifico
     getUsers(page, limit).then((total) => setTotal(total))
   }, [page, limit, flag]);
+
+  const handleOpenAssign = (user: UserModel) => {
+    setSelectedUser(user);
+    setOpenAssignDialog(true);
+  };
+
+  const handleCloseAssign = () => {
+    setOpenAssignDialog(false);
+    setSelectedUser(null);
+    getUsers(page, limit);
+  };
 
   return (
     <>
@@ -65,12 +82,25 @@ export const UserTable = (props: tableProps) => {
                         </Typography>
                       </TableCell>
                       <TableCell>
-                        <Switch
-                          checked={user.is_active}
-                          onChange={() => toggleActivation(user)}
-                          color="success"
-                          size="small"
-                        />
+                        <Stack direction="row" spacing={1}>
+                          {hasPermission('users.change') && (
+                            <Tooltip title="Asignar Rol">
+                              <IconButton
+                                size="small"
+                                onClick={() => handleOpenAssign(user)}
+                                color="primary"
+                              >
+                                <AdminPanelSettings fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                          )}
+                          <Switch
+                            checked={user.is_active}
+                            onChange={() => toggleActivation(user)}
+                            color="success"
+                            size="small"
+                          />
+                        </Stack>
                       </TableCell>
                     </TableRow>
                   );
@@ -86,6 +116,14 @@ export const UserTable = (props: tableProps) => {
           limit={limit}
         />
       </Stack>
+
+      {openAssignDialog && (
+        <AssignRoleDialog
+          open={openAssignDialog}
+          handleClose={handleCloseAssign}
+          user={selectedUser}
+        />
+      )}
     </>
   );
 };
