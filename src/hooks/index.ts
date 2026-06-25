@@ -51,3 +51,6 @@ export * from './useExtraHourStore';
 
 /* DAMAGE STORE */
 export * from './useDamageStore';
+
+/* ROLES STORE */
+export * from './useRoleStore';
