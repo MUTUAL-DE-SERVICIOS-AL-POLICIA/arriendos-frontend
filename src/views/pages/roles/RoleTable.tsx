@@ -1,9 +1,8 @@
 import { IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { DeleteOutline, EditOutlined } from "@mui/icons-material";
-import { ComponentSearch, ComponentTablePagination, SkeletonComponent } from "@/components";
+import { ComponentSearch, ComponentTablePagination, SkeletonComponent, DialogComponent } from "@/components";
 import { useRoleStore } from "@/hooks";
-import { ComponentDialogConfirm } from "@/components";
 
 interface tableProps {
   handleEdit: (role: any) => void;
@@ -38,10 +37,8 @@ export const RoleTable = (props: tableProps) => {
   };
 
   const handleDelete = async (id: number) => {
-    const confirmed = await ComponentDialogConfirm(
-      '¿Estas seguro?',
-      'El rol sera eliminado permanentemente'
-    );
+    const { dialogDelete } = DialogComponent();
+    const confirmed = await dialogDelete('El rol sera eliminado permanentemente');
     if (confirmed) {
       const success = await deleteRemoveRole(id);
       if (success) setFlag(!flag);
