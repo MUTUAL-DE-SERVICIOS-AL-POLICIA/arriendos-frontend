@@ -1,14 +1,16 @@
 
 import { useForm, useProductStore } from "@/hooks";
-import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid } from "@mui/material";
+import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton } from "@mui/material";
 import { FormEvent, useCallback, useState } from "react";
 import { FormProductModel, FormProductValidations, HourRangeModel, ProductModel, RateModel, RoomModel } from "@/models";
 import { ComponentAutoCompleteSelect, ComponentInput, ComponentInputSelect, ModalSelectComponent } from "@/components";
+import { History } from "@mui/icons-material";
 
 import days from '@/models/days.json';
 import { HourRangeTable } from "../hourRanges";
 import { PropertieTable } from "../properties";
 import { RateTable } from "../rates";
+import { PriceHistory } from ".";
 
 interface createProps {
   open: boolean;
@@ -101,6 +103,8 @@ export const CreateProduct = (props: createProps) => {
   const handleModalRate = useCallback((value: boolean) => {
     setModalRate(value);
   }, []);
+
+  const [openHistory, setOpenHistory] = useState(false);
   return (
     <>
       {/* MODAL PARA EL RANGO DE HORAS */}
@@ -230,6 +234,15 @@ export const CreateProduct = (props: createProps) => {
               loading ?
                 <CircularProgress color="success" size={30} /> :
                 <>
+                  {item != null && (
+                    <IconButton
+                      onClick={() => setOpenHistory(true)}
+                      title="Ver historial de precios"
+                      color="primary"
+                    >
+                      <History />
+                    </IconButton>
+                  )}
                   <Button onClick={handleClose}>Cancelar</Button>
                   <Button type="submit">
                     {item == null ? 'CREAR' : 'GUARDAR'}
@@ -239,6 +252,14 @@ export const CreateProduct = (props: createProps) => {
           </DialogActions>
         </form>
       </Dialog>
+      {item != null && (
+        <PriceHistory
+          open={openHistory}
+          handleClose={() => setOpenHistory(false)}
+          productId={item.id}
+          productName={`${item.room.name} - ${item.rate.name}`}
+        />
+      )}
     </>
   )
 }
