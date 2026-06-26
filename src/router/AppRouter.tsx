@@ -26,7 +26,7 @@ interface ProtectedRouteProps {
 const ProtectedRoute = ({ permission, children }: ProtectedRouteProps) => {
     const { hasPermission } = useAuthStore();
     if (!hasPermission(permission)) {
-        return <Navigate to={"/rentalCalendarView"} />;
+        return <Navigate to={"/dashboardView"} />;
     }
     return <>{children}</>;
 };

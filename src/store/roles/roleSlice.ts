@@ -6,17 +6,7 @@ export const roleSlice = createSlice({
         roles: null,
         flag: false,
     },
-    reducers: {
-        setRoles: (state, action) => {
-            state.roles = action.payload.roles;
-        },
-        refreshRoles: (state) => {
-            state.flag = !state.flag;
-        },
-        clearRoles: (state) => {
-            state.roles = null;
-        },
-    }
+    reducers: {}
 });
 
-export const { setRoles, refreshRoles, clearRoles } = roleSlice.actions;
+export default roleSlice.reducer;

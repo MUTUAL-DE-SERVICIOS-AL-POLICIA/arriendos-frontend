@@ -1,12 +1,9 @@
-import { useDispatch, useSelector } from 'react-redux';
 import { coffeApi } from '@/services';
 import Swal from 'sweetalert2';
 
 const api = coffeApi;
 
 export const useRoleStore = () => {
-  const { } = useSelector((state: any) => state.roles);
-  const dispatch = useDispatch();
 
   const getRoles = async (page: number, limit: number, search: string) => {
     try {

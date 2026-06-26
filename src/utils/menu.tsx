@@ -29,7 +29,8 @@ export const menu = () => {
         {
             path: "/reports",
             title: "Reportes",
-            icon: <Assessment />
+            icon: <Assessment />,
+            permission: "leases.view"
         }
     ]
 }

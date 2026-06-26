@@ -2,7 +2,7 @@ import { IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHe
 import { useEffect, useState } from "react";
 import { DeleteOutline, EditOutlined } from "@mui/icons-material";
 import { ComponentSearch, ComponentTablePagination, SkeletonComponent, DialogComponent } from "@/components";
-import { useRoleStore } from "@/hooks";
+import { useRoleStore, useAuthStore } from "@/hooks";
 
 interface tableProps {
   handleEdit: (role: any) => void;
@@ -17,6 +17,7 @@ export const RoleTable = (props: tableProps) => {
   const [limit, setLimit] = useState(limitInit);
   const [flag, setFlag] = useState(false);
   const { getRoles, deleteRemoveRole } = useRoleStore();
+  const { hasPermission } = useAuthStore();
 
   useEffect(() => {
     loadRoles();
@@ -98,12 +99,16 @@ export const RoleTable = (props: tableProps) => {
                   </TableCell>
                   <TableCell>
                     <Stack alignItems="center" direction="row">
-                      <IconButton sx={{ p: 0 }} onClick={() => handleEdit(role)} title="Editar rol">
-                        <EditOutlined color="warning" />
-                      </IconButton>
-                      <IconButton sx={{ p: 0 }} onClick={() => handleDelete(role.id)} title="Eliminar rol">
-                        <DeleteOutline color="error" />
-                      </IconButton>
+                      {hasPermission('users.change') && (
+                        <IconButton sx={{ p: 0 }} onClick={() => handleEdit(role)} title="Editar rol">
+                          <EditOutlined color="warning" />
+                        </IconButton>
+                      )}
+                      {hasPermission('users.delete') && (
+                        <IconButton sx={{ p: 0 }} onClick={() => handleDelete(role.id)} title="Eliminar rol">
+                          <DeleteOutline color="error" />
+                        </IconButton>
+                      )}
                     </Stack>
                   </TableCell>
                 </TableRow>

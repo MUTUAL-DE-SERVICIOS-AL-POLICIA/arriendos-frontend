@@ -21,7 +21,7 @@ import {
 } from "@/store";
 
 export const useAuthStore = () => {
-  const { status, user, permissions, role } = useSelector((state: any) => state.auth);
+  const { status, user, username, permissions, role } = useSelector((state: any) => state.auth);
   const dispatch = useDispatch();
 
   const startLogin = async ({ username, password }: { username: string, password: string }) => {
@@ -31,10 +31,12 @@ export const useAuthStore = () => {
       localStorage.setItem('refresh', data.refresh);
       const userName = `${data.first_name} ${data.last_name}`;
       localStorage.setItem('user', userName);
+      localStorage.setItem('username', data.username);
       localStorage.setItem('permissions', JSON.stringify(data.permissions || []));
       localStorage.setItem('role', data.role || '');
       dispatch(onLogin({
         user: userName,
+        username: data.username,
         permissions: data.permissions || [],
         role: data.role || null,
       }));
@@ -49,6 +51,7 @@ export const useAuthStore = () => {
     const token = localStorage.getItem('token');
     if (token) {
       const user = localStorage.getItem('user')
+      const username = localStorage.getItem('username') || '';
       const permissions = JSON.parse(localStorage.getItem('permissions') || '[]');
       const role = localStorage.getItem('role') || null;
       const decodedToken = decodeToken(token)
@@ -56,7 +59,7 @@ export const useAuthStore = () => {
         localStorage.clear();
         return dispatch(onLogout());
       } else {
-        return dispatch(onLogin({ user, permissions, role }))
+        return dispatch(onLogin({ user, username, permissions, role }))
       }
     } else {
       localStorage.clear();
@@ -85,10 +88,6 @@ export const useAuthStore = () => {
     return permissions.includes(permission);
   };
 
-  const hasAnyPermission = (perms: string[]): boolean => {
-    return perms.some(p => permissions.includes(p));
-  };
-
   const startLogout = () => {
     localStorage.clear();
     dispatch(clearCustomers())
@@ -111,12 +110,12 @@ export const useAuthStore = () => {
   return {
     status,
     user,
+    username,
     permissions,
     role,
     startLogin,
     checkAuthToken,
     startLogout,
     hasPermission,
-    hasAnyPermission,
   }
 }

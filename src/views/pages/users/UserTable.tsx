@@ -18,7 +18,7 @@ export const UserTable = (props: tableProps) => {
 
   /*DATA */
   const { users, flag, getUsers, toggleActivation } = useUserStore();
-  const { hasPermission, user: currentUser } = useAuthStore();
+  const { hasPermission, username: currentUserUsername } = useAuthStore();
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(limitInit)
@@ -43,7 +43,7 @@ export const UserTable = (props: tableProps) => {
 
   // Verificar si el usuario es el admin del sistema (username admin o sin rol asignado = is_superuser)
   const isSystemAdmin = (user: UserModel) => {
-    return user.username === 'admin' || user.role === null;
+    return user.username === 'admin';
   };
 
   return (
@@ -70,7 +70,7 @@ export const UserTable = (props: tableProps) => {
                 <SkeletonComponent
                   quantity={5}
                 /> : users.map((user: UserModel) => {
-                  const isCurrentUser = user.username === currentUser;
+                  const isCurrentUser = user.username === currentUserUsername;
                   const adminUser = isSystemAdmin(user);
                   return (
                     <TableRow key={user.id} sx={{ borderBottom: '2px solid #ccc' }}>
@@ -85,7 +85,7 @@ export const UserTable = (props: tableProps) => {
                             fontWeight: user.role ? 'bold' : 'normal',
                           }}
                         >
-                          {user.role?.name || 'Administrador'}
+                          {user.role?.name || 'Sin rol'}
                         </Typography>
                       </TableCell>
                       <TableCell>

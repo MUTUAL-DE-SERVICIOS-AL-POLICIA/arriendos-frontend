@@ -3,10 +3,12 @@ import { Add } from "@mui/icons-material";
 import { Stack, SvgIcon } from "@mui/material";
 import { useCallback, useState } from "react";
 import { RoleTable, CreateRole } from ".";
+import { useAuthStore } from "@/hooks";
 
 export const RolesView = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [itemEdit, setItemEdit] = useState<any>(null);
+  const { hasPermission } = useAuthStore();
 
   const handleDialog = useCallback((value: boolean) => {
     if (!value) setItemEdit(null);
@@ -16,11 +18,13 @@ export const RolesView = () => {
   return (
     <>
       <Stack direction="row" justifyContent="end">
-        <ComponentButton
-          text="Nuevo Rol"
-          onClick={() => handleDialog(true)}
-          startIcon={<SvgIcon fontSize="small"><Add /></SvgIcon>}
-        />
+        {hasPermission('users.add') && (
+          <ComponentButton
+            text="Nuevo Rol"
+            onClick={() => handleDialog(true)}
+            startIcon={<SvgIcon fontSize="small"><Add /></SvgIcon>}
+          />
+        )}
       </Stack>
 
       <RoleTable
