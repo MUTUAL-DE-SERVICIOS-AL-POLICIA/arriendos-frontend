@@ -47,7 +47,7 @@ export const useRoleStore = () => {
       Swal.fire('Rol creado correctamente', '', 'success');
       return true;
     } catch (error: any) {
-      const message = error.response?.data?.message || 'Error al crear el rol';
+      const message = error.response?.data?.detail || error.response?.data?.message || 'Error al crear el rol';
       Swal.fire('Error', message, 'error');
       return false;
     }
@@ -59,7 +59,7 @@ export const useRoleStore = () => {
       Swal.fire('Rol actualizado correctamente', '', 'success');
       return true;
     } catch (error: any) {
-      const message = error.response?.data?.message || 'Error al actualizar el rol';
+      const message = error.response?.data?.detail || error.response?.data?.message || 'Error al actualizar el rol';
       Swal.fire('Error', message, 'error');
       return false;
     }
@@ -71,7 +71,7 @@ export const useRoleStore = () => {
       Swal.fire('Rol eliminado correctamente', '', 'success');
       return true;
     } catch (error: any) {
-      const message = error.response?.data?.message || 'Error al eliminar el rol';
+      const message = error.response?.data?.detail || error.response?.data?.message || 'Error al eliminar el rol';
       Swal.fire('Error', message, 'error');
       return false;
     }
@@ -83,7 +83,7 @@ export const useRoleStore = () => {
       Swal.fire('Rol asignado correctamente', '', 'success');
       return true;
     } catch (error: any) {
-      const message = error.response?.data?.message || 'Error al asignar el rol';
+      const message = error.response?.data?.detail || error.response?.data?.message || 'Error al asignar el rol';
       Swal.fire('Error', message, 'error');
       return false;
     }
@@ -104,7 +104,7 @@ export const useRoleStore = () => {
       Swal.fire('Rol removido del usuario', '', 'success');
       return true;
     } catch (error: any) {
-      const message = error.response?.data?.message || 'Error al remover el rol';
+      const message = error.response?.data?.detail || error.response?.data?.message || 'Error al remover el rol';
       Swal.fire('Error', message, 'error');
       return false;
     }
