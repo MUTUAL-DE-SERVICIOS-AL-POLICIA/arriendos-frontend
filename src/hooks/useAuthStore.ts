@@ -82,12 +82,10 @@ export const useAuthStore = () => {
   };
 
   const hasPermission = (permission: string): boolean => {
-    if (role === 'Administrador') return true;
     return permissions.includes(permission);
   };
 
   const hasAnyPermission = (perms: string[]): boolean => {
-    if (role === 'Administrador') return true;
     return perms.some(p => permissions.includes(p));
   };
 
