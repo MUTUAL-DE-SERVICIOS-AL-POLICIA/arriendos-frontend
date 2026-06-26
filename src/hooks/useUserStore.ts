@@ -80,7 +80,7 @@ export const useUserStore = () => {
         )
       } catch (error: any) {
         if (error.response && error.response.status == 400) {
-          const message = error.response.data.error
+          const message = error.response.data.message || error.response.data.error
           Swal.fire('Error', message, 'error')
         } else if (error.response && error.response.status == 403) {
           const message = error.response.data.detail

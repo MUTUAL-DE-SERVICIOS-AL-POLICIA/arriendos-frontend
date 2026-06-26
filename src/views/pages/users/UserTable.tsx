@@ -18,7 +18,7 @@ export const UserTable = (props: tableProps) => {
 
   /*DATA */
   const { users, flag, getUsers, toggleActivation } = useUserStore();
-  const { hasPermission } = useAuthStore();
+  const { hasPermission, user: currentUser } = useAuthStore();
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(limitInit)
@@ -39,6 +39,11 @@ export const UserTable = (props: tableProps) => {
     setOpenAssignDialog(false);
     setSelectedUser(null);
     getUsers(page, limit);
+  };
+
+  // Verificar si el usuario es el admin del sistema (username admin o sin rol asignado = is_superuser)
+  const isSystemAdmin = (user: UserModel) => {
+    return user.username === 'admin' || user.role === null;
   };
 
   return (
@@ -65,6 +70,8 @@ export const UserTable = (props: tableProps) => {
                 <SkeletonComponent
                   quantity={5}
                 /> : users.map((user: UserModel) => {
+                  const isCurrentUser = user.username === currentUser;
+                  const adminUser = isSystemAdmin(user);
                   return (
                     <TableRow key={user.id} sx={{ borderBottom: '2px solid #ccc' }}>
                       <TableCell>{user.username}</TableCell>
@@ -78,12 +85,12 @@ export const UserTable = (props: tableProps) => {
                             fontWeight: user.role ? 'bold' : 'normal',
                           }}
                         >
-                          {user.role?.name || 'Sin rol'}
+                          {user.role?.name || 'Administrador'}
                         </Typography>
                       </TableCell>
                       <TableCell>
                         <Stack direction="row" spacing={1}>
-                          {hasPermission('users.change') && (
+                          {hasPermission('users.change') && !adminUser && (
                             <Tooltip title="Asignar Rol">
                               <IconButton
                                 size="small"
@@ -94,12 +101,19 @@ export const UserTable = (props: tableProps) => {
                               </IconButton>
                             </Tooltip>
                           )}
-                          <Switch
-                            checked={user.is_active}
-                            onChange={() => toggleActivation(user)}
-                            color="success"
-                            size="small"
-                          />
+                          {hasPermission('users.delete') && (
+                            <Tooltip title={adminUser ? "No se puede desactivar al admin" : isCurrentUser ? "No puedes desactivarte a ti mismo" : ""}>
+                              <span>
+                                <Switch
+                                  checked={user.is_active}
+                                  onChange={() => toggleActivation(user)}
+                                  color="success"
+                                  size="small"
+                                  disabled={adminUser || isCurrentUser}
+                                />
+                              </span>
+                            </Tooltip>
+                          )}
                         </Stack>
                       </TableCell>
                     </TableRow>
