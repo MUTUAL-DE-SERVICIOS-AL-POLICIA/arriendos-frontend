@@ -1,3 +1,26 @@
+/**
+ * Configuración del menú de ajustes/configuración.
+ *
+ * Define los elementos del menú de ajustes agrupados por categorías.
+ * Cada categoría y elemento tiene un permiso RBAC requerido.
+ *
+ * Grupos y permisos:
+ * - Ajustes de productos:
+ *   - Rangos de horas: products.view
+ *   - Tarifas: products.view
+ *   - Requisitos: requirements.view
+ * - Ajustes de Clientes:
+ *   - Tipos de Clientes: customers.view
+ * - Gestión de Usuarios:
+ *   - Usuarios: users.view
+ *   - Roles: users.view
+ * - Gestión de Inmuebles:
+ *   - Inmuebles: rooms.view
+ *
+ * Autor: Dilan Torrez
+ * Fecha: 2026
+ */
+
 import { DocumentScanner, Home, HourglassBottom, Person, Security } from "@mui/icons-material"
 
 export const menuSettings = () => {

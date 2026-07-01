@@ -1,3 +1,26 @@
+/**
+ * Tabla de gestión de roles.
+ *
+ * Muestra la lista de roles con sus permisos, cantidad de usuarios
+ * y estado. Permite editar y eliminar roles.
+ *
+ * Columnas mostradas:
+ * - Cod.: ID del rol
+ * - Nombre: Nombre del rol
+ * - Descripción: Descripción del rol
+ * - Módulos: Módulos con permisos asignados
+ * - Usuarios: Cantidad de usuarios con este rol
+ * - Estado: Activo/Inactivo
+ * - Acciones: Botones de editar/eliminar
+ *
+ * Permisos requeridos:
+ * - users.change: Para ver botón de editar
+ * - users.delete: Para ver botón de eliminar
+ *
+ * Autor: Dilan Torrez
+ * Fecha: 2026
+ */
+
 import { IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { DeleteOutline, EditOutlined } from "@mui/icons-material";

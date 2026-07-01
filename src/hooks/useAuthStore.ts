@@ -1,3 +1,25 @@
+/**
+ * Hook personalizado para gestión de autenticación.
+ *
+ * Este hook proporciona funcionalidades para:
+ * - Iniciar sesión (startLogin)
+ * - Cerrar sesión (startLogout)
+ * - Verificar token de autenticación (checkAuthToken)
+ * - Verificar permisos del usuario (hasPermission)
+ *
+ * Flujo de autenticación:
+ * 1. startLogin envía credenciales al backend
+ * 2. Backend retorna tokens JWT + datos del usuario + permisos RBAC
+ * 3. Datos se almacenan en localStorage y Redux
+ * 4. hasPermission verifica si el usuario tiene un permiso específico
+ *
+ * Formato de permiso: "modulo.accion"
+ * Ejemplo: "products.view", "leases.add"
+ *
+ * Autor: Dilan Torrez
+ * Fecha: 2026
+ */
+
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import { coffeApi } from "@/services";
@@ -24,6 +46,29 @@ export const useAuthStore = () => {
   const { status, user, username, permissions, role } = useSelector((state: any) => state.auth);
   const dispatch = useDispatch();
 
+  /**
+   * Inicia sesión del usuario.
+   *
+   * Envía credenciales al backend y almacena:
+   * - Tokens JWT (access y refresh) en localStorage
+   * - Datos del usuario en localStorage y Redux
+   * - Permisos RBAC del usuario
+   *
+   * @param username - Nombre de usuario
+   * @param password - Contraseña del usuario
+   *
+   * Respuesta exitosa del backend:
+   * {
+   *   access: "token_jwt...",
+   *   refresh: "token_refresh...",
+   *   user_id: 1,
+   *   username: "admin",
+   *   first_name: "Administrador",
+   *   last_name: "Sistema",
+   *   role: "Operador",
+   *   permissions: ["products.view", ...]
+   * }
+   */
   const startLogin = async ({ username, password }: { username: string, password: string }) => {
     try {
       const { data } = await coffeApi.post('/login/auth/', { username, password });
@@ -84,6 +129,20 @@ export const useAuthStore = () => {
     }
   };
 
+  /**
+   * Verifica si el usuario tiene un permiso específico.
+   *
+   * Utilizada en componentes para mostrar/ocultar elementos
+   * basándose en los permisos del usuario.
+   *
+   * @param permission - Permiso a verificar en formato "modulo.accion"
+   * @returns true si tiene el permiso, false si no
+   *
+   * Ejemplos:
+   * hasPermission('products.view') - ¿Puede ver productos?
+   * hasPermission('leases.add') - ¿Puede crear arriendos?
+   * hasPermission('users.delete') - ¿Puede eliminar usuarios?
+   */
   const hasPermission = (permission: string): boolean => {
     return permissions.includes(permission);
   };

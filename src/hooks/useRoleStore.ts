@@ -1,3 +1,24 @@
+/**
+ * Hook personalizado para gestión de roles (RBAC).
+ *
+ * Este hook proporciona funcionalidades para:
+ * - Obtener roles del sistema (getRoles)
+ * - Obtener módulos disponibles (getModules)
+ * - Obtener permisos disponibles (getPermissions)
+ * - Crear roles (postCreateRole)
+ * - Actualizar roles (patchUpdateRole)
+ * - Eliminar roles (deleteRemoveRole)
+ * - Asignar roles a usuarios (assignRole)
+ * - Obtener asignaciones de roles (getUserRoles)
+ * - Remover roles de usuarios (removeUserRole)
+ *
+ * Formato de permiso: "modulo.accion"
+ * Ejemplo: "products.view", "leases.add"
+ *
+ * Autor: Dilan Torrez
+ * Fecha: 2026
+ */
+
 import { coffeApi } from '@/services';
 import Swal from 'sweetalert2';
 

@@ -1,3 +1,30 @@
+/**
+ * Componente para crear o editar roles.
+ *
+ * Formulario modal que permite:
+ * - Crear un nuevo rol con permisos
+ * - Editar un rol existente
+ *
+ * Características:
+ * - Muestra todos los módulos disponibles
+ * - Permite seleccionar permisos por módulo (Ver, Crear, Editar, Eliminar)
+ * - Valida que el nombre sea obligatorio
+ * - Muestra estado activo/inactivo
+ *
+ * Props:
+ * - open: Controla si el diálogo está abierto
+ * - handleClose: Función para cerrar el diálogo
+ * - item: Rol a editar (null para crear nuevo)
+ *
+ * Estructura de permisos:
+ * {
+ *   moduleId: ["view", "add", "change", "delete"]
+ * }
+ *
+ * Autor: Dilan Torrez
+ * Fecha: 2026
+ */
+
 import { useRoleStore } from "@/hooks";
 import {
   Button, Checkbox, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle,

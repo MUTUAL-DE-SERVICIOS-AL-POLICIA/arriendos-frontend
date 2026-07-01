@@ -1,3 +1,34 @@
+/**
+ * Router principal de la aplicación.
+ *
+ * Este componente define todas las rutas de la aplicación y
+ * protege las rutas que requieren permisos RBAC.
+ *
+ * Flujo de autenticación:
+ * 1. Si el usuario no está autenticado, muestra AuthPage (login)
+ * 2. Si está autenticado, muestra el Layout con las rutas
+ * 3. Cada ruta protegida valida permisos con ProtectedRoute
+ *
+ * Rutas protegidas y permisos requeridos:
+ * - /propertiesView → rooms.view (Ver inmuebles)
+ * - /productsView → products.view (Ver productos)
+ * - /rentalCalendarView → leases.view (Ver arriendos)
+ * - /rentalView → leases.view (Ver arriendos)
+ * - /hourRangesView → products.view (Ver rangos de horas)
+ * - /ratesView → products.view (Ver tarifas)
+ * - /requirementsView → requirements.view (Ver requisitos)
+ * - /customersView → customers.view (Ver clientes)
+ * - /typeCustomersView → customers.view (Ver tipos de cliente)
+ * - /usersView → users.view (Ver usuarios)
+ * - /rolesView → users.view (Ver roles)
+ * - /reports → leases.view (Ver reportes)
+ *
+ * Si el usuario no tiene permiso, redirige a /dashboardView
+ *
+ * Autor: Dilan Torrez
+ * Fecha: 2026
+ */
+
 import { useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useAuthStore } from '@/hooks';
@@ -18,6 +49,15 @@ import { ProductsView } from '@/views/pages/products';
 import { ReportView } from '@/views/pages/reports'
 import { RolesView } from '@/views/pages/roles'
 
+/**
+ * Componente para rutas protegidas con RBAC.
+ *
+ * Valida que el usuario tenga el permiso especificado.
+ * Si no tiene permiso, redirige a /dashboardView.
+ *
+ * @param permission - Permiso requerido en formato "modulo.accion"
+ * @param children - Componentes hijos a renderizar si tiene permiso
+ */
 interface ProtectedRouteProps {
     permission: string;
     children: React.ReactNode;

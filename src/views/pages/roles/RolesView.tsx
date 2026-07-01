@@ -1,3 +1,20 @@
+/**
+ * Vista principal de gestión de roles.
+ *
+ * Muestra la lista de roles del sistema y permite:
+ * - Crear nuevos roles (requiere permiso users.add)
+ * - Editar roles existentes (requiere permiso users.change)
+ * - Eliminar roles (requiere permiso users.delete)
+ *
+ * Permisos requeridos:
+ * - users.add: Para ver el botón "Nuevo Rol"
+ * - users.change: Para ver botones de edición en RoleTable
+ * - users.delete: Para ver botones de eliminación en RoleTable
+ *
+ * Autor: Dilan Torrez
+ * Fecha: 2026
+ */
+
 import { ComponentButton } from "@/components";
 import { Add } from "@mui/icons-material";
 import { Stack, SvgIcon } from "@mui/material";

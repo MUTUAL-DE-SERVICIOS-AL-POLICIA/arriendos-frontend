@@ -1,3 +1,28 @@
+/**
+ * Tabla de gestión de usuarios.
+ *
+ * Muestra la lista de usuarios del sistema con su rol asignado.
+ * Permite:
+ * - Asignar roles a usuarios (requiere permiso users.change)
+ * - Activar/desactivar usuarios (requiere permiso users.delete)
+ *
+ * Columnas mostradas:
+ * - Cuenta: Nombre de usuario
+ * - Nombre: Nombre del usuario
+ * - Apellido: Apellido del usuario
+ * - Correo: Email del usuario
+ * - Rol: Rol asignado (o "Sin rol")
+ * - Acciones: Botones de asignar rol y activar/desactivar
+ *
+ * Restricciones:
+ * - No se puede desactivar al usuario admin
+ * - No se puede desactivar a uno mismo
+ * - Solo usuarios con permiso users.change pueden asignar roles
+ * - Solo usuarios con permiso users.delete pueden activar/desactivar
+ *
+ * Autor: Dilan Torrez
+ * Fecha: 2026
+ */
 
 import { Stack, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, IconButton, Tooltip } from '@mui/material';
 import { /*ComponentSearch, */ ComponentTablePagination, SkeletonComponent } from '@/components';

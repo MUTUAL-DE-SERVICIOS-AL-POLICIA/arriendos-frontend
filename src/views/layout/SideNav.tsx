@@ -1,3 +1,26 @@
+/**
+ * Componente de navegación lateral (SideNav).
+ *
+ * Muestra el menú lateral de navegación de la aplicación.
+ * Los elementos del menú se filtran según los permisos del usuario.
+ *
+ * Características:
+ * - Diseño responsivo (permanent drawer en desktop, temporary en móvil)
+ * - Filtra elementos del menú según permisos RBAC
+ * - Logo de la institución
+ * - Efecto de expansión al pasar el mouse
+ *
+ * Elementos del menú (filtrados por permisos):
+ * - Calendario: requires leases.view
+ * - Clientes: requires customers.view
+ * - Alquileres: requires leases.view
+ * - Productos: requires products.view
+ * - Reportes: requires leases.view
+ *
+ * Autor: Dilan Torrez
+ * Fecha: 2026
+ */
+
 import { styled, Theme, CSSObject } from '@mui/material/styles';
 import MuiDrawer from '@mui/material/Drawer';
 import { useState } from 'react';
@@ -72,6 +95,10 @@ export const SideNav = (props: navProps) => {
   const lgUp = useMediaQuery(theme.breakpoints.up('md'));
   const { hasPermission } = useAuthStore();
 
+  /**
+   * Filtra el menú según los permisos del usuario.
+   * Si un elemento no tiene permiso, no se muestra.
+   */
   const filteredMenu = menu().filter((item) => {
     if (!item.permission) return true;
     return hasPermission(item.permission);

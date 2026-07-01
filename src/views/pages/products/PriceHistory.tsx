@@ -1,7 +1,30 @@
+/**
+ * Componente de Historial de Precios.
+ *
+ * Muestra el historial completo de precios de un producto en un diálogo modal.
+ * Permite visualizar:
+ * - Precio actual (resaltado en verde)
+ * - Precios históricos
+ * - Fechas de vigencia (desde/hasta)
+ * - Estado de cada precio (Activo/Inactivo)
+ *
+ * Props:
+ * - open: Controla si el diálogo está abierto
+ * - handleClose: Función para cerrar el diálogo
+ * - productId: ID del producto a consultar
+ * - productName: Nombre del producto para mostrar en el título
+ *
+ * Autor: Dilan Torrez
+ * Fecha: 2026
+ */
+
 import { useProductStore } from "@/hooks";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
+/**
+ * Props del componente PriceHistory.
+ */
 interface PriceHistoryProps {
   open: boolean;
   handleClose: () => void;
@@ -9,6 +32,9 @@ interface PriceHistoryProps {
   productName: string;
 }
 
+/**
+ * Interfaz para un registro de precio.
+ */
 interface PriceRecord {
   id: number;
   mount: number;

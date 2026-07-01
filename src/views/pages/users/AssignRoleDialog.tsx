@@ -1,3 +1,26 @@
+/**
+ * Diálogo para asignar roles a usuarios.
+ *
+ * Permite:
+ * - Seleccionar un rol de la lista de roles disponibles
+ * - Asignar el rol al usuario seleccionado
+ * - Quitar el rol actual del usuario
+ *
+ * Características:
+ * - Muestra el nombre del usuario y su rol actual
+ * - Dropdown con todos los roles disponibles
+ * - Botón "Quitar Rol" si el usuario tiene rol asignado
+ * - Valida que no se pueda asignar rol a uno mismo
+ *
+ * Props:
+ * - open: Controla si el diálogo está abierto
+ * - handleClose: Función para cerrar el diálogo
+ * - user: Usuario seleccionado para asignar rol
+ *
+ * Autor: Dilan Torrez
+ * Fecha: 2026
+ */
+
 import { useRoleStore } from "@/hooks";
 import {
     Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle,
