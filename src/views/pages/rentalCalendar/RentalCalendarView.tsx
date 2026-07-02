@@ -33,7 +33,7 @@ export const RentalCalendarView = () => {
   const lgUp = useMediaQuery(theme.breakpoints.up('sm'));
   const [openNav, setOpenNav] = useState(false);
   const { room, customer, onValueChange } = useForm(formFields);
-  const { postLeakedProduct, clearLakedProduct } = useProductStore();
+  const { postLeakedProduct, clearLakedProduct, flag } = useProductStore();
   const { getRentals } = useRentalStore();
   const [daySelect, setDaySelect] = useState<Date | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -52,7 +52,7 @@ export const RentalCalendarView = () => {
     } else {
       clearLakedProduct()
     }
-  }, [daySelect, room, customer])
+  }, [daySelect, room, customer, flag])
 
   const [screenHeight, setScreenHeight] = useState(window.innerHeight);
 
