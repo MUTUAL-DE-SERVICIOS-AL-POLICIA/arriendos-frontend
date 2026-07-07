@@ -14,7 +14,7 @@ export const useUserStore = () => {
   const getUsers = async (page: number, limit: number) => {
     try {
       let filter: any = { params: { page: page } };
-      if (limit != -1) filter.params.limit = limit;
+      filter.params.limit = limit;
       const { data } = await api.get(`/users/`, filter)
       dispatch(setUsers({ users: data.users }));
       return data.total

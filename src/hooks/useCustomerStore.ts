@@ -14,7 +14,7 @@ export const useCustomerStore = () => {
 
   const getCustomers = async (page: number, limit: number, search: string) => {
     let filter: any = { params: { page: page } };
-    if (limit != -1) filter.params.limit = limit;
+    filter.params.limit = limit;
     if (search !== '') filter.params.search = search;
     const { data } = await api.get(`/customers/`, filter);
     dispatch(setCustomers({ customers: data.customers }));

@@ -29,7 +29,7 @@ export const useRoleStore = () => {
   const getRoles = async (page: number, limit: number, search: string) => {
     try {
       let filter: any = { params: { page: page } };
-      if (limit != -1) filter.params.limit = limit;
+      filter.params.limit = limit;
       if (search !== '') filter.params.search = search;
       const { data } = await api.get('/roles/', filter);
       return { roles: data.roles, total: data.total };

@@ -13,7 +13,7 @@ export const useRateStore = () => {
   const getRates = async (page: number, limit: number) => {
     try {
       let filter: any = { params: { page: page } };
-      if (limit != -1) filter.params.limit = limit;
+      filter.params.limit = limit;
       const { data } = await api.get(`/requirements/allrates/`, filter);
       dispatch(setRates({ rates: data.rates }));
       return data.total;

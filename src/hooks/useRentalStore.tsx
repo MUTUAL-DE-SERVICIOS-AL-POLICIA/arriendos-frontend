@@ -241,7 +241,7 @@ export const useRentalStore = () => {
   const getAllRentals = async (page: number, limit: number, handleDialog: Function, search: string|null = null) => {
     try {
       let filter: any = { params: { page: page, search }}
-      if(limit != -1) filter.params.limit = limit
+      filter.params.limit = limit
       const { data } = await api.get('/leases/rental_list/', filter)
       const rentals: any = []
       data.rentals.forEach((element: any) => {

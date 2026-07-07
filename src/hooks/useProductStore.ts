@@ -30,7 +30,7 @@ export const useProductStore = () => {
   const getProducts = async (page: number, limit: number, search: string, filters?: { rate_id?: string, property_id?: string, room_id?: string, hour_range_id?: string, day?: string }) => {
     try {
       let filter: any = { params: { page: page } };
-      if (limit != -1) filter.params.limit = limit;
+      filter.params.limit = limit;
       if (search !== '') filter.params.search = search;
       if (filters?.rate_id) filter.params.rate_id = filters.rate_id;
       if (filters?.property_id) filter.params.property_id = filters.property_id;
