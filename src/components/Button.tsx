@@ -2,7 +2,7 @@ import LoadingButton from '@mui/lab/LoadingButton'
 import { memo } from 'react'
 
 export const ComponentButton = memo((
-    { type, text, onClick, startIcon, endIcon, disable, margin, height, loading = false, variant = "contained",
+    { type, text, onClick, startIcon, endIcon, disable, margin, height, loading, variant = "contained",
     sx={fontWeight: 'bold',
          display: 'flex',
          margin: { margin },
@@ -11,7 +11,7 @@ export const ComponentButton = memo((
     : { type?: any, text: string, onClick?: any, width?: any, startIcon?: any, margin?: any, height?: any, disable?: boolean, loading?: boolean, variant?: any, endIcon?: any, sx?: object, color?: any }) => {
     return (
         <LoadingButton
-            loading={loading}
+            loading={loading || undefined}
             type={type}
             className='mt-2'
             variant={variant}
