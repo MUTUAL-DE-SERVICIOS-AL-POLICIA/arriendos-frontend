@@ -46,7 +46,7 @@ import { RentalView } from '@/views/pages/rental';
 import { HourRangeView } from '@/views/pages/hourRanges';
 import { RequirementsView } from '@/views/pages/requirements';
 import { ProductsView } from '@/views/pages/products';
-import { ReportView } from '@/views/pages/reports'
+// import { ReportView } from '@/views/pages/reports' // oculto, integrado en Alquileres
 import { RolesView } from '@/views/pages/roles'
 
 /**
@@ -152,12 +152,12 @@ export const AppRouter = () => {
                             <RolesView />
                         </ProtectedRoute>
                     } />
-                    {/* reportes */}
-                    <Route path="/reports" element={
+                    {/* reportes - oculto, integrado en Alquileres */}
+                    {/* <Route path="/reports" element={
                         <ProtectedRoute permission="leases.view">
                             <ReportView />
                         </ProtectedRoute>
-                    } />
+                    } /> */}
                     {/*  */}
                     <Route path="/*" element={<Navigate to={"/rentalCalendarView"} />} />
                 </Routes>

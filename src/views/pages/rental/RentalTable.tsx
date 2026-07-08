@@ -1,9 +1,12 @@
 import { ComponentTablePagination } from "@/components";
-import { Box, MenuItem, Stack, TextField } from "@mui/material";
+import { Box, Button, CircularProgress, MenuItem, Stack, TextField, Tooltip } from "@mui/material";
+import { Download } from "@mui/icons-material";
 import { ComponentTableContent } from "@/components/TableContent";
 import { useEffect, useState } from "react";
 import { useRentalStore } from "@/hooks";
+import { useReportStore } from "@/hooks/useReportStore";
 import { EditRental } from ".";
+import dayjs from 'dayjs';
 
 interface tableProps {
   limitInit?: number;
@@ -26,8 +29,10 @@ export const RentalTable = (props: tableProps) => {
   const [filters, setFilters] = useState({ state_id: '', date_from: '', date_to: '', search_customer: '' });
 
   const { allRentals = [], allRentalsWithProducts = [], getAllRentals, getRentalFilterOptions} = useRentalStore()
+  const { getReportXlsx } = useReportStore()
   const [ open, setOpen ] = useState(false)
   const [ rentalSelected, setRentalSelected ] = useState(null)
+  const [ downloading, setDownloading ] = useState(false)
 
   const handleDialog = (value: boolean, rental: any) => {
     setOpen(value)
@@ -60,6 +65,25 @@ export const RentalTable = (props: tableProps) => {
   const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement | HTMLInputElement>, filterType: string) => {
     setFilters(prev => ({ ...prev, [filterType]: event.target.value }));
     setPage(0);
+  };
+
+  const canDownload = filters.state_id && filters.date_from && filters.date_to;
+
+  const handleDownloadReport = async () => {
+    if (!canDownload) return;
+    setDownloading(true);
+    try {
+      const start_date = dayjs(filters.date_from).startOf('day').hour(0).minute(0).second(0).toISOString();
+      const end_date = dayjs(filters.date_to).endOf('day').hour(23).minute(59).second(59).toISOString();
+      await getReportXlsx({
+        get: (key: string) => {
+          const map: Record<string, string> = { start_date, end_date, state: filters.state_id };
+          return map[key];
+        }
+      });
+    } finally {
+      setDownloading(false);
+    }
   };
 
   return (
@@ -108,6 +132,20 @@ export const RentalTable = (props: tableProps) => {
             InputLabelProps={{ shrink: true }}
             sx={{ minWidth: 160, '& .MuiOutlinedInput-root': { borderRadius: '10px' } }}
           />
+          <Tooltip title={!canDownload ? "Selecciona estado y rango de fechas para descargar" : ""}>
+            <span>
+              <Button
+                size="small"
+                variant="contained"
+                startIcon={downloading ? <CircularProgress size={16} color="inherit" /> : <Download />}
+                disabled={!canDownload || downloading}
+                onClick={handleDownloadReport}
+                sx={{ height: 40, borderRadius: '10px', textTransform: 'none' }}
+              >
+                Descargar reporte
+              </Button>
+            </span>
+          </Tooltip>
         </Box>
         { allRentals.length !== 0 && allRentalsWithProducts.length !== 0 && <ComponentTableContent
           headers={['N°', 'N° trámite', 'Cliente', 'Estado', 'Fecha', 'Acción' ]}

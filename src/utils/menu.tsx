@@ -16,7 +16,10 @@
  * Fecha: 2026
  */
 
+import { Bento, CalendarMonth, Group, Receipt } from "@mui/icons-material"
+/*
 import { Assessment, Bento, CalendarMonth, Group, Receipt } from "@mui/icons-material"
+*/
 
 export const menu = () => {
     return [
@@ -44,11 +47,12 @@ export const menu = () => {
             icon: <Bento />,
             permission: "products.view"
         },
-        {
-            path: "/reports",
-            title: "Reportes",
-            icon: <Assessment />,
-            permission: "leases.view"
-        }
+        // Reportes oculto - se integra en Alquileres
+        // {
+        //     path: "/reports",
+        //     title: "Reportes",
+        //     icon: <Assessment />,
+        //     permission: "leases.view"
+        // }
     ]
 }
