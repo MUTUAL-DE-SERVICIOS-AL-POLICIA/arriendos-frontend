@@ -62,7 +62,7 @@ export const useProductStore = () => {
         days: data.days || [],
       };
     } catch (error: any) {
-      return { rates: [], properties: [], hour_ranges: [], days: [] };
+      return { rates: [], properties: [], rooms: [], hour_ranges: [], days: [] };
     }
   }
 

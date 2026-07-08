@@ -238,10 +238,13 @@ export const useRentalStore = () => {
     dispatch(setDaySelected({ daySelected: day }))
   }
 
-  const getAllRentals = async (page: number, limit: number, handleDialog: Function, search: string|null = null) => {
+  const getAllRentals = async (page: number, limit: number, handleDialog: Function, search: string|null = null, filters?: { state_id?: string, date_from?: string, date_to?: string }) => {
     try {
       let filter: any = { params: { page: page, search }}
       filter.params.limit = limit
+      if (filters?.state_id) filter.params.state_id = filters.state_id;
+      if (filters?.date_from) filter.params.date_from = filters.date_from;
+      if (filters?.date_to) filter.params.date_to = filters.date_to;
       const { data } = await api.get('/leases/rental_list/', filter)
       const rentals: any = []
       data.rentals.forEach((element: any) => {
@@ -307,6 +310,17 @@ export const useRentalStore = () => {
     }
   }
 
+  const getRentalFilterOptions = async () => {
+    try {
+      const { data } = await api.get(`/leases/rental_filter_options/`);
+      return {
+        states: data.states || [],
+      };
+    } catch (error: any) {
+      return { states: [] };
+    }
+  }
+
   return {
     //* Propiedades
     rentals,
@@ -329,6 +343,7 @@ export const useRentalStore = () => {
     postPrintDeliveryForm,
     getPrintReturnWarrantyForm,
     saveDaySelected,
-    getAllRentals
+    getAllRentals,
+    getRentalFilterOptions
   }
 }

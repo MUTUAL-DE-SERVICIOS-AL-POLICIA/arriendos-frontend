@@ -47,12 +47,12 @@ export const rentalSlice = createSlice({
     },
     setUpdateRental: (state, action) => {
       state.rentals = [...state.rentals!.map((rental: any) => {
-        if (rental.product_id == action.payload.productId) {
+        if (rental.rental == action.payload.productId) {
           return {
             ...rental,
-            ...action.payload,
-            start_time: getDateJSON(action.payload.start),
-            end_time: getDateJSON(action.payload.end),
+            name_state: action.payload.name_state ?? rental.name_state,
+            start: action.payload.start ? getDateJSON(action.payload.start) : rental.start,
+            end: action.payload.end ? getDateJSON(action.payload.end) : rental.end,
           }
         }
         return rental;
@@ -60,36 +60,39 @@ export const rentalSlice = createSlice({
     },
     setUpdateGroupRental: (state, action) => {
       state.groupRentals = [...state.groupRentals!.map((rental: any) => {
-        if (rental.product_id == action.payload.productId) {
+        if (rental.rental == action.payload.productId) {
           return {
             ...rental,
-            ...action.payload,
-            start_time: getDateJSON(action.payload.start),
-            end_time: getDateJSON(action.payload.end),
+            name_state: action.payload.name_state ?? rental.name_state,
+            start: action.payload.start ? getDateJSON(action.payload.start) : rental.start,
+            end: action.payload.end ? getDateJSON(action.payload.end) : rental.end,
           }
         }
         return rental;
       })]
     },
     setUpdateRentalSelected: (state, action) => {
-      state.rentalInformation = {
-        ...state.rentalInformation!,
-        products: state.rentalInformation.products.map((rental: any) => {
-          return {
-            ...rental,
-            ...action.payload,
-            start_time: getDateJSON(action.payload.start),
-            end_time: getDateJSON(action.payload.end),
-          }
-        })
+      if (state.rentalInformation) {
+        state.rentalInformation = {
+          ...state.rentalInformation,
+          products: state.rentalInformation.products.map((rental: any) => {
+            return {
+              ...rental,
+              name_state: action.payload.name_state ?? rental.name_state,
+              start_time: action.payload.start ? getDateJSON(action.payload.start) : rental.start_time,
+              end_time: action.payload.end ? getDateJSON(action.payload.end) : rental.end_time,
+            }
+          })
+        }
       }
-      state.rentalSelected = {
-        ...state.rentalSelected!,
-        ...action.payload,
-        start_time: getDateJSON(action.payload.start),
-        end_time: getDateJSON(action.payload.end),
+      if (state.rentalSelected) {
+        state.rentalSelected = {
+          ...state.rentalSelected,
+          name_state: action.payload.name_state ?? state.rentalSelected.name_state,
+          start: action.payload.start ? getDateJSON(action.payload.start) : state.rentalSelected.start,
+          end: action.payload.end ? getDateJSON(action.payload.end) : state.rentalSelected.end,
+        }
       }
-
     },
     setDaySelected: (state, action) => {
       state.daySelected = action.payload.daySelected

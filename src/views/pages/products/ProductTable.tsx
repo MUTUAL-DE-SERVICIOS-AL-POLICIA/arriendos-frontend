@@ -1,4 +1,4 @@
-import { IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Box, Chip } from "@mui/material";
+import { IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, MenuItem, SelectChangeEvent, Box, Chip, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { DeleteOutline, EditOutlined, History } from "@mui/icons-material";
 import { ComponentTablePagination, SkeletonComponent } from "@/components";
@@ -85,82 +85,83 @@ export const ProductTable = (props: tableProps) => {
 
   return (
     <Stack>
-      <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap' }}>
-        <FormControl size="small" sx={{ minWidth: 150 }}>
-          <InputLabel>Tarifa</InputLabel>
-          <Select
-            value={filters.rate_id}
-            label="Tarifa"
-            onChange={(e) => handleFilterChange(e, 'rate_id')}
-          >
-            <MenuItem value="">Todas</MenuItem>
-            {filterOptions.rates.map((rate) => (
-              <MenuItem key={rate.id} value={rate.id}>{rate.name}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl size="small" sx={{ minWidth: 150 }}>
-          <InputLabel>Inmueble</InputLabel>
-          <Select
-            value={filters.property_id}
-            label="Inmueble"
-            onChange={(e) => handleFilterChange(e, 'property_id')}
-          >
-            <MenuItem value="">Todos</MenuItem>
-            {filterOptions.properties.map((property) => (
-              <MenuItem key={property.id} value={property.id}>{property.name}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl size="small" sx={{ minWidth: 150 }}>
-          <InputLabel>Ambiente</InputLabel>
-          <Select
-            value={filters.room_id}
-            label="Ambiente"
-            onChange={(e) => handleFilterChange(e, 'room_id')}
-          >
-            <MenuItem value="">Todos</MenuItem>
-            {(filterOptions.rooms || [])
-              .filter(room => !filters.property_id || room.property_id === Number(filters.property_id))
-              .map((room) => (
-              <MenuItem key={room.id} value={room.id}>{room.name}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl size="small" sx={{ minWidth: 150 }}>
-          <InputLabel>Rango Hrs</InputLabel>
-          <Select
-            value={filters.hour_range_id}
-            label="Rango Hrs"
-            onChange={(e) => handleFilterChange(e, 'hour_range_id')}
-          >
-            <MenuItem value="">Todos</MenuItem>
-            {filterOptions.hour_ranges.map((hr) => (
-              <MenuItem key={hr.id} value={hr.id}>{hr.time} Hrs</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl size="small" sx={{ minWidth: 150 }}>
-          <InputLabel>Días</InputLabel>
-          <Select
-            multiple
-            value={filters.day}
-            label="Días"
-            onChange={(e) => handleFilterChange(e, 'day')}
-            renderValue={(selected) => (
+      <Box sx={{ display: 'flex', gap: 2, mb: 2, mt: 2, flexWrap: 'wrap', alignItems: 'center' }}>
+        <TextField
+          select
+          size="small"
+          label="Tarifa"
+          value={filters.rate_id}
+          onChange={(e) => handleFilterChange(e as SelectChangeEvent<string>, 'rate_id')}
+          sx={{ minWidth: 150, '& .MuiOutlinedInput-root': { borderRadius: '10px' } }}
+        >
+          <MenuItem value="">Todas</MenuItem>
+          {filterOptions.rates.map((rate) => (
+            <MenuItem key={rate.id} value={rate.id}>{rate.name}</MenuItem>
+          ))}
+        </TextField>
+        <TextField
+          select
+          size="small"
+          label="Inmueble"
+          value={filters.property_id}
+          onChange={(e) => handleFilterChange(e as SelectChangeEvent<string>, 'property_id')}
+          sx={{ minWidth: 150, '& .MuiOutlinedInput-root': { borderRadius: '10px' } }}
+        >
+          <MenuItem value="">Todos</MenuItem>
+          {filterOptions.properties.map((property) => (
+            <MenuItem key={property.id} value={property.id}>{property.name}</MenuItem>
+          ))}
+        </TextField>
+        <TextField
+          select
+          size="small"
+          label="Ambiente"
+          value={filters.room_id}
+          onChange={(e) => handleFilterChange(e as SelectChangeEvent<string>, 'room_id')}
+          sx={{ minWidth: 150, '& .MuiOutlinedInput-root': { borderRadius: '10px' } }}
+        >
+          <MenuItem value="">Todos</MenuItem>
+          {(filterOptions.rooms || [])
+            .filter(room => !filters.property_id || room.property_id === Number(filters.property_id))
+            .map((room) => (
+            <MenuItem key={room.id} value={room.id}>{room.name}</MenuItem>
+          ))}
+        </TextField>
+        <TextField
+          select
+          size="small"
+          label="Rango Hrs"
+          value={filters.hour_range_id}
+          onChange={(e) => handleFilterChange(e as SelectChangeEvent<string>, 'hour_range_id')}
+          sx={{ minWidth: 150, '& .MuiOutlinedInput-root': { borderRadius: '10px' } }}
+        >
+          <MenuItem value="">Todos</MenuItem>
+          {filterOptions.hour_ranges.map((hr) => (
+            <MenuItem key={hr.id} value={hr.id}>{hr.time} Hrs</MenuItem>
+          ))}
+        </TextField>
+        <TextField
+          select
+          size="small"
+          label="Días"
+          value={filters.day}
+          onChange={(e) => handleFilterChange(e as SelectChangeEvent<string>, 'day')}
+          sx={{ minWidth: 150, '& .MuiOutlinedInput-root': { borderRadius: '10px' } }}
+          SelectProps={{
+            multiple: true,
+            renderValue: (selected) => (
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                {selected.map((value) => (
+                {((selected as string[]) || []).map((value) => (
                   <Chip key={value} label={value} size="small" />
                 ))}
               </Box>
-            )}
-          >
-            <MenuItem value="">Todos</MenuItem>
-            {(filterOptions.days || []).map((day) => (
-              <MenuItem key={day} value={day}>{day}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+            ),
+          }}
+        >
+          {(filterOptions.days || []).map((day) => (
+            <MenuItem key={day} value={day}>{day}</MenuItem>
+          ))}
+        </TextField>
       </Box>
       <TableContainer>
         <Table sx={{ minWidth: 350 }} size="small">
