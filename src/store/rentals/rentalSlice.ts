@@ -138,6 +138,9 @@ export const rentalSlice = createSlice({
     },
     setAllRentalsWithProducts: (state, action) => {
       state.allRentalsWithProducts = action.payload.allRentalsWithProducts
+    },
+    clearShoppingCart: (state) => {
+      state.shoppingCart = [];
     }
   }
 });
@@ -159,5 +162,6 @@ export const {
   setAllStates,
   setDaySelected,
   setAllRentals,
-  setAllRentalsWithProducts
+  setAllRentalsWithProducts,
+  clearShoppingCart
 } = rentalSlice.actions;

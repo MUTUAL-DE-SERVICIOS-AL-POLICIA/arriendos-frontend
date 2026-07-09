@@ -34,7 +34,7 @@ export const RentalCalendarView = () => {
   const [openNav, setOpenNav] = useState(false);
   const { room, customer, onValueChange } = useForm(formFields);
   const { postLeakedProduct, clearLakedProduct, flag } = useProductStore();
-  const { getRentals } = useRentalStore();
+  const { getRentals, resetShoppingCart } = useRentalStore();
   const [daySelect, setDaySelect] = useState<Date | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -52,6 +52,7 @@ export const RentalCalendarView = () => {
     } else {
       clearLakedProduct()
     }
+    resetShoppingCart()
   }, [daySelect, room, customer, flag])
 
   const [screenHeight, setScreenHeight] = useState(window.innerHeight);

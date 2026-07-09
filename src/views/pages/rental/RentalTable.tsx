@@ -62,7 +62,7 @@ export const RentalTable = (props: tableProps) => {
     setTotal(total || 0);
   };
 
-  const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement | HTMLInputElement>, filterType: string) => {
+  const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, filterType: string) => {
     setFilters(prev => ({ ...prev, [filterType]: event.target.value }));
     setPage(0);
   };
@@ -111,7 +111,7 @@ export const RentalTable = (props: tableProps) => {
           >
             <MenuItem value="">Todos</MenuItem>
             {filterOptions.states.map((state) => (
-              <MenuItem key={state.id} value={state.id}>{state.name}</MenuItem>
+              <MenuItem key={state.id} value={String(state.id)}>{state.name}</MenuItem>
             ))}
           </TextField>
           <TextField

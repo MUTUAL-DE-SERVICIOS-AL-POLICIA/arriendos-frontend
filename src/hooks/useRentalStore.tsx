@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { coffeApi } from '@/services';
 import Swal from 'sweetalert2';
-import { setDaySelected, setGroupRentals, setRentalSelected, setRentals, setShoppingCart, setAllRentals, setAllRentalsWithProducts } from '@/store';
+import { setDaySelected, setGroupRentals, setRentalSelected, setRentals, setShoppingCart, setAllRentals, setAllRentalsWithProducts, clearShoppingCart } from '@/store';
 import { formatDate } from '@/helpers';
 import { EventsCalendarModel } from '@/models';
 import {  Edit } from '@mui/icons-material';
@@ -17,6 +17,10 @@ export const useRentalStore = () => {
 
   const setUpdateShoppingCart = async (items: any) => {
     dispatch(setShoppingCart({ shoppingCart: items }))
+  }
+
+  const resetShoppingCart = () => {
+    dispatch(clearShoppingCart())
   }
   const getRentals = async (roomId?: number) => {
     try {
@@ -332,6 +336,7 @@ export const useRentalStore = () => {
     shoppingCart,
     //* Métodos
     setUpdateShoppingCart,
+    resetShoppingCart,
     getRentals,
     saveGroupRental,
     saveRentalSelected,

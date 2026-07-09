@@ -1,7 +1,7 @@
 import { ComponentTablePagination, SkeletonComponent } from "@/components";
 import { useCustomerStore } from "@/hooks";
 import { CustomerModel } from "@/models";
-import { Box, Checkbox, IconButton, MenuItem, SelectChangeEvent, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material";
+import { Box, Checkbox, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { DeleteOutline, EditOutlined, KeyboardArrowDownOutlined, KeyboardArrowUpOutlined } from "@mui/icons-material";
 import { ContactTable } from "./contact";
@@ -61,18 +61,13 @@ export const CustomerTable = (props: tableProps) => {
     setTotal(total || 0);
   };
 
-  const handleFilterChange = (event: SelectChangeEvent<string>, filterType: string) => {
-    setFilters(prev => ({ ...prev, [filterType]: event.target.value }));
-    setPage(0);
-  };
-
   const handleContactSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFilters(prev => ({ ...prev, contact_search: event.target.value }));
     setPage(0);
   };
   return (
     <Stack sx={{ paddingRight: '10px' }}>
-      <Box sx={{ display: 'flex', gap: 2, mb: 2, mt: 2, flexWrap: 'wrap', alignItems: 'center' }}>
+      <Box sx={{ display: 'flex', gap: 2, mb: 2, mt: 2, flexWrap: 'wrap', alignItems: 'center', overflow: 'visible', position: 'relative' }}>
         <TextField
           size="small"
           label="Buscar por NIT/CI"
@@ -101,12 +96,14 @@ export const CustomerTable = (props: tableProps) => {
           size="small"
           label="Tipo de Cliente"
           value={filters.customer_type_id}
-          onChange={(e) => handleFilterChange(e as SelectChangeEvent<string>, 'customer_type_id')}
+          onChange={(e) => { setFilters(prev => ({ ...prev, customer_type_id: e.target.value })); setPage(0); }}
           sx={{ minWidth: 180, '& .MuiOutlinedInput-root': { borderRadius: '10px' } }}
+          SelectProps={{ native: true }}
+          InputLabelProps={{ shrink: true }}
         >
-          <MenuItem value="">Todos</MenuItem>
+          <option value="">Todos</option>
           {filterOptions.customer_types.map((type) => (
-            <MenuItem key={type.id} value={type.id}>{type.name}</MenuItem>
+            <option key={type.id} value={String(type.id)}>{type.name}</option>
           ))}
         </TextField>
         <TextField
