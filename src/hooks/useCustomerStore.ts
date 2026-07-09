@@ -13,16 +13,25 @@ export const useCustomerStore = () => {
   const dispatch = useDispatch();
 
   const getCustomers = async (page: number, limit: number, search: string, filters?: { customer_type_id?: string, contact_search?: string, search_nit?: string, search_name?: string }) => {
-    let filter: any = { params: { page: page } };
-    filter.params.limit = limit;
-    if (search !== '') filter.params.search = search;
-    if (filters?.search_nit) filter.params.search_nit = filters.search_nit;
-    if (filters?.search_name) filter.params.search_name = filters.search_name;
-    if (filters?.customer_type_id) filter.params.customer_type_id = filters.customer_type_id;
-    if (filters?.contact_search) filter.params.contact_search = filters.contact_search;
-    const { data } = await api.get(`/customers/`, filter);
-    dispatch(setCustomers({ customers: data.customers }));
-    return data.total
+    try {
+      let filter: any = { params: { page: page } };
+      filter.params.limit = limit;
+      if (search !== '') filter.params.search = search;
+      if (filters?.search_nit) filter.params.search_nit = filters.search_nit;
+      if (filters?.search_name) filter.params.search_name = filters.search_name;
+      if (filters?.customer_type_id) filter.params.customer_type_id = filters.customer_type_id;
+      if (filters?.contact_search) filter.params.contact_search = filters.contact_search;
+      const { data } = await api.get(`/customers/`, filter);
+      dispatch(setCustomers({ customers: data.customers }));
+      return data.total
+    } catch (error: any) {
+      if (error.response && error.response.status == 403) {
+        Swal.fire('Acceso denegado', error.response.data.detail, 'warning')
+      } else {
+        Swal.fire('Error', 'No se pudieron cargar los clientes', 'error')
+      }
+      return 0
+    }
   }
 
   const getCustomerFilterOptions = async () => {

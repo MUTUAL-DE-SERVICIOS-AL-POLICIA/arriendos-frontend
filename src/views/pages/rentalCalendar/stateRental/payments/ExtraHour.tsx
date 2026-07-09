@@ -21,7 +21,6 @@ const formValidations: FormExtraHourValidations = {
   voucherNumber: [(value: number) => value > 0, 'Debe ingresar el número de comprobante'],
   eventSelect: [(value: string) => value.length !== 0, 'Debe seleccionar un evento'],
   businessName: [(value: string) => {
-    console.log(value)
     if(value !== undefined && value !== '') {
       return true
     } else {

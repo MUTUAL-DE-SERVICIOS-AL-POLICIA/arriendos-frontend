@@ -1,4 +1,5 @@
 import { coffeApi } from '@/services';
+import Swal from 'sweetalert2';
 
 
 export const useReportStore = () => {
@@ -23,7 +24,7 @@ export const useReportStore = () => {
       link.click();
       document.body.removeChild(link);
     } catch(error: any) {
-      console.log("Error al descargar el archivo: ", error)
+      Swal.fire('Error', 'No se pudo descargar el reporte', 'error')
     }
   };
 

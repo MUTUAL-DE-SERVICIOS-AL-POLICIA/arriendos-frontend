@@ -74,7 +74,7 @@ export const useRentalStore = () => {
         try {
           await api.post('/leases/', body)
           Swal.fire('¡Prereserva exitoso!', '', 'success');
-          setShoppingCart({ shoppingCart: [] })
+          dispatch(setShoppingCart({ shoppingCart: [] }))
           onClose()
         } catch (error: any) {
           if (error.response && error.response.status == 400) {
@@ -304,7 +304,7 @@ export const useRentalStore = () => {
         const message = error.response.data.detail
         Swal.fire('Acceso denegado', message, 'warning')
       } else {
-        console.log(error)
+        Swal.fire('Error', 'Ocurrió un error en el servidor', 'error')
         throw new Error('Ocurrió algun error en el backend')
       }
     }
