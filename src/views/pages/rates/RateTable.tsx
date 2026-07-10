@@ -1,4 +1,5 @@
 import { /*ComponentSearch,*/ ComponentTablePagination, SkeletonComponent } from "@/components";
+import { useAuthStore } from "@/hooks";
 import { useRateStore } from "@/hooks/useRateStore";
 import { RateModel } from "@/models";
 import { DeleteOutline } from "@mui/icons-material";
@@ -22,6 +23,7 @@ export const RateTable = (props: tableProps) => {
 
   /*DATA */
   const { rates = [], flag, getRates, deleteRemoveRate } = useRateStore();
+  const { hasPermission } = useAuthStore();
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(limitInit)
@@ -67,14 +69,16 @@ export const RateTable = (props: tableProps) => {
                     <TableCell>{rate.customer_type.map((e) => (<Typography key={e.id}>-{e.name}</Typography>))}</TableCell>
                     <TableCell>{rate.requirements.map((e) => (<Typography key={e.id}>-{e.requirement_name}</Typography>))}</TableCell>
                     {
-                      !stateSelect && <TableCell>
+                      !stateSelect &&                       <TableCell>
                         <Stack
                           alignItems="center"
                           direction="row"
                         >
-                          <IconButton sx={{ p: 0 }} onClick={() => deleteRemoveRate(rate)}>
-                            <DeleteOutline color="error" />
-                          </IconButton>
+                          {hasPermission('products.delete') && (
+                            <IconButton sx={{ p: 0 }} onClick={() => deleteRemoveRate(rate)}>
+                              <DeleteOutline color="error" />
+                            </IconButton>
+                          )}
                         </Stack>
                       </TableCell>
                     }

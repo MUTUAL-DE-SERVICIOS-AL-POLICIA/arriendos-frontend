@@ -2,7 +2,7 @@ import { IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHe
 import { useEffect, useState } from "react";
 import { DeleteOutline, EditOutlined, History } from "@mui/icons-material";
 import { ComponentTablePagination, SkeletonComponent } from "@/components";
-import { useProductStore } from "@/hooks";
+import { useAuthStore, useProductStore } from "@/hooks";
 import { ProductModel } from "@/models";
 import { PriceHistory } from ".";
 
@@ -27,6 +27,7 @@ export const ProductTable = (props: tableProps) => {
 
   /*DATA */
   const { products = null, flag, getProducts, deleteRemoveProduct, getFilterOptions } = useProductStore();
+  const { hasPermission } = useAuthStore();
 
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);
@@ -197,13 +198,15 @@ export const ProductTable = (props: tableProps) => {
                         alignItems="center"
                         direction="row"
                       >
-                        <IconButton
-                          sx={{ p: 0 }}
-                          onClick={() => handleEdit(product)}
-                          title="Editar producto"
-                        >
-                          <EditOutlined color="warning" />
-                        </IconButton>
+                        {hasPermission('products.change') && (
+                          <IconButton
+                            sx={{ p: 0 }}
+                            onClick={() => handleEdit(product)}
+                            title="Editar producto"
+                          >
+                            <EditOutlined color="warning" />
+                          </IconButton>
+                        )}
                         <IconButton
                           sx={{ p: 0 }}
                           onClick={() => handleOpenHistory(product)}
@@ -211,11 +214,13 @@ export const ProductTable = (props: tableProps) => {
                         >
                           <History color="primary" />
                         </IconButton>
-                        <IconButton
-                          sx={{ p: 0 }}
-                          onClick={() => deleteRemoveProduct(product)}>
-                          <DeleteOutline color="error" />
-                        </IconButton>
+                        {hasPermission('products.delete') && (
+                          <IconButton
+                            sx={{ p: 0 }}
+                            onClick={() => deleteRemoveProduct(product)}>
+                            <DeleteOutline color="error" />
+                          </IconButton>
+                        )}
                       </Stack>
                     </TableCell>
                   </TableRow>

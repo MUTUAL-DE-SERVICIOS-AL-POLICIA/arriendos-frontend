@@ -12,7 +12,7 @@ const api = coffeApi;
 export const usePaymentsStore = () => {
   const { payments = [], amountTotal, detailPayment = {} } = useSelector((state: any) => state.payments);
   const dispatch = useDispatch();
-  const getRegistersPayments = async (rental: number, canEdit: boolean = false, handleModal?: Function) => {
+  const getRegistersPayments = async (rental: number, canEdit: boolean = false, handleModal?: Function, canDelete: boolean = true) => {
     try {
       const { data } = await api.get('/financials/register_payment/', {
         params: {
@@ -26,11 +26,13 @@ export const usePaymentsStore = () => {
         detail: e.detail,
         action: index == data.payments.length - 1 ?
           <Stack direction="row" alignItems="center">
-            <DeleteForever
-              onClick={() => deleteLastRegisteredPayment(rental, canEdit, handleModal)}
-              color="error"
-              sx={{ cursor: 'pointer' }}
-            />
+            {canDelete && (
+              <DeleteForever
+                onClick={() => deleteLastRegisteredPayment(rental, canEdit, handleModal)}
+                color="error"
+                sx={{ cursor: 'pointer' }}
+              />
+            )}
             { canEdit &&
               <Edit
                 onClick={() => handleModal!(true, e.id, Reason.payment)}

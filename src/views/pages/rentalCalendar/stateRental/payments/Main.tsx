@@ -4,7 +4,7 @@ import { Tab, Tabs, Typography } from '@mui/material';
 import { Box, Stack } from "@mui/system"
 import { useEffect, useState } from "react"
 import { FormPayments, Reason } from "."
-import { useExtraHourStore, useForm, usePaymentsStore, useRentalStore, useWarrantyStore } from "@/hooks"
+import { useAuthStore, useExtraHourStore, useForm, usePaymentsStore, useRentalStore, useWarrantyStore } from "@/hooks"
 import { FormWarrantyValidation, WarrantyModel } from "@/models/paymentModel"
 
 const formField: WarrantyModel = {
@@ -27,6 +27,7 @@ export const Rented = () => {
   const { extraHours = [], getRegisterExtraHours, getExtraHour } = useExtraHourStore();
   const { warrantys = [], totalWarranty, getListWarranty } = useWarrantyStore()
   const { rentalSelected } = useRentalStore();
+  const { hasPermission } = useAuthStore();
 
   const properties = (index: number) => {
     return {
@@ -40,9 +41,9 @@ export const Rented = () => {
   }
 
   useEffect(() => {
-    getRegistersPayments(rentalSelected.rental)
-    getRegisterExtraHours(rentalSelected.rental)
-    getListWarranty(rentalSelected.rental)
+    getRegistersPayments(rentalSelected.rental, false, undefined, hasPermission('leases.delete'))
+    getRegisterExtraHours(rentalSelected.rental, false, undefined, hasPermission('leases.delete'))
+    getListWarranty(rentalSelected.rental, false, undefined, hasPermission('leases.delete'))
   }, []);
 
   const formValidation: FormWarrantyValidation = {
@@ -102,14 +103,16 @@ export const Rented = () => {
               sx={{ py: 1 }}
             >
               <Typography>El monto del alquiler es: {amountTotal} Bs</Typography>
-              <ComponentButton
-                text={`Registrar pago`}
-                onClick={() => handleModal(true, Reason.payment)}
-                height="35px"
-                width="30%"
-                margin="1px"
-                disable={payments.length > 0 && payments[payments.length - 1].payable_mount == 0}
-              />
+              {hasPermission('leases.add') && (
+                <ComponentButton
+                  text={`Registrar pago`}
+                  onClick={() => handleModal(true, Reason.payment)}
+                  height="35px"
+                  width="30%"
+                  margin="1px"
+                  disable={payments.length > 0 && payments[payments.length - 1].payable_mount == 0}
+                />
+              )}
             </Stack>
             {
               payments.length !== 0 &&
@@ -140,20 +143,24 @@ export const Rented = () => {
               >
               </Stack>
               <Stack spacing={1} direction="row">
-                <ComponentButton text={`Registro de daños`}
-                  onClick={() => handleModal(true, Reason.damage)}
-                  height="35px"
-                  width="30%"
-                  margin="1px"
-                  disable={warrantys.length == 0}
-                />
-                <ComponentButton
-                  text={`Registro de garantia`}
-                  onClick={() => handleModal(true, Reason.warranty)}
-                  height="35px"
-                  width="30%"
-                  margin="1px"
-                />
+                {hasPermission('leases.add') && (
+                  <ComponentButton text={`Registro de daños`}
+                    onClick={() => handleModal(true, Reason.damage)}
+                    height="35px"
+                    width="30%"
+                    margin="1px"
+                    disable={warrantys.length == 0}
+                  />
+                )}
+                {hasPermission('leases.add') && (
+                  <ComponentButton
+                    text={`Registro de garantia`}
+                    onClick={() => handleModal(true, Reason.warranty)}
+                    height="35px"
+                    width="30%"
+                    margin="1px"
+                  />
+                )}
               </Stack>
             </Stack>
             {warrantys.length != 0 && <ComponentTableContent
@@ -170,11 +177,13 @@ export const Rented = () => {
               justifyContent="space-between"
               sx={{ py: 1 }}
             >
-              <ComponentButton
-                text={`Registrar hora extra`}
-                onClick={() => handleModal(true, Reason.extraHour)}
-                margin="1px"
-              />
+              {hasPermission('leases.add') && (
+                <ComponentButton
+                  text={`Registrar hora extra`}
+                  onClick={() => handleModal(true, Reason.extraHour)}
+                  margin="1px"
+                />
+              )}
             </Stack>
             {
               extraHours.length !== 0 &&

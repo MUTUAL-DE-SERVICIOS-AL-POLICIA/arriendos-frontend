@@ -31,7 +31,7 @@ export const useWarrantyStore = () => {
     }
   }
 
-  const getListWarranty = async (rental: number, canEdit: boolean = false, handleModal?: Function) => {
+  const getListWarranty = async (rental: number, canEdit: boolean = false, handleModal?: Function, canDelete: boolean = true) => {
     try {
       const { data } = await api.get('/financials/register_warranty/', {
         params: {
@@ -49,11 +49,13 @@ export const useWarrantyStore = () => {
         detail: e.detail,
         action: index == data.warranty_movements.length - 1 ?
           <Stack direction="row" alignItems="center">
-            <DeleteForever
-              onClick={() => deleteLastRegisteredWarranty(rental, canEdit, handleModal)}
-              color="error"
-              sx={{ cursor: 'pointer' }}
-            />
+            {canDelete && (
+              <DeleteForever
+                onClick={() => deleteLastRegisteredWarranty(rental, canEdit, handleModal)}
+                color="error"
+                sx={{ cursor: 'pointer' }}
+              />
+            )}
             { canEdit &&
               <Edit
                 onClick={() => handleModal!(true, e.id, Reason.warranty)}

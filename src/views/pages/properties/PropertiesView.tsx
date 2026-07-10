@@ -4,11 +4,13 @@ import { Stack, SvgIcon, Box } from '@mui/material';
 import { useCallback, useState } from 'react';
 import { CreatePropertie, PropertieTable } from '.';
 import { PropertieModel } from '@/models';
+import { useAuthStore } from '@/hooks';
 
 
 const SIDE_NAV_WIDTH = 100;
 
 export const PropertiesView = () => {
+  const { hasPermission } = useAuthStore();
   const [openDialog, setopenDialog] = useState(false);
   const [itemEdit, setItemEdit] = useState<PropertieModel | null>(null);
 
@@ -43,10 +45,12 @@ export const PropertiesView = () => {
           direction="row"
           justifyContent="end"
         >
-          <ComponentButton
-            text="Nuevo Inmueble"
-            onClick={() => handleDialog(true)}
-            startIcon={<SvgIcon fontSize="small"><Add /></SvgIcon>} />
+          {hasPermission('rooms.add') && (
+            <ComponentButton
+              text="Nuevo Inmueble"
+              onClick={() => handleDialog(true)}
+              startIcon={<SvgIcon fontSize="small"><Add /></SvgIcon>} />
+          )}
         </Stack>
       </Box>
       <PropertieTable

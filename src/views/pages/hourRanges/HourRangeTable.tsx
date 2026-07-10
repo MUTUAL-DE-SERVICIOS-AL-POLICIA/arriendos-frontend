@@ -1,6 +1,7 @@
 
 
 import { SkeletonComponent } from "@/components";
+import { useAuthStore } from "@/hooks";
 import { useHourRangeStore } from "@/hooks/useHourRangeStore";
 import { HourRangeModel } from "@/models";
 import { DeleteOutline, EditOutlined } from "@mui/icons-material";
@@ -25,6 +26,7 @@ export const HourRangeTable = (props: tableProps) => {
 
   /*DATA */
   const { hourRanges, getHourRanges, deleteRemoveHourRange } = useHourRangeStore();
+  const { hasPermission } = useAuthStore();
   useEffect(() => {
     getHourRanges()
   }, []);
@@ -64,24 +66,28 @@ export const HourRangeTable = (props: tableProps) => {
                     }
                     <TableCell>{`${hourRange.time} HORAS`}</TableCell>
                     {
-                      !stateSelect && <TableCell>
+                      !stateSelect &&                       <TableCell>
                         <Stack
                           alignItems="center"
                           direction="row"
                           spacing={2}
                         >
-                          <IconButton
-                            sx={{ p: 0 }}
-                            onClick={() => handleEdit!(hourRange)}
-                          >
-                            <EditOutlined color="info" />
-                          </IconButton>
-                          <IconButton
-                            sx={{ p: 0 }}
-                            onClick={() => deleteRemoveHourRange(hourRange)}
-                          >
-                            <DeleteOutline color="error" />
-                          </IconButton>
+                          {hasPermission('products.change') && (
+                            <IconButton
+                              sx={{ p: 0 }}
+                              onClick={() => handleEdit!(hourRange)}
+                            >
+                              <EditOutlined color="info" />
+                            </IconButton>
+                          )}
+                          {hasPermission('products.delete') && (
+                            <IconButton
+                              sx={{ p: 0 }}
+                              onClick={() => deleteRemoveHourRange(hourRange)}
+                            >
+                              <DeleteOutline color="error" />
+                            </IconButton>
+                          )}
                         </Stack>
                       </TableCell>
                     }

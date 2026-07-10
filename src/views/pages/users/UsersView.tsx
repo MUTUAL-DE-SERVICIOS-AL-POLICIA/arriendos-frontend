@@ -3,8 +3,10 @@ import { Add } from "@mui/icons-material";
 import { Stack, SvgIcon } from "@mui/material";
 import { useCallback, useState } from "react";
 import { UserTable, CreateUser } from ".";
+import { useAuthStore } from "@/hooks";
 
 export const UsersView = () => {
+  const { hasPermission } = useAuthStore();
   const [openDialog, setopenDialog] = useState(false);
 
 
@@ -19,10 +21,12 @@ export const UsersView = () => {
         direction="row"
         justifyContent="end"
       >
-        <ComponentButton
-          text="Nuevo usuario"
-          onClick={() => handleDialog(true)}
-          startIcon={<SvgIcon fontSize="small"><Add /></SvgIcon>} />
+        {hasPermission('users.add') && (
+          <ComponentButton
+            text="Nuevo usuario"
+            onClick={() => handleDialog(true)}
+            startIcon={<SvgIcon fontSize="small"><Add /></SvgIcon>} />
+        )}
       </Stack>
       <UserTable />
       {

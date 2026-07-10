@@ -3,8 +3,10 @@ import { Add } from "@mui/icons-material";
 import { Stack, SvgIcon } from "@mui/material";
 import { useCallback, useState } from "react";
 import { CreateRate, RateTable } from ".";
+import { useAuthStore } from "@/hooks";
 
 export const RatesView = () => {
+  const { hasPermission } = useAuthStore();
   const [openDialog, setopenDialog] = useState(false);
 
 
@@ -19,10 +21,12 @@ export const RatesView = () => {
         direction="row"
         justifyContent="end"
       >
-        <ComponentButton
-          text="Nueva Tarifa"
-          onClick={() => handleDialog(true)}
-          startIcon={<SvgIcon fontSize="small"><Add /></SvgIcon>} />
+        {hasPermission('products.add') && (
+          <ComponentButton
+            text="Nueva Tarifa"
+            onClick={() => handleDialog(true)}
+            startIcon={<SvgIcon fontSize="small"><Add /></SvgIcon>} />
+        )}
       </Stack>
       <RateTable />
       {

@@ -1,5 +1,5 @@
 import { ComponentSearch, ComponentTablePagination, SeverityPill, SkeletonComponent } from "@/components";
-import { useTypeCustomerStore } from "@/hooks";
+import { useAuthStore, useTypeCustomerStore } from "@/hooks";
 import { TypeCustomerModel } from "@/models";
 import { DeleteOutline, EditOutlined } from "@mui/icons-material";
 import { Checkbox, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
@@ -23,6 +23,7 @@ export const TypeCustomerTable = (props: tableProps) => {
   } = props;
 
   const { typesCustomers, flag, getTypesCustomers, deleteRemoveTypeCustomer } = useTypeCustomerStore();
+  const { hasPermission } = useAuthStore();
 
 
   const [total, setTotal] = useState(0);
@@ -86,16 +87,20 @@ export const TypeCustomerTable = (props: tableProps) => {
                           direction="row"
                           spacing={2}
                         >
-                          <IconButton
-                            sx={{ p: 0 }}
-                            onClick={() => handleEdit!(typeCustomer)} >
-                            <EditOutlined color="info" />
-                          </IconButton>
-                          <IconButton
-                            sx={{ p: 0 }}
-                            onClick={() => deleteRemoveTypeCustomer(typeCustomer)} >
-                            <DeleteOutline color="error" />
-                          </IconButton>
+                          {hasPermission('customers.change') && (
+                            <IconButton
+                              sx={{ p: 0 }}
+                              onClick={() => handleEdit!(typeCustomer)} >
+                              <EditOutlined color="info" />
+                            </IconButton>
+                          )}
+                          {hasPermission('customers.delete') && (
+                            <IconButton
+                              sx={{ p: 0 }}
+                              onClick={() => deleteRemoveTypeCustomer(typeCustomer)} >
+                              <DeleteOutline color="error" />
+                            </IconButton>
+                          )}
                         </Stack>
                       </TableCell>
                     }

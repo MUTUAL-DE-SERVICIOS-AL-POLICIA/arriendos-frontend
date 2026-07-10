@@ -1,5 +1,5 @@
 import { ComponentTablePagination, SkeletonComponent } from "@/components";
-import { useCustomerStore } from "@/hooks";
+import { useAuthStore, useCustomerStore } from "@/hooks";
 import { CustomerModel } from "@/models";
 import { Box, Checkbox, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
@@ -29,6 +29,7 @@ export const CustomerTable = (props: tableProps) => {
   } = props;
 
   const { customers, flag, getCustomers, getCustomerFilterOptions, deleteRemoveCustomer } = useCustomerStore();
+  const { hasPermission } = useAuthStore();
 
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);
@@ -167,12 +168,16 @@ export const CustomerTable = (props: tableProps) => {
                             alignItems="center"
                             direction="row"
                           >
-                            <IconButton sx={{ p: 0 }} onClick={() => itemEdit!(customer)} >
-                              <EditOutlined color="info" />
-                            </IconButton>
-                            <IconButton sx={{ p: 0 }} onClick={() => deleteRemoveCustomer(customer)} >
-                              <DeleteOutline color="error" />
-                            </IconButton>
+                            {hasPermission('customers.change') && (
+                              <IconButton sx={{ p: 0 }} onClick={() => itemEdit!(customer)} >
+                                <EditOutlined color="info" />
+                              </IconButton>
+                            )}
+                            {hasPermission('customers.delete') && (
+                              <IconButton sx={{ p: 0 }} onClick={() => deleteRemoveCustomer(customer)} >
+                                <DeleteOutline color="error" />
+                              </IconButton>
+                            )}
                           </Stack>
                         </TableCell>}
                       </TableRow>

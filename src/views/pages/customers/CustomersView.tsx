@@ -5,8 +5,10 @@ import { useCallback, useState } from "react";
 import { CustomerTable } from ".";
 import { CustomerModel } from "@/models";
 import { CreateCustomer } from "./createCustomer";
+import { useAuthStore } from "@/hooks";
 
 export const CustomersView = () => {
+  const { hasPermission } = useAuthStore();
 
   const [openDialog, setopenDialog] = useState(false);
   const [itemEdit, setItemEdit] = useState<CustomerModel | null>(null);
@@ -25,10 +27,12 @@ export const CustomersView = () => {
         direction="row"
         justifyContent="end"
       >
-        <ComponentButton
-          text="Nuevo Cliente"
-          onClick={() => handleDialog(true)}
-          startIcon={<SvgIcon fontSize="small"><Add /></SvgIcon>} />
+        {hasPermission('customers.add') && (
+          <ComponentButton
+            text="Nuevo Cliente"
+            onClick={() => handleDialog(true)}
+            startIcon={<SvgIcon fontSize="small"><Add /></SvgIcon>} />
+        )}
       </Stack>
       <CustomerTable
         itemEdit={(v) => {
