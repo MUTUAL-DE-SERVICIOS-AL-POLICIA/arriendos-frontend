@@ -43,7 +43,7 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-const DOC_TYPE_COLORS: Record<string, string> = {
+const DOC_TYPE_COLORS: Record<string, 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'> = {
   reserva: 'info',
   entrega: 'success',
   horas_extra: 'warning',
@@ -69,7 +69,7 @@ export const ReportView = () => {
     onValueChange, formSubmitted
   } = useForm(formFields)
 
-  var bodyFormData = new FormData();
+  const bodyFormData = new FormData();
 
   const [modalState, setModalState] = useState(false)
   const { getReportXlsx, getDocumentsByRental } = useReportStore()
@@ -99,18 +99,18 @@ export const ReportView = () => {
     return !(state && Object.keys(state).length != 0 && since && until)
   }
 
-  const loadDocuments = async () => {
+  const loadDocuments = useCallback(async () => {
     setLoading(true);
     const data = await getDocumentsByRental();
     setRentals(data.rentals || []);
     setLoading(false);
-  };
+  }, [getDocumentsByRental]);
 
   useEffect(() => {
     if (tabValue === 1) {
       loadDocuments();
     }
-  }, [tabValue]);
+  }, [tabValue, loadDocuments]);
 
   const handleReprint = (doc: AvailableDoc, rentalId: number) => {
     switch (doc.type) {
@@ -288,7 +288,7 @@ export const ReportView = () => {
                                     <TableCell>
                                       <Chip
                                         label={doc.name}
-                                        color={DOC_TYPE_COLORS[doc.type] as any || 'default'}
+                                        color={DOC_TYPE_COLORS[doc.type] || 'default'}
                                         size="small"
                                       />
                                     </TableCell>
