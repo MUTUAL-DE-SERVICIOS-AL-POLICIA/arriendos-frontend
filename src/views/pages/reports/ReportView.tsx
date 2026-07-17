@@ -3,7 +3,7 @@ import { useReportStore } from "@/hooks/useReportStore"
 import { useDamageStore, useExtraHourStore, usePaymentsStore, useRentalStore, useWarrantyStore } from "@/hooks"
 import { Download, Description, ExpandMore, ExpandLess, Print } from "@mui/icons-material"
 import { Button, Grid, Stack, SvgIcon, Tabs, Tab, Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Chip, CircularProgress, IconButton, Collapse } from "@mui/material"
-import { Fragment, useCallback, useState, useEffect } from "react"
+import { Fragment, useCallback, useState, useEffect, useRef } from "react"
 import { StateTable } from "."
 import { useForm } from "@/hooks"
 import { ComponentDateWithoutTime } from "@/components/DateWithoutTime"
@@ -99,18 +99,18 @@ export const ReportView = () => {
     return !(state && Object.keys(state).length != 0 && since && until)
   }
 
-  const loadDocuments = useCallback(async () => {
-    setLoading(true);
-    const data = await getDocumentsByRental();
-    setRentals(data.rentals || []);
-    setLoading(false);
-  }, [getDocumentsByRental]);
+  const loadDocumentsRef = useRef(false);
 
   useEffect(() => {
-    if (tabValue === 1) {
-      loadDocuments();
+    if (tabValue === 1 && !loadDocumentsRef.current) {
+      loadDocumentsRef.current = true;
+      setLoading(true);
+      getDocumentsByRental().then((data) => {
+        setRentals(data.rentals || []);
+        setLoading(false);
+      });
     }
-  }, [tabValue, loadDocuments]);
+  }, [tabValue]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleReprint = (doc: AvailableDoc, rentalId: number) => {
     switch (doc.type) {
