@@ -8,7 +8,7 @@ export const useReportStore = () => {
       const { data } = await coffeApi.post('/leases/report', {
         start_date: body.get('start_date'),
         end_date: body.get('end_date'),
-        state: parseInt(body.get('state') || '0')
+        state: parseInt(String(body.get('state') || '0'))
       }, {
         responseType: 'arraybuffer',
         headers: {

@@ -172,6 +172,7 @@ export const useWarrantyStore = () => {
     postRegisterWarranty,
     getListWarranty,
     getDetailWarranty,
-    patchRegisterWarranty
+    patchRegisterWarranty,
+    printWarrantyForm
   }
 }

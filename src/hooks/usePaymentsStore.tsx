@@ -171,6 +171,7 @@ export const usePaymentsStore = () => {
     postRegisterPayment,
     deleteLastRegisteredPayment,
     getDetailPayment,
-    patchRegisterPayment
+    patchRegisterPayment,
+    printPaymentForm
   }
 }

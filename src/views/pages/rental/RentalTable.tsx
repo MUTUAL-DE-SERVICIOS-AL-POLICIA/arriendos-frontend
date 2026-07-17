@@ -75,12 +75,11 @@ export const RentalTable = (props: tableProps) => {
     try {
       const start_date = dayjs(filters.date_from).startOf('day').hour(0).minute(0).second(0).toISOString();
       const end_date = dayjs(filters.date_to).endOf('day').hour(23).minute(59).second(59).toISOString();
-      await getReportXlsx({
-        get: (key: string) => {
-          const map: Record<string, string> = { start_date, end_date, state: filters.state_id };
-          return map[key];
-        }
-      });
+      const formData = new FormData();
+      formData.append('start_date', start_date);
+      formData.append('end_date', end_date);
+      formData.append('state', filters.state_id);
+      await getReportXlsx(formData);
     } finally {
       setDownloading(false);
     }
