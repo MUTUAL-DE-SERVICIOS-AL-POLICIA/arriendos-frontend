@@ -55,8 +55,15 @@ describe('Menu RBAC configuration', () => {
     expect(products?.title).toBe('Productos');
   });
 
-  it('should have exactly 4 menu items', () => {
-    expect(menuItems.length).toBe(4);
+  it('should include Reportes with leases.view permission', () => {
+    const reports = menuItems.find((item) => item.path === '/reports');
+    expect(reports).toBeDefined();
+    expect(reports?.permission).toBe('leases.view');
+    expect(reports?.title).toBe('Reportes');
+  });
+
+  it('should have exactly 5 menu items', () => {
+    expect(menuItems.length).toBe(5);
   });
 
   it('all permissions should start with a valid module name', () => {
