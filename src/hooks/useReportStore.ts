@@ -28,7 +28,18 @@ export const useReportStore = () => {
     }
   };
 
+  const getDocumentsByRental = async () => {
+    try {
+      const { data } = await coffeApi.get('/records/available_by_rental/');
+      return data;
+    } catch(error: any) {
+      Swal.fire('Error', 'No se pudo cargar los documentos', 'error')
+      return { rentals: [] };
+    }
+  };
+
   return {
     getReportXlsx,
+    getDocumentsByRental,
   }
 }
