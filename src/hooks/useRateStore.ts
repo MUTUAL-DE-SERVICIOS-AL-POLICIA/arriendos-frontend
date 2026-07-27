@@ -46,6 +46,24 @@ export const useRateStore = () => {
     }
   }
 
+  const updateRate = async (id: number, body: object) => {
+    try {
+      await api.patch(`/requirements/rates/${id}`, body);
+      dispatch(refreshRate());
+      Swal.fire('Tarifa actualizada correctamente', '', 'success');
+      return true;
+    } catch (error: any) {
+      if (error.response && error.response.status == 403) {
+        const message = error.response.data.detail
+        Swal.fire('Acceso denegado', message, 'warning')
+      } else {
+        const message = error.response?.data?.error || 'Error al actualizar la tarifa'
+        Swal.fire('Error', message, 'error');
+      }
+      return false;
+    }
+  }
+
   const deleteRemoveRate = async (rate: RateModel) => {
     const { dialogDelete } = DialogComponent();
     const state = await dialogDelete(`Se eliminará la tarifa: ${rate.name}`)
@@ -77,6 +95,7 @@ export const useRateStore = () => {
     //* Métodos
     getRates,
     postCreateRate,
+    updateRate,
     deleteRemoveRate,
   }
 }

@@ -2,14 +2,15 @@ import { ComponentInput, ComponentInputSelect, ModalSelectComponent } from "@/co
 import { useForm } from "@/hooks";
 import { useRateStore } from "@/hooks/useRateStore";
 import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid } from "@mui/material";
-import { FormEvent, useCallback, useState } from "react";
-import { FormRateModel, FormRateValidations, RequirementModel, TypeCustomerModel } from "@/models";
+import { FormEvent, useCallback, useEffect, useState } from "react";
+import { FormRateModel, FormRateValidations, RateModel, RequirementModel, TypeCustomerModel } from "@/models";
 import { RequirementTable } from "../requirements";
 import { TypeCustomerTable } from "../typesCustomers";
 
 interface createProps {
   open: boolean;
   handleClose: () => void;
+  rateToEdit?: RateModel | null;
 }
 const formFields: FormRateModel = {
   rate: '',
@@ -26,33 +27,51 @@ export const CreateRate = (props: createProps) => {
   const {
     open,
     handleClose,
+    rateToEdit = null,
   } = props;
 
-  const { postCreateRate } = useRateStore();
+  const { postCreateRate, updateRate } = useRateStore();
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const isEditing = rateToEdit !== null;
 
   const {
     rate, customer_type, requirement,
-    onInputChange, onValueChange, isFormValid, onResetForm,
+    onInputChange, onValueChange, isFormValid, onResetForm, setFormState,
     rateValid, requirementValid, customer_typeValid } = useForm(formFields, formValidations);
+
+  useEffect(() => {
+    if (rateToEdit) {
+      setFormState({
+        rate: rateToEdit.name,
+        customer_type: rateToEdit.customer_type,
+        requirement: rateToEdit.requirements,
+      });
+    } else {
+      onResetForm();
+    }
+  }, [rateToEdit, open]);
 
   const sendSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setFormSubmitted(true);
     if (!isFormValid) return;
     setLoading(true);
-    await postCreateRate(
-      {
-        rate,
-        requirement: requirement.map((e: RequirementModel) => e.id),
-        customer_type: customer_type.map((e: TypeCustomerModel) => e.id),
-      }).then((res) => {
-        if (res) {
-          handleClose();
-          onResetForm();
-        }
-      });
+    const body = {
+      name: rate,
+      requirement: requirement.map((e: RequirementModel) => e.id),
+      customer_type: customer_type.map((e: TypeCustomerModel) => e.id),
+    };
+    let res = false;
+    if (isEditing) {
+      res = await updateRate(rateToEdit!.id, body);
+    } else {
+      res = await postCreateRate(body);
+    }
+    if (res) {
+      handleClose();
+      onResetForm();
+    }
     setLoading(false);
   }
 
@@ -115,7 +134,7 @@ export const CreateRate = (props: createProps) => {
           <></>
       }
       <Dialog open={open} onClose={handleClose} >
-        <DialogTitle>{'Nueva Tarifa'}</DialogTitle>
+        <DialogTitle>{isEditing ? 'Editar Tarifa' : 'Nueva Tarifa'}</DialogTitle>
         <form onSubmit={sendSubmit}>
           <DialogContent sx={{ display: 'flex' }}>
             <Grid container>
@@ -160,7 +179,7 @@ export const CreateRate = (props: createProps) => {
 
                   <Button onClick={handleClose}>Cancelar</Button>
                   <Button type="submit">
-                    {'CREAR'}
+                    {isEditing ? 'GUARDAR' : 'CREAR'}
                   </Button>
                 </>
             }
