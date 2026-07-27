@@ -43,7 +43,7 @@ export const UserTable = (props: tableProps) => {
 
   /*DATA */
   const { users, flag, getUsers, toggleActivation } = useUserStore();
-  const { hasPermission, username: currentUserUsername } = useAuthStore();
+  const { hasPermission, username: currentUserUsername, role: currentRole } = useAuthStore();
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(limitInit)
@@ -66,10 +66,13 @@ export const UserTable = (props: tableProps) => {
     getUsers(page, limit);
   };
 
-  // Verificar si el usuario es el admin del sistema (username admin o sin rol asignado = is_superuser)
+  // Verificar si el usuario es administrador
   const isSystemAdmin = (user: UserModel) => {
-    return user.username === 'admin';
+    return user.role?.name === 'Administrador';
   };
+
+  // Verificar si el usuario actual es operador
+  const isOperador = currentRole === 'Operador';
 
   return (
     <>
@@ -115,7 +118,7 @@ export const UserTable = (props: tableProps) => {
                       </TableCell>
                       <TableCell>
                         <Stack direction="row" spacing={1}>
-                          {hasPermission('users.change') && !adminUser && (
+                          {hasPermission('users.change') && !(isOperador && adminUser) && (
                             <Tooltip title="Asignar Rol">
                               <IconButton
                                 size="small"
@@ -127,14 +130,14 @@ export const UserTable = (props: tableProps) => {
                             </Tooltip>
                           )}
                           {hasPermission('users.delete') && (
-                            <Tooltip title={adminUser ? "No se puede desactivar al admin" : isCurrentUser ? "No puedes desactivarte a ti mismo" : ""}>
+                            <Tooltip title={isCurrentUser ? "No puedes desactivarte a ti mismo" : (isOperador && adminUser) ? "Operador no puede desactivar admin" : ""}>
                               <span>
                                 <Switch
                                   checked={user.is_active}
                                   onChange={() => toggleActivation(user)}
                                   color="success"
                                   size="small"
-                                  disabled={adminUser || isCurrentUser}
+                                  disabled={isCurrentUser || (isOperador && adminUser)}
                                 />
                               </span>
                             </Tooltip>
