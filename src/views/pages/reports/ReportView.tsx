@@ -69,8 +69,6 @@ export const ReportView = () => {
     onValueChange, formSubmitted
   } = useForm(formFields)
 
-  const bodyFormData = new FormData();
-
   const [modalState, setModalState] = useState(false)
   const { getReportXlsx, getDocumentsByRental } = useReportStore()
   const { postSendRequirements, getPrintReturnWarrantyForm, getPrintWarrantyReturn, postPrintDeliveryForm } = useRentalStore()
@@ -89,10 +87,7 @@ export const ReportView = () => {
   const getDocument = () => {
     const start_date = dayjs(since).startOf('day').hour(0).minute(0).second(0).toISOString();
     const end_date = dayjs(until).endOf('day').hour(23).minute(59).second(59).toISOString();
-    bodyFormData.append("start_date", start_date!)
-    bodyFormData.append("end_date", end_date!)
-    bodyFormData.append("state", state.id)
-    getReportXlsx(bodyFormData)
+    getReportXlsx({ start_date, end_date, state: state.id })
   }
 
   const exists = () => {

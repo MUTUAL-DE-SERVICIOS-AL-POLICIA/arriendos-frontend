@@ -3,12 +3,12 @@ import Swal from 'sweetalert2';
 
 
 export const useReportStore = () => {
-  const getReportXlsx = async (body: FormData) => {
+  const getReportXlsx = async (body: { start_date: string; end_date: string; state: number }) => {
     try {
       const { data } = await coffeApi.post('/leases/report', {
-        start_date: body.get('start_date'),
-        end_date: body.get('end_date'),
-        state: parseInt(String(body.get('state') || '0'))
+        start_date: body.start_date,
+        end_date: body.end_date,
+        state: body.state
       }, {
         responseType: 'arraybuffer',
         headers: {
