@@ -76,15 +76,16 @@ export const CardEvent = (props: cardProps) => {
               onSave={handleUpdateTime}
               loading={loadingChangeTime}
             />}
-          {
-            currentRentalState.current_state.id == 2 && <ComponentButton
-              onClick={() => printDeliveryForm(rental, product.id)}
-              text={'Imprimir Acta'}
-              sx={{ height: "35px", width: "90%", margin: "2px 10px" }}
-              loading={loading}
-              startIcon={<Print />}
-            />}
         </>
+      }
+      {
+        currentRentalState.current_state.id == 2 && <ComponentButton
+          onClick={() => printDeliveryForm(rental, product.id)}
+          text={'Imprimir Acta'}
+          sx={{ height: "35px", width: "90%", margin: "2px 10px" }}
+          loading={loading}
+          startIcon={<Print />}
+        />
       }
     </ItemPaper>
   )
@@ -127,7 +128,7 @@ export const InfoRental = (props: infoProps) => {
       try {
         const changeRentalState = {
           rental: rentalSelected.rental,
-          state: currentRentalState.next_states.find((e: any) => e.id != currentRentalState.current_state.id + 1).id,
+          state: currentRentalState.next_states.find((e: any) => e.id == 5).id,
           reason: text
         }
         await postChangeRentalState(changeRentalState)
@@ -176,7 +177,7 @@ export const InfoRental = (props: infoProps) => {
               </>
           }
         </ItemPaper>
-        {(currentRentalState.current_state.id == 1 || currentRentalState.current_state.id == 2) && hasPermission('leases.change') && <ComponentButton
+        {(currentRentalState.current_state.id >= 1 && currentRentalState.current_state.id <= 4) && hasPermission('leases.change') && <ComponentButton
           text={'ANULAR'}
           onClick={stoppedAction}
           variant={'outlined'}
