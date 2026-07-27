@@ -21,7 +21,7 @@
  * Fecha: 2026
  */
 
-import { useRoleStore } from "@/hooks";
+import { useRoleStore, useAuthStore } from "@/hooks";
 import {
     Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle,
     FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, Typography
@@ -41,6 +41,10 @@ export const AssignRoleDialog = (props: AssignRoleProps) => {
     const [roles, setRoles] = useState<any[]>([]);
     const [selectedRoleId, setSelectedRoleId] = useState<string>('');
     const { getRoles, assignRole, removeUserRole, getUserRoles } = useRoleStore();
+    const { role: currentRole } = useAuthStore();
+
+    // Operador no puede asignar rol de Administrador
+    const isOperador = currentRole === 'Operador';
 
     useEffect(() => {
         if (open && user) {
@@ -51,7 +55,9 @@ export const AssignRoleDialog = (props: AssignRoleProps) => {
 
     const loadRoles = async () => {
         const { roles: data } = await getRoles(0, -1, '');
-        setRoles(data);
+        // Operador no puede asignar rol de Administrador
+        const filteredRoles = isOperador ? data.filter((r: any) => r.name !== 'Administrador') : data;
+        setRoles(filteredRoles);
     };
 
     const handleSubmit = async (e: FormEvent) => {
