@@ -1,11 +1,11 @@
 import { ItemPaper, SkeletonPropertie } from "@/components";
 import { useAuthStore, usePropertieStore } from "@/hooks";
-import { PropertieModel, RoomModel, SubRooms } from "@/models";
+import { PropertieModel, RoomModel } from "@/models";
 import { AddCircle, Edit } from "@mui/icons-material";
 import { Grid, IconButton, Typography, Box } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import noimage from "@/assets/images/no-image.webp";
-import { RoomTable, CreateRoom, EditSubRoom, CreateSubRoom } from "./rooms";
+import { RoomTable, CreateRoom } from "./rooms";
 
 
 interface tableProps {
@@ -28,35 +28,11 @@ export const PropertieTable = (props: tableProps) => {
   const [openDialog, setopenDialog] = useState(false);
   const [itemEdit, setItemEdit] = useState<any>(null);
   const [change, setChange] = useState<boolean>(true);
-  const [openSubRoomDialog, setOpenSubRoomDialog] = useState(false);
-  const [subRoomToEdit, setSubRoomToEdit] = useState<SubRooms | null>(null);
-  const [openCreateSubRoomDialog, setOpenCreateSubRoomDialog] = useState(false);
-  const [createSubRoomRoomId, setCreateSubRoomRoomId] = useState<number | null>(null);
 
   const handleDialog = useCallback((value: boolean) => {
     setopenDialog(value)
     if (!value) return setItemEdit(null)
     setChange(value)
-  }, []);
-
-  const handleSubRoomEdit = useCallback((subRoom: SubRooms) => {
-    setSubRoomToEdit(subRoom);
-    setOpenSubRoomDialog(true);
-  }, []);
-
-  const handleCloseSubRoomDialog = useCallback(() => {
-    setOpenSubRoomDialog(false);
-    setSubRoomToEdit(null);
-  }, []);
-
-  const handleCreateSubRoom = useCallback((roomId: number) => {
-    setCreateSubRoomRoomId(roomId);
-    setOpenCreateSubRoomDialog(true);
-  }, []);
-
-  const handleCloseCreateSubRoomDialog = useCallback(() => {
-    setOpenCreateSubRoomDialog(false);
-    setCreateSubRoomRoomId(null);
   }, []);
 
   useEffect(() => {
@@ -123,8 +99,6 @@ export const PropertieTable = (props: tableProps) => {
                           handleDialog(true);
                           setChange(false)
                         }}
-                        editSubRoom={handleSubRoomEdit}
-                        createSubRoom={handleCreateSubRoom}
                       />
                     }
                   </Grid>
@@ -140,22 +114,6 @@ export const PropertieTable = (props: tableProps) => {
           property={itemEdit}
           change={change}
         ></CreateRoom>
-      }
-      {
-        openSubRoomDialog &&
-        <EditSubRoom
-          open={openSubRoomDialog}
-          handleClose={handleCloseSubRoomDialog}
-          subRoom={subRoomToEdit}
-        />
-      }
-      {
-        openCreateSubRoomDialog && createSubRoomRoomId &&
-        <CreateSubRoom
-          open={openCreateSubRoomDialog}
-          handleClose={handleCloseCreateSubRoomDialog}
-          roomId={createSubRoomRoomId}
-        />
       }
     </>
   )

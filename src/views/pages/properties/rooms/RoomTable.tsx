@@ -1,5 +1,5 @@
 import { SeverityPill } from "@/components"
-import { RoomModel, SubRooms } from "@/models"
+import { RoomModel } from "@/models"
 import { Edit, KeyboardArrowDownOutlined, KeyboardArrowUpOutlined } from "@mui/icons-material";
 import { Checkbox, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material"
 import React, { useState } from "react";
@@ -10,8 +10,6 @@ interface tableProps {
   stateSelect?: boolean;
   itemSelect?: (room: RoomModel) => void;
   editItem?: (room: RoomModel) => void;
-  editSubRoom?: (subRoom: SubRooms) => void;
-  createSubRoom?: (roomId: number) => void;
   items?: any[];
 }
 
@@ -21,8 +19,6 @@ export const RoomTable = (props: tableProps) => {
     stateSelect = false,
     itemSelect,
     editItem,
-    editSubRoom,
-    createSubRoom,
     items = [],
   } = props;
 
@@ -99,8 +95,6 @@ export const RoomTable = (props: tableProps) => {
                       <SubEnviromentTable
                         open={openIndex == room.id}
                         SubRooms={room.sub_rooms}
-                        onEdit={editSubRoom}
-                        onAdd={createSubRoom ? () => createSubRoom(room.id) : undefined}
                       />}
                   </React.Fragment>
                 )
