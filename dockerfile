@@ -3,13 +3,13 @@ FROM node:18.12.1 AS build-stage
 
 WORKDIR /app
 
-COPY package*.json .env ./
+COPY package.json yarn.lock ./
 
-RUN npm install
+RUN yarn install --frozen-lockfile
 
 COPY . .
 
-RUN npm run build
+RUN yarn build
 
 # Fase de producción
 FROM nginx:1.21-alpine AS production-stage
