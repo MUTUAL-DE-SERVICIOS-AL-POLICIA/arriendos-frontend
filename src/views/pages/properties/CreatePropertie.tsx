@@ -4,7 +4,7 @@ import { useForm, usePropertieStore } from "@/hooks";
 import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 import { DepartmentModel, FormPropertieModel, FormPropertieValidations, PropertieModel, listDepartments } from '@/models';
-import { isFile } from "@/helpers";
+import { isFile, getMediaUrl } from "@/helpers";
 import noimage from "@/assets/images/no-image.webp";
 import { DepartamentTable } from "./DepartamentTable";
 
@@ -52,7 +52,7 @@ export const CreatePropertie = (props: CreatePropertieProps) => {
 
   useEffect(() => {
     if (propertie != null) {
-      setNewImage(propertie.photo);
+      setNewImage(getMediaUrl(propertie.photo));
       const departmentSelect = listDepartments.find((item: DepartmentModel) => item.name === propertie.department)
       onValueChange('department', departmentSelect)
     }

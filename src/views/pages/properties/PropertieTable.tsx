@@ -5,6 +5,7 @@ import { AddCircle, Edit } from "@mui/icons-material";
 import { Grid, IconButton, Typography, Box } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import noimage from "@/assets/images/no-image.webp";
+import { getMediaUrl } from "@/helpers";
 import { RoomTable, CreateRoom } from "./rooms";
 
 
@@ -52,7 +53,7 @@ export const PropertieTable = (props: tableProps) => {
                     <Typography sx={{ fontWeight: 'bold' }}>{propertie.address}</Typography>
                     <Typography sx={{ fontWeight: 'bold' }}>{propertie.department}</Typography>
                     <img
-                      src={propertie.photo}
+                      src={getMediaUrl(propertie.photo)}
                       alt="Descripción de la imagen"
                       style={{ height: '180px', width: '170px', objectFit: 'cover' }}
                       onError={(e: any) => e.target.src = noimage}
