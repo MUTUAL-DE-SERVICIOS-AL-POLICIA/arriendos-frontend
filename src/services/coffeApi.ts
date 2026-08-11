@@ -55,6 +55,17 @@ const createAxiosInstance = (baseURL: string) => {
     return Promise.reject(error)
   });
 
+  instance.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      if (error.response && error.response.status === 401) {
+        localStorage.clear();
+        window.location.href = '/';
+      }
+      return Promise.reject(error);
+    }
+  );
+
   return instance;
 };
 

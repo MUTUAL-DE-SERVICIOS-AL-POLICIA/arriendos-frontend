@@ -14,10 +14,14 @@ export const usePropertieStore = () => {
       const { data } = await api.get('/rooms/properties/roomslist/');
       dispatch(setProperties({ properties: data.properties }))
     } catch (error: any) {
-      if (error.response && error.response.status == 400) {
+      if (error.response && error.response.status === 401) {
+        localStorage.clear();
+        window.location.href = '/';
+        return;
+      } else if (error.response && error.response.status === 400) {
         const message = error.response.data.error
         Swal.fire('Error', message, 'error')
-      } else if (error.response && error.response.status == 403) {
+      } else if (error.response && error.response.status === 403) {
         const message = error.response.data.detail
         Swal.fire('Acceso denegado', message, 'warning')
       } else throw new Error('Ocurrió algun error en el backend')
