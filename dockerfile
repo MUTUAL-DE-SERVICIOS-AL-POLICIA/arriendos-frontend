@@ -1,15 +1,15 @@
 # Fase de construcción
-FROM node:18.12.1 AS build-stage
+FROM node:18 AS build-stage
 
 WORKDIR /app
 
 COPY package.json yarn.lock ./
 
-RUN yarn install --frozen-lockfile
+RUN yarn install --ignore-engines
 
 COPY . .
 
-RUN yarn build
+RUN npx vite build
 
 # Fase de producción
 FROM nginx:1.21-alpine AS production-stage

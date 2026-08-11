@@ -29,6 +29,7 @@ export const authSlice = createSlice({
         username: '',
         permissions: [] as string[],
         role: null as string | null,
+        is_superuser: false,
     },
     reducers: {
         onLogin: (state, { payload }) => {
@@ -37,6 +38,7 @@ export const authSlice = createSlice({
             state.username = payload.username || '';
             state.permissions = payload.permissions || [];
             state.role = payload.role || null;
+            state.is_superuser = payload.is_superuser || false;
         },
         onLogout: (state) => {
             state.status = 'not-authenticated';
@@ -44,6 +46,7 @@ export const authSlice = createSlice({
             state.username = '';
             state.permissions = [];
             state.role = null;
+            state.is_superuser = false;
         },
     }
 });

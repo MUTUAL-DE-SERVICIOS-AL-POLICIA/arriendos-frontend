@@ -3,9 +3,9 @@ import { Box, Typography } from '@mui/material';
 import { Warning } from '@mui/icons-material';
 
 export const DashboardView = () => {
-    const { role, permissions } = useAuthStore();
+    const { role, permissions, is_superuser } = useAuthStore();
 
-    if (!role || permissions.length === 0) {
+    if (!is_superuser && (!role || permissions.length === 0)) {
         return (
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '60vh' }}>
                 <Warning sx={{ fontSize: 60, color: 'warning.main', mb: 2 }} />

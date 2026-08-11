@@ -43,7 +43,7 @@ import {
 } from "@/store";
 
 export const useAuthStore = () => {
-  const { status, user, username, permissions, role } = useSelector((state: any) => state.auth);
+  const { status, user, username, permissions, role, is_superuser } = useSelector((state: any) => state.auth);
   const dispatch = useDispatch();
 
   /**
@@ -79,11 +79,13 @@ export const useAuthStore = () => {
       localStorage.setItem('username', data.username);
       localStorage.setItem('permissions', JSON.stringify(data.permissions || []));
       localStorage.setItem('role', data.role || '');
+      localStorage.setItem('is_superuser', data.is_superuser || false);
       dispatch(onLogin({
         user: userName,
         username: data.username,
         permissions: data.permissions || [],
         role: data.role || null,
+        is_superuser: data.is_superuser || false,
       }));
     } catch (error: any) {
       dispatch(onLogout());
@@ -99,12 +101,13 @@ export const useAuthStore = () => {
       const username = localStorage.getItem('username') || '';
       const permissions = JSON.parse(localStorage.getItem('permissions') || '[]');
       const role = localStorage.getItem('role') || null;
+      const is_superuser = localStorage.getItem('is_superuser') === 'true';
       const decodedToken = decodeToken(token)
       if(isTokenExpired(decodedToken)) {
         localStorage.clear();
         return dispatch(onLogout());
       } else {
-        return dispatch(onLogin({ user, username, permissions, role }))
+        return dispatch(onLogin({ user, username, permissions, role, is_superuser }))
       }
     } else {
       localStorage.clear();
@@ -144,6 +147,7 @@ export const useAuthStore = () => {
    * hasPermission('users.delete') - ¿Puede eliminar usuarios?
    */
   const hasPermission = (permission: string): boolean => {
+    if (is_superuser) return true;
     return permissions.includes(permission);
   };
 
