@@ -3,6 +3,9 @@ import { getEnvVariables } from '../helpers';
 import { jwtDecode } from 'jwt-decode'
 
 const { VITE_HOST_BACKEND } = getEnvVariables();
+const backendBase = VITE_HOST_BACKEND
+    ? `${VITE_HOST_BACKEND.replace(/\/$/, '')}/api`
+    : '/api';
 
 let isUserActive = false
 
@@ -19,7 +22,7 @@ document.addEventListener('keypress', setUserActive)
 // Creamos una función que devuelve la instancia de axios con el host deseado
 const createAxiosInstance = (baseURL: string) => {
   const instance = axios.create({
-    baseURL: `${baseURL}api`,
+    baseURL: baseURL,
   });
 
   const verifyToken = () => {
@@ -61,4 +64,4 @@ const isTokenExpired = (expirationDate: any) => {
   return now > expirationDate
 }
 
-export const coffeApi = createAxiosInstance(VITE_HOST_BACKEND);
+export const coffeApi = createAxiosInstance(backendBase);
