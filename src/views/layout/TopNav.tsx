@@ -5,6 +5,8 @@ import { MenuOutlined } from '@mui/icons-material';
 import { usePopover } from '@/hooks';
 import { AccountPopover } from '.';
 import noimage from '@/assets/images/profile.png';
+import { EnvironmentBadge } from '@/components/EnvironmentBadge';
+import { getEnvVariables } from '@/helpers/getEnvVariables';
 
 interface topProps {
     onNavOpen: () => void;
@@ -25,6 +27,9 @@ export const TopNav = (props: topProps) => {
     const accountPopover = usePopover();
     return (
         <>
+            <EnvironmentBadge
+                environment={getEnvVariables().VITE_DEPLOY_ENV as 'dev' | 'test' | 'prod'}
+            />
             <Box
                 component="header"
                 sx={{

@@ -14,3 +14,4 @@ export * from './Select';
 export * from './Paper';
 export * from './Skeleton';
 export * from './Dialog';
+export * from './EnvironmentBadge';
