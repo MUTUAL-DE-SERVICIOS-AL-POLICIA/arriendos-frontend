@@ -44,11 +44,11 @@ export const UserLdapTable = (props: userLdapProps) => {
 
   useEffect(() => {
     if (query && query.trim() !== "") {
-      const filteredUsers = usersLDAP.filter((e: any) => e.username.includes(query.trim()));
+      const filteredUsers = usersLDAP.filter((e: any) => e.username && e.username.includes(query.trim()));
       const updateCustomerList = applyPagination(filteredUsers, page, limit);
       setUsers(updateCustomerList);
     } else {
-      const defaultCustomerList = applyPagination(usersLDAP, page, limit);
+      const defaultCustomerList = applyPagination(usersLDAP.filter((e: any) => e.username), page, limit);
       setUsers(defaultCustomerList);
     }
   }, [usersLDAP, page, limit, query]);
