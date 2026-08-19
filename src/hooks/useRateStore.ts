@@ -13,7 +13,7 @@ export const useRateStore = () => {
   const getRates = async (page: number, limit: number) => {
     try {
       let filter: any = { params: { page: page } };
-      if (limit != -1) filter.params.limit = limit;
+      filter.params.limit = limit;
       const { data } = await api.get(`/requirements/allrates/`, filter);
       dispatch(setRates({ rates: data.rates }));
       return data.total;
@@ -40,6 +40,24 @@ export const useRateStore = () => {
         Swal.fire('Acceso denegado', message, 'warning')
       } else {
         const message = error.response.data.error
+        Swal.fire('Error', message, 'error');
+      }
+      return false;
+    }
+  }
+
+  const updateRate = async (id: number, body: object) => {
+    try {
+      await api.patch(`/requirements/rates/${id}`, body);
+      dispatch(refreshRate());
+      Swal.fire('Tarifa actualizada correctamente', '', 'success');
+      return true;
+    } catch (error: any) {
+      if (error.response && error.response.status == 403) {
+        const message = error.response.data.detail
+        Swal.fire('Acceso denegado', message, 'warning')
+      } else {
+        const message = error.response?.data?.error || 'Error al actualizar la tarifa'
         Swal.fire('Error', message, 'error');
       }
       return false;
@@ -77,6 +95,7 @@ export const useRateStore = () => {
     //* Métodos
     getRates,
     postCreateRate,
+    updateRate,
     deleteRemoveRate,
   }
 }

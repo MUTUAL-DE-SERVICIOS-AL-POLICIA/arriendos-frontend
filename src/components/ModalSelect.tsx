@@ -32,7 +32,7 @@ export const ModalSelectComponent = React.memo((props: any) => {
             onClose={() => handleDrawer(false)}
             style={{ zIndex: 9998 }}
         >
-            <div style={{ overflowY: 'auto' }}>
+            <div style={{ overflowY: 'auto', overflowX: 'visible' }}>
                 <Stack direction="row" justifyContent="space-between" style={{ padding: '8px', }}>
                     <Stack spacing={1}>
                         <Typography variant="h5">{title}</Typography>
@@ -50,7 +50,7 @@ export const ModalSelectComponent = React.memo((props: any) => {
                         </div>
                     }
                 </Stack>
-                <div style={{ padding: '16px' }}>
+                <div style={{ padding: '16px', overflow: 'visible', position: 'relative' }}>
                     {React.Children.map(children, child => {
                         return React.cloneElement(child, {
                             stateMultiple: stateMultiple,

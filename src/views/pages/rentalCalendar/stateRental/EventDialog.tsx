@@ -3,7 +3,7 @@ import { Box } from "@mui/system"
 import { useEffect, useState } from "react"
 import { ArrowCircleRight, Close, KeyboardReturn } from "@mui/icons-material"
 import { useLeasesStates } from "@/hooks/useLeasesStates"
-import { useRentalStore } from "@/hooks"
+import { useAuthStore, useRentalStore } from "@/hooks"
 import Swal from "sweetalert2"
 import { InfoRental } from "./InfoRental"
 import { Reserver } from "./reserve/Main"
@@ -29,6 +29,7 @@ export const EventDialog = (props: elementsProps) => {
 
   //INFORMACIÓN DEL ALQUILER
   const { rentalSelected, postSendRequirements, postWarrantyReturn } = useRentalStore();
+  const { hasPermission } = useAuthStore();
 
 
   const { states, rentalInformation, currentRentalState, getLeaseState, getRental, getCurrentLeaseState, postChangeRentalState } = useLeasesStates();
@@ -202,7 +203,7 @@ export const EventDialog = (props: elementsProps) => {
             <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2, pb: 1 }}>
               <Box sx={{ flex: '1 1 auto' }} />
               {
-                (currentRentalState.current_state.id) <= states.length &&
+                (currentRentalState.current_state.id) <= states.length && hasPermission('leases.change') &&
                 <ComponentButton
                   text={(currentRentalState.current_state.id) == states.length ? 'Devolver' : 'Siguiente'}
                   onClick={handleNext}

@@ -4,8 +4,10 @@ import { Stack, SvgIcon } from "@mui/material"
 import { useCallback, useState } from "react";
 import { CreateRequirement, RequirementTable } from ".";
 import { RequirementModel } from "@/models";
+import { useAuthStore } from "@/hooks";
 
 export const RequirementsView = () => {
+  const { hasPermission } = useAuthStore();
   const [openDialog, setopenDialog] = useState(false);
   const [itemEdit, setItemEdit] = useState<RequirementModel | null>(null);
 
@@ -21,10 +23,12 @@ export const RequirementsView = () => {
         direction="row"
         justifyContent="end"
       >
-        <ComponentButton
-          text="Nuevo Requisito"
-          onClick={() => handleDialog(true)}
-          startIcon={<SvgIcon fontSize="small"><Add /></SvgIcon>} />
+        {hasPermission('requirements.add') && (
+          <ComponentButton
+            text="Nuevo Requisito"
+            onClick={() => handleDialog(true)}
+            startIcon={<SvgIcon fontSize="small"><Add /></SvgIcon>} />
+        )}
       </Stack>
       <RequirementTable
         handleEdit={(v) => {

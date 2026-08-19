@@ -1,69 +1,93 @@
-import { DocumentScanner, Home, HourglassBottom, Person, Wifi } from "@mui/icons-material"
+/**
+ * Configuración del menú de ajustes/configuración.
+ *
+ * Define los elementos del menú de ajustes agrupados por categorías.
+ * Cada categoría y elemento tiene un permiso RBAC requerido.
+ *
+ * Grupos y permisos:
+ * - Ajustes de productos:
+ *   - Rangos de horas: products.view
+ *   - Tarifas: products.view
+ *   - Requisitos: requirements.view
+ * - Ajustes de Clientes:
+ *   - Tipos de Clientes: customers.view
+ * - Gestión de Usuarios:
+ *   - Usuarios: users.view
+ *   - Roles: users.view
+ * - Gestión de Inmuebles:
+ *   - Inmuebles: rooms.view
+ *
+ * Autor: Dilan Torrez
+ * Fecha: 2026
+ */
+
+import { DocumentScanner, Home, HourglassBottom, Person, Security } from "@mui/icons-material"
 
 export const menuSettings = () => {
     return [
         {
             title: "Ajustes de productos",
-            permission: "show-rent",
+            permission: "products.view",
             group: [
                 {
                     path: "/hourRangesView",
                     title: "Rangos de horas",
                     icon: <HourglassBottom />,
-                    permission: "show-halls"
+                    permission: "products.view"
                 },
                 {
                     path: "/ratesView",
                     title: "Tarifas",
-                    icon: <Wifi />,
-                    permission: "show-halls"
-                }, {
+                    icon: <HourglassBottom />,
+                    permission: "products.view"
+                },
+                {
                     path: "/requirementsView",
                     title: "Requisitos",
                     icon: <DocumentScanner />,
-                    permission: "show-halls"
+                    permission: "requirements.view"
                 },
             ]
         },
         {
-            title: "Ajustes de Clienes",
-            permission: "show-rent",
+            title: "Ajustes de Clientes",
+            permission: "customers.view",
             group: [
                 {
                     title: "Tipos de Clientes",
-                    permission: "show-rent",
+                    permission: "customers.view",
                     path: "/typeCustomersView",
-                    icon: <Wifi />
+                    icon: <DocumentScanner />
                 },
             ]
         },
         {
-            title: "Gestión de Usuarios",
-            permission: "show-rent",
+            title: "Gestion de Usuarios",
+            permission: "users.view",
             group: [
                 {
                     path: "/usersView",
                     title: "Usuarios",
                     icon: <Person />,
-                    permission: "show-users"
+                    permission: "users.view"
                 },
-                // {
-                //     path: "/users/rolesView",
-                //     title: "Roles",
-                //     icon: <Wifi />,
-                //     permission: "show-roles"
-                // }
+                {
+                    path: "/rolesView",
+                    title: "Roles",
+                    icon: <Security />,
+                    permission: "users.view"
+                },
             ]
         },
         {
             title: "Gestion de Inmuebles",
-            permission: "show-rent",
+            permission: "rooms.view",
             group: [
                 {
                     path: "/propertiesView",
                     title: "Inmuebles",
                     icon: <Home />,
-                    permission: "show-halls"
+                    permission: "rooms.view"
                 },
             ]
         }

@@ -1,3 +1,26 @@
+/**
+ * Componente de navegación lateral (SideNav).
+ *
+ * Muestra el menú lateral de navegación de la aplicación.
+ * Los elementos del menú se filtran según los permisos del usuario.
+ *
+ * Características:
+ * - Diseño responsivo (permanent drawer en desktop, temporary en móvil)
+ * - Filtra elementos del menú según permisos RBAC
+ * - Logo de la institución
+ * - Efecto de expansión al pasar el mouse
+ *
+ * Elementos del menú (filtrados por permisos):
+ * - Calendario: requires leases.view
+ * - Clientes: requires customers.view
+ * - Alquileres: requires leases.view
+ * - Productos: requires products.view
+ * - Reportes: requires leases.view
+ *
+ * Autor: Dilan Torrez
+ * Fecha: 2026
+ */
+
 import { styled, Theme, CSSObject } from '@mui/material/styles';
 import MuiDrawer from '@mui/material/Drawer';
 import { useState } from 'react';
@@ -7,6 +30,7 @@ import { menu } from '@/utils/menu';
 import { SideNavItem } from '@/components';
 import logo from '@/assets/images/muserpol-logo.png';
 import logoWithOutText from '@/assets/images/muserpol-logo-without-text.png';
+import { useAuthStore } from '@/hooks';
 import React from 'react';
 
 const drawerWidth = 190;
@@ -69,6 +93,16 @@ export const SideNav = (props: navProps) => {
   const { pathname } = useLocation();
   const theme = useTheme();
   const lgUp = useMediaQuery(theme.breakpoints.up('md'));
+  const { hasPermission } = useAuthStore();
+
+  /**
+   * Filtra el menú según los permisos del usuario.
+   * Si un elemento no tiene permiso, no se muestra.
+   */
+  const filteredMenu = menu().filter((item) => {
+    if (!item.permission) return true;
+    return hasPermission(item.permission);
+  });
 
   const content = (
     <Box sx={{ py: 3 }}>
@@ -83,7 +117,7 @@ export const SideNav = (props: navProps) => {
         }}
       />
       {
-        menu().map((item, index) => (
+        filteredMenu.map((item, index) => (
           <React.Fragment key={index}>
             <SideNavItem
               key={item.title}

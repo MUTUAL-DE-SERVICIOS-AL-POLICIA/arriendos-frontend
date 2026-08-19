@@ -2,19 +2,53 @@ import { getDateJSON } from '@/helpers';
 import { EventsCalendarModel } from '@/models';
 import { createSlice } from '@reduxjs/toolkit';
 
+interface RentalItem {
+  rental: number;
+  name_state: string;
+  start: string;
+  end: string;
+  [key: string]: unknown;
+}
+
+interface RentalInformationProduct {
+  rental: number;
+  name_state: string;
+  start_time: string;
+  end_time: string;
+  [key: string]: unknown;
+}
+
+interface RentalInformation {
+  products: RentalInformationProduct[];
+  [key: string]: unknown;
+}
+
+interface RentalState {
+  rentals: RentalItem[];
+  groupRentals: EventsCalendarModel[];
+  rentalSelected: EventsCalendarModel | null;
+  states: unknown[];
+  rentalInformation: RentalInformation | null;
+  currentRentalState: unknown;
+  daySelected: unknown;
+  shoppingCart: unknown[];
+  allRentals: unknown[];
+  allRentalsWithProducts: unknown[];
+}
+
 export const rentalSlice = createSlice({
   name: 'rental',
   initialState: {
-    rentals: <any>[],
-    groupRentals: <EventsCalendarModel[]>[],
-    rentalSelected: <EventsCalendarModel | null>null,
-    states: [],
-    rentalInformation: <any>null,
+    rentals: [] as RentalItem[],
+    groupRentals: [] as EventsCalendarModel[],
+    rentalSelected: null as EventsCalendarModel | null,
+    states: [] as unknown[],
+    rentalInformation: null as RentalInformation | null,
     currentRentalState: null,
     daySelected: null,
-    shoppingCart: <any>[],
-    allRentals: [],
-    allRentalsWithProducts: []
+    shoppingCart: [] as unknown[],
+    allRentals: [] as unknown[],
+    allRentalsWithProducts: [] as unknown[]
   },
   reducers: {
     setShoppingCart: (state, action) => {
@@ -47,12 +81,12 @@ export const rentalSlice = createSlice({
     },
     setUpdateRental: (state, action) => {
       state.rentals = [...state.rentals!.map((rental: any) => {
-        if (rental.product_id == action.payload.productId) {
+        if (rental.rental == action.payload.productId) {
           return {
             ...rental,
-            ...action.payload,
-            start_time: getDateJSON(action.payload.start),
-            end_time: getDateJSON(action.payload.end),
+            name_state: action.payload.name_state ?? rental.name_state,
+            start: action.payload.start ? getDateJSON(action.payload.start) : rental.start,
+            end: action.payload.end ? getDateJSON(action.payload.end) : rental.end,
           }
         }
         return rental;
@@ -60,36 +94,41 @@ export const rentalSlice = createSlice({
     },
     setUpdateGroupRental: (state, action) => {
       state.groupRentals = [...state.groupRentals!.map((rental: any) => {
-        if (rental.product_id == action.payload.productId) {
+        if (rental.rental == action.payload.productId) {
           return {
             ...rental,
-            ...action.payload,
-            start_time: getDateJSON(action.payload.start),
-            end_time: getDateJSON(action.payload.end),
+            name_state: action.payload.name_state ?? rental.name_state,
+            start: action.payload.start ? getDateJSON(action.payload.start) : rental.start,
+            end: action.payload.end ? getDateJSON(action.payload.end) : rental.end,
           }
         }
         return rental;
       })]
     },
     setUpdateRentalSelected: (state, action) => {
-      state.rentalInformation = {
-        ...state.rentalInformation!,
-        products: state.rentalInformation.products.map((rental: any) => {
-          return {
-            ...rental,
-            ...action.payload,
-            start_time: getDateJSON(action.payload.start),
-            end_time: getDateJSON(action.payload.end),
-          }
-        })
+      if (state.rentalInformation) {
+        state.rentalInformation = {
+          ...state.rentalInformation,
+          products: state.rentalInformation.products.map((rental: any) => {
+            return {
+              ...rental,
+              name_state: action.payload.name_state ?? rental.name_state,
+              start_time: action.payload.start ? getDateJSON(action.payload.start) : rental.start_time,
+              end_time: action.payload.end ? getDateJSON(action.payload.end) : rental.end_time,
+            }
+          })
+        }
       }
-      state.rentalSelected = {
-        ...state.rentalSelected!,
-        ...action.payload,
-        start_time: getDateJSON(action.payload.start),
-        end_time: getDateJSON(action.payload.end),
+      if (state.rentalSelected) {
+        const newStart = action.payload.start ? getDateJSON(action.payload.start) : state.rentalSelected.start;
+        const newEnd = action.payload.end ? getDateJSON(action.payload.end) : state.rentalSelected.end;
+        state.rentalSelected = {
+          ...state.rentalSelected,
+          name_state: action.payload.name_state ?? state.rentalSelected.name_state,
+          start: newStart ?? state.rentalSelected.start,
+          end: newEnd ?? state.rentalSelected.end,
+        }
       }
-
     },
     setDaySelected: (state, action) => {
       state.daySelected = action.payload.daySelected
@@ -99,6 +138,9 @@ export const rentalSlice = createSlice({
     },
     setAllRentalsWithProducts: (state, action) => {
       state.allRentalsWithProducts = action.payload.allRentalsWithProducts
+    },
+    clearShoppingCart: (state) => {
+      state.shoppingCart = [];
     }
   }
 });
@@ -120,5 +162,6 @@ export const {
   setAllStates,
   setDaySelected,
   setAllRentals,
-  setAllRentalsWithProducts
+  setAllRentalsWithProducts,
+  clearShoppingCart
 } = rentalSlice.actions;

@@ -3,13 +3,7 @@ import { ComponentDamage, ComponentDamageRectify, ComponentExtraHour, ComponentP
 import { useDamageStore, useExtraHourStore, useLeasesStates, usePaymentsStore, useWarrantyStore } from "@/hooks";
 import { EventsCalendarModel, ProductRentalModel } from "@/models";
 import { useEffect } from "react";
-
-export enum Reason {
-  payment = 'payment',
-  warranty = 'warranty',
-  extraHour = 'extraHour',
-  damage = 'damage',
-}
+import { Reason } from "./Reason";
 
 interface elementsProps {
   amountTotal: number;

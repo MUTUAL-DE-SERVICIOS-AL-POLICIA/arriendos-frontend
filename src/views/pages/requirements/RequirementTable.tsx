@@ -1,5 +1,5 @@
 import { ComponentSearch, ComponentTablePagination, SkeletonComponent } from '@/components';
-import { useRequirementStore } from '@/hooks';
+import { useAuthStore, useRequirementStore } from '@/hooks';
 import { RequirementModel } from '@/models';
 import { DeleteOutline, EditOutlined } from '@mui/icons-material';
 import { Checkbox, IconButton, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
@@ -25,6 +25,7 @@ export const RequirementTable = (props: tableProps) => {
 
   /*DATA */
   const { requirements, flag, getRequirements, deleteRemoveRequirement } = useRequirementStore();
+  const { hasPermission } = useAuthStore();
 
 
   const [total, setTotal] = useState(0);
@@ -75,16 +76,20 @@ export const RequirementTable = (props: tableProps) => {
                         direction="row"
                         spacing={2}
                       >
-                        <IconButton
-                          sx={{ p: 0 }}
-                          onClick={() => handleEdit!(requirement)} >
-                          <EditOutlined color="info" />
-                        </IconButton>
-                        <IconButton
-                          sx={{ p: 0 }}
-                          onClick={() => deleteRemoveRequirement(requirement)} >
-                          <DeleteOutline color="error" />
-                        </IconButton>
+                        {hasPermission('requirements.change') && (
+                          <IconButton
+                            sx={{ p: 0 }}
+                            onClick={() => handleEdit!(requirement)} >
+                            <EditOutlined color="info" />
+                          </IconButton>
+                        )}
+                        {hasPermission('requirements.delete') && (
+                          <IconButton
+                            sx={{ p: 0 }}
+                            onClick={() => deleteRemoveRequirement(requirement)} >
+                            <DeleteOutline color="error" />
+                          </IconButton>
+                        )}
                       </Stack>
                     </TableCell>
                   </TableRow>

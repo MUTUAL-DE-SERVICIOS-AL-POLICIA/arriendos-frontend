@@ -1,5 +1,5 @@
 import { ComponentTableContent } from "@/components/TableContent"
-import { usePaymentsStore, useRentalStore, useWarrantyStore } from "@/hooks"
+import { useAuthStore, usePaymentsStore, useRentalStore, useWarrantyStore } from "@/hooks"
 import { Box, Dialog, DialogContent, DialogTitle, IconButton, Stack, Tab, Tabs } from "@mui/material"
 import { useEffect, useState } from "react"
 import { FormPayments, Reason } from "../rentalCalendar/stateRental/payments"
@@ -111,10 +111,11 @@ export const EditRental = (props: Props) => {
   const { payments = [], amountTotal, getRegistersPayments, getDetailPayment } = usePaymentsStore()
   const { warrantys = [], getListWarranty, getDetailWarranty } = useWarrantyStore()
   const { getRentals } = useRentalStore()
+  const { hasPermission } = useAuthStore()
 
   useEffect(() => {
-    getRegistersPayments(rental, true, handleModal)
-    getListWarranty(rental, true, handleModal)
+    getRegistersPayments(rental, true, handleModal, hasPermission('leases.delete'))
+    getListWarranty(rental, true, handleModal, hasPermission('leases.delete'))
     getRentals(rental)
   },[])
 
@@ -149,7 +150,7 @@ export const EditRental = (props: Props) => {
               </Tabs>
               <Stack direction="row" alignItems="right">
                 {
-                  handleTab(tabValueRegister) == 'warranty' &&
+                  handleTab(tabValueRegister) == 'warranty' && hasPermission('leases.add') &&
                   <ComponentButton
                     onClick={() => handleModal(true, null, Reason.damage)}
                     text={`Registar daño`}
@@ -157,12 +158,14 @@ export const EditRental = (props: Props) => {
                     sx={{marginTop: '10px'}}
                   />
                 }
-                <ComponentButton
-                  text={`Registrar pago`}
-                  height="30px"
-                  onClick={() => handleModal(true, null, handleTab(tabValueRegister))}
-                  sx={{marginTop: '10px', marginLeft: '10px'}}
-                />
+                {hasPermission('leases.add') && (
+                  <ComponentButton
+                    text={`Registrar pago`}
+                    height="30px"
+                    onClick={() => handleModal(true, null, handleTab(tabValueRegister))}
+                    sx={{marginTop: '10px', marginLeft: '10px'}}
+                  />
+                )}
               </Stack>
               </Stack>
             { tabValueRegister === 0 &&

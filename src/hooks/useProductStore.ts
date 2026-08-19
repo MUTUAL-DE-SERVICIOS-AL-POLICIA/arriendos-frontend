@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { coffeApi } from '@/services';
-import { refreshProduct, setProducts, setLeakedProducts, setClearLakProducts } from '@/store';
+import { refreshProduct, setProducts, setLeakedProducts, setClearLakedProducts } from '@/store';
 import Swal from 'sweetalert2';
 import { ProductModel } from '@/models';
 import days from '@/models/days.json';
@@ -27,11 +27,16 @@ export const useProductStore = () => {
     }
   }
 
-  const getProducts = async (page: number, limit: number, search: string) => {
+  const getProducts = async (page: number, limit: number, search: string, filters?: { rate_id?: string, property_id?: string, room_id?: string, hour_range_id?: string, day?: string }) => {
     try {
       let filter: any = { params: { page: page } };
-      if (limit != -1) filter.params.limit = limit;
+      filter.params.limit = limit;
       if (search !== '') filter.params.search = search;
+      if (filters?.rate_id) filter.params.rate_id = filters.rate_id;
+      if (filters?.property_id) filter.params.property_id = filters.property_id;
+      if (filters?.room_id) filter.params.room_id = filters.room_id;
+      if (filters?.hour_range_id) filter.params.hour_range_id = filters.hour_range_id;
+      if (filters?.day) filter.params.day = filters.day;
       const { data } = await api.get(`/product/product_filter/`, filter);
       dispatch(setProducts({ products: data.products }));
       return data.total
@@ -43,6 +48,21 @@ export const useProductStore = () => {
         const message = error.response.data.detail
         Swal.fire('Acceso denegado', message, 'warning')
       } else throw new Error('Ocurrió algun error en el backend')
+    }
+  }
+
+  const getFilterOptions = async () => {
+    try {
+      const { data } = await api.get(`/product/product_filter_options/`);
+      return {
+        rates: data.rates || [],
+        properties: data.properties || [],
+        rooms: data.rooms || [],
+        hour_ranges: data.hour_ranges || [],
+        days: data.days || [],
+      };
+    } catch (error: any) {
+      return { rates: [], properties: [], rooms: [], hour_ranges: [], days: [] };
     }
   }
 
@@ -137,6 +157,7 @@ export const useProductStore = () => {
     patchUpdateProduct,
     deleteRemoveProduct,
     getPriceHistory,
+    getFilterOptions,
     //* Métodos filtro de productos
     postLeakedProduct,
     clearLakedProduct,

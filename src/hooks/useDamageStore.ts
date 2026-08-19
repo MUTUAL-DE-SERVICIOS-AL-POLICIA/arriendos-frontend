@@ -29,10 +29,30 @@ export const useDamageStore = () => {
     }
   }
 
+  const printDamageWarrantyForm = async (rentalId: number, productId: number) => {
+    try {
+      const res = await api.get(`/financials/print_damage_warranty/?rental=${rentalId}&product=${productId}`, {
+        responseType: 'arraybuffer'
+      })
+      printDocument(res)
+      return true
+    } catch (error: any) {
+      if(error.response.data instanceof ArrayBuffer) {
+        const errorMessage = new TextDecoder('utf-8').decode(error.response.data)
+        const message = JSON.parse(errorMessage).error
+        Swal.fire('Error', message, 'error')
+      } else if(error.response.status == 403) {
+        const message = error.response.data.detail
+        Swal.fire('Acceso denegado', message, 'warning')
+      } else throw new Error('Ocurrió algun error en el backend')
+    }
+  }
+
   return {
     //* Propiedades
 
     //* Métodos
     postRegisterDiscountWarranty,
+    printDamageWarrantyForm,
   }
 }

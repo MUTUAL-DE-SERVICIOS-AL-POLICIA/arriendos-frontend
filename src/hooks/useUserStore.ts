@@ -14,7 +14,7 @@ export const useUserStore = () => {
   const getUsers = async (page: number, limit: number) => {
     try {
       let filter: any = { params: { page: page } };
-      if (limit != -1) filter.params.limit = limit;
+      filter.params.limit = limit;
       const { data } = await api.get(`/users/`, filter)
       dispatch(setUsers({ users: data.users }));
       return data.total
@@ -80,7 +80,7 @@ export const useUserStore = () => {
         )
       } catch (error: any) {
         if (error.response && error.response.status == 400) {
-          const message = error.response.data.error
+          const message = error.response.data.message || error.response.data.error
           Swal.fire('Error', message, 'error')
         } else if (error.response && error.response.status == 403) {
           const message = error.response.data.detail

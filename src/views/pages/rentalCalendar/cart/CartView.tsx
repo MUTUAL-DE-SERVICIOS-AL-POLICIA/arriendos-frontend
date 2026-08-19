@@ -3,7 +3,7 @@ import { Collapse, Grow, Paper, Typography } from "@mui/material";
 import { TransitionGroup } from "react-transition-group";
 import { ComponentButton, SelectComponent } from "@/components";
 import { FormEvent, useEffect, useState } from "react";
-import { usePlanStore, useProductStore, useRentalStore } from "@/hooks";
+import { useAuthStore, usePlanStore, useProductStore, useRentalStore } from "@/hooks";
 import { CardEvent } from ".";
 import { getDateJSON } from "@/helpers";
 
@@ -27,6 +27,7 @@ export const CartView = (props: cartProps) => {
   const [planSelect, setPlanSelect] = useState<number>(0);
   const { leakedProducts = [] } = useProductStore();
   const { shoppingCart, setUpdateShoppingCart, postCreateRental } = useRentalStore();
+  const { hasPermission } = useAuthStore();
 
   useEffect(() => {
     getPlans();
@@ -108,12 +109,14 @@ export const CartView = (props: cartProps) => {
             </TransitionGroup>
           </div>
           <div style={{ padding: '10px' }}>
-            <ComponentButton
-              type="submit"
-              text={`Crear Alquiler con ${shoppingCart.length} producto(s)`}
-              height="90%"
-              disable={shoppingCart.length === 0}
-            />
+            {hasPermission('leases.add') && (
+              <ComponentButton
+                type="submit"
+                text={`Crear Alquiler con ${shoppingCart.length} producto(s)`}
+                height="90%"
+                disable={shoppingCart.length === 0}
+              />
+            )}
           </div>
         </form>
       </Grow>

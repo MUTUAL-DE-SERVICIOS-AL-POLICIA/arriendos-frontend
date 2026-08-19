@@ -20,6 +20,7 @@ export interface ProductRentalModel {
     detail: string;
     event: string;
     rental: number;
+    product_price: number;
 }
 
 /* RENTAL MODEL */

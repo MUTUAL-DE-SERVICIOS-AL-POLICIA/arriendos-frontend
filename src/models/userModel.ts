@@ -8,6 +8,10 @@ export interface UserModel {
     last_name: string;
     email: string;
     is_active: boolean;
+    role: {
+        id: number;
+        name: string;
+    } | null;
 }
 
 /* FORM USER MODEL */

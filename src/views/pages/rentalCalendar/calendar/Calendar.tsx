@@ -82,8 +82,13 @@ export const CalendarComponent = (props: calendarProps) => {
           let backgroundColor = '#F79009'
           let textColor = '#000'
           if (event.name_state == 'Pre-reserva') backgroundColor = '#FFDD33'
+          if (event.name_state == 'Alquilado') {backgroundColor = '#1976D2'; textColor = '#f2f2f2'}
           if (event.name_state == 'Concluido') {
             backgroundColor = '#134E48'
+            textColor = '#f2f2f2'
+          }
+          if (event.name_state == 'Anulado') {
+            backgroundColor = '#9E9E9E'
             textColor = '#f2f2f2'
           }
           return {

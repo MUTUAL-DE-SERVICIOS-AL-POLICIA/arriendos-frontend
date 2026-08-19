@@ -2,7 +2,7 @@ import { ComponentButton, ComponentDate, ItemPaper } from "@/components";
 import { ContactModel, ProductRentalModel } from "@/models";
 import { Grid, Typography } from '@mui/material';
 import { formatDate, virifyDate } from "@/helpers";
-import { useLeasesStates, useRentalStore } from "@/hooks";
+import { useAuthStore, useLeasesStates, useRentalStore } from "@/hooks";
 import { format } from "date-fns";
 import esES from 'date-fns/locale/es';
 import { useState } from "react";
@@ -23,6 +23,7 @@ export const CardEvent = (props: cardProps) => {
   } = props;
   const { currentRentalState, patchUpdateTime } = useLeasesStates();
   const { postPrintDeliveryForm } = useRentalStore();
+  const { hasPermission } = useAuthStore();
 
   const [loading, setLoading] = useState(false);
   const [loadingChangeTime, setLoadingChangeTime] = useState(false);
@@ -68,22 +69,23 @@ export const CardEvent = (props: cardProps) => {
         showEdit &&
         <>
           {
-            (currentRentalState.current_state.id == 1 || currentRentalState.current_state.id == 2) && <ComponentDate
+            (currentRentalState.current_state.id == 1 || currentRentalState.current_state.id == 2) && hasPermission('leases.change') && <ComponentDate
               title={'Nueva fecha'}
               date={formatDate(product.start_time)}
               timeAdd={product.hour_range}
               onSave={handleUpdateTime}
               loading={loadingChangeTime}
             />}
-          {
-            currentRentalState.current_state.id == 2 && <ComponentButton
-              onClick={() => printDeliveryForm(rental, product.id)}
-              text={'Imprimir Acta'}
-              sx={{ height: "35px", width: "90%", margin: "2px 10px" }}
-              loading={loading}
-              startIcon={<Print />}
-            />}
         </>
+      }
+      {
+        currentRentalState.current_state.id == 2 && <ComponentButton
+          onClick={() => printDeliveryForm(rental, product.id)}
+          text={'Imprimir Acta'}
+          sx={{ height: "35px", width: "90%", margin: "2px 10px" }}
+          loading={loading}
+          startIcon={<Print />}
+        />
       }
     </ItemPaper>
   )
@@ -99,6 +101,7 @@ export const InfoRental = (props: infoProps) => {
 
   const { rentalInformation, currentRentalState, postChangeRentalState } = useLeasesStates();
   const { rentalSelected } = useRentalStore();
+  const { hasPermission } = useAuthStore();
   const stoppedAction = async () => {
     const { value: text } = await Swal.fire({
       title: '¿Está seguro de esta acción?',
@@ -125,7 +128,7 @@ export const InfoRental = (props: infoProps) => {
       try {
         const changeRentalState = {
           rental: rentalSelected.rental,
-          state: currentRentalState.next_states.find((e: any) => e.id != currentRentalState.current_state.id + 1).id,
+          state: currentRentalState.next_states.find((e: any) => e.id == 5).id,
           reason: text
         }
         await postChangeRentalState(changeRentalState)
@@ -174,7 +177,7 @@ export const InfoRental = (props: infoProps) => {
               </>
           }
         </ItemPaper>
-        {(currentRentalState.current_state.id == 1 || currentRentalState.current_state.id == 2) && <ComponentButton
+        {(currentRentalState.current_state.id >= 1 && currentRentalState.current_state.id <= 4) && hasPermission('leases.change') && <ComponentButton
           text={'ANULAR'}
           onClick={stoppedAction}
           variant={'outlined'}

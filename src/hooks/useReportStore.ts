@@ -1,13 +1,14 @@
 import { coffeApi } from '@/services';
+import Swal from 'sweetalert2';
 
 
 export const useReportStore = () => {
-  const getReportXlsx = async (body: any) => {
+  const getReportXlsx = async (body: { start_date: string; end_date: string; state: number }) => {
     try {
       const { data } = await coffeApi.post('/leases/report', {
-        start_date: body.get('start_date'),
-        end_date: body.get('end_date'),
-        state: parseInt(body.get('state'))
+        start_date: body.start_date,
+        end_date: body.end_date,
+        state: body.state
       }, {
         responseType: 'arraybuffer',
         headers: {
@@ -22,12 +23,23 @@ export const useReportStore = () => {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-    } catch(error: any) {
-      console.log("Error al descargar el archivo: ", error)
+    } catch(error) {
+      Swal.fire('Error', 'No se pudo descargar el reporte', 'error')
+    }
+  };
+
+  const getDocumentsByRental = async () => {
+    try {
+      const { data } = await coffeApi.get('/records/available_by_rental/');
+      return data;
+    } catch(error) {
+      Swal.fire('Error', 'No se pudo cargar los documentos', 'error')
+      return { rentals: [] };
     }
   };
 
   return {
     getReportXlsx,
+    getDocumentsByRental,
   }
 }

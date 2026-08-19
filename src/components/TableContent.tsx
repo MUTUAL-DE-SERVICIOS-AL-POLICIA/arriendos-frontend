@@ -38,8 +38,8 @@ export const ComponentTableContent = (props: Props) => {
 
   const columns = data.length > 0 ? Object.keys(data[0]) : [];
   let subColumns:any = []
-  if(subTableData && subTableData.length !== 0) {
-    subColumns = subTableData.length > 0 ? Object.keys(subTableData[0].selected_product[0]) : []
+  if(subTableData && subTableData.length !== 0 && subTableData[0]?.selected_product?.length > 0) {
+    subColumns = Object.keys(subTableData[0].selected_product[0])
   }
   const [ openRows, setOpenRows ] = useState<Array<boolean>>(Array(data.length).fill(false))
 
@@ -117,7 +117,7 @@ export const ComponentTableContent = (props: Props) => {
                             </TableRow>
                           </TableHead>
                           <TableBody sx={{backgroundColor: 'white'}}>
-                            {subTableData[index_body].selected_product.map((row:any, index_sub_body: number) => (
+                            {(subTableData[index_body]?.selected_product || []).map((row:any, index_sub_body: number) => (
                               <TableRow key={index_sub_body} sx={{'&>*': { borderBottom: '.1px solid grey' }}}>
                                 {subColumns && subColumns.length !== 0 && subColumns.map((columnName:any, index_sub:number) => (
                                   <TableCell key={index_sub} component="th" scope="row">

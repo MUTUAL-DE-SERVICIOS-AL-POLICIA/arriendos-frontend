@@ -1,3 +1,4 @@
+export * from './Reason';
 export * from './FormPayments';
 export * from './Payment';
 export * from './ExtraHour';

@@ -1,3 +1,34 @@
+/**
+ * Router principal de la aplicación.
+ *
+ * Este componente define todas las rutas de la aplicación y
+ * protege las rutas que requieren permisos RBAC.
+ *
+ * Flujo de autenticación:
+ * 1. Si el usuario no está autenticado, muestra AuthPage (login)
+ * 2. Si está autenticado, muestra el Layout con las rutas
+ * 3. Cada ruta protegida valida permisos con ProtectedRoute
+ *
+ * Rutas protegidas y permisos requeridos:
+ * - /propertiesView → rooms.view (Ver inmuebles)
+ * - /productsView → products.view (Ver productos)
+ * - /rentalCalendarView → leases.view (Ver arriendos)
+ * - /rentalView → leases.view (Ver arriendos)
+ * - /hourRangesView → products.view (Ver rangos de horas)
+ * - /ratesView → products.view (Ver tarifas)
+ * - /requirementsView → requirements.view (Ver requisitos)
+ * - /customersView → customers.view (Ver clientes)
+ * - /typeCustomersView → customers.view (Ver tipos de cliente)
+ * - /usersView → users.view (Ver usuarios)
+ * - /rolesView → users.view (Ver roles)
+ * - /reports → leases.view (Ver reportes)
+ *
+ * Si el usuario no tiene permiso, redirige a /dashboardView
+ *
+ * Autor: Dilan Torrez
+ * Fecha: 2026
+ */
+
 import { useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useAuthStore } from '@/hooks';
@@ -16,6 +47,29 @@ import { HourRangeView } from '@/views/pages/hourRanges';
 import { RequirementsView } from '@/views/pages/requirements';
 import { ProductsView } from '@/views/pages/products';
 import { ReportView } from '@/views/pages/reports'
+import { RolesView } from '@/views/pages/roles'
+
+/**
+ * Componente para rutas protegidas con RBAC.
+ *
+ * Valida que el usuario tenga el permiso especificado.
+ * Si no tiene permiso, redirige a /dashboardView.
+ *
+ * @param permission - Permiso requerido en formato "modulo.accion"
+ * @param children - Componentes hijos a renderizar si tiene permiso
+ */
+interface ProtectedRouteProps {
+    permission: string;
+    children: React.ReactNode;
+}
+
+const ProtectedRoute = ({ permission, children }: ProtectedRouteProps) => {
+    const { hasPermission } = useAuthStore();
+    if (!hasPermission(permission)) {
+        return <Navigate to={"/dashboardView"} />;
+    }
+    return <>{children}</>;
+};
 
 export const AppRouter = () => {
 
@@ -33,27 +87,76 @@ export const AppRouter = () => {
                     {/* dashboard */}
                     <Route path="/dashboardView" element={<DashboardView />} />
                     {/* inmuebles */}
-                    <Route path="/propertiesView" element={<PropertiesView />} />
+                    <Route path="/propertiesView" element={
+                        <ProtectedRoute permission="rooms.view">
+                            <PropertiesView />
+                        </ProtectedRoute>
+                    } />
                     {/* productos */}
-                    <Route path="/productsView" element={<ProductsView />} />
+                    <Route path="/productsView" element={
+                        <ProtectedRoute permission="products.view">
+                            <ProductsView />
+                        </ProtectedRoute>
+                    } />
                     {/* arriendos con calendario */}
-                    <Route path="/rentalCalendarView" element={<RentalCalendarView />} />
+                    <Route path="/rentalCalendarView" element={
+                        <ProtectedRoute permission="leases.view">
+                            <RentalCalendarView />
+                        </ProtectedRoute>
+                    } />
                     {/* arriendos */}
-                    <Route path="/rentalView" element={<RentalView />} />
+                    <Route path="/rentalView" element={
+                        <ProtectedRoute permission="leases.view">
+                            <RentalView />
+                        </ProtectedRoute>
+                    } />
                     {/* rangos de horas */}
-                    <Route path="/hourRangesView" element={<HourRangeView />} />
+                    <Route path="/hourRangesView" element={
+                        <ProtectedRoute permission="products.view">
+                            <HourRangeView />
+                        </ProtectedRoute>
+                    } />
                     {/* tarifas */}
-                    <Route path="/ratesView" element={<RatesView />} />
+                    <Route path="/ratesView" element={
+                        <ProtectedRoute permission="products.view">
+                            <RatesView />
+                        </ProtectedRoute>
+                    } />
                     {/* requisitos */}
-                    <Route path="/requirementsView" element={<RequirementsView />} />
+                    <Route path="/requirementsView" element={
+                        <ProtectedRoute permission="requirements.view">
+                            <RequirementsView />
+                        </ProtectedRoute>
+                    } />
                     {/* clientes */}
-                    <Route path="/customersView" element={<CustomersView />} />
+                    <Route path="/customersView" element={
+                        <ProtectedRoute permission="customers.view">
+                            <CustomersView />
+                        </ProtectedRoute>
+                    } />
                     {/* tipos de clientes */}
-                    <Route path="/typeCustomersView" element={<TypesCustomersView />} />
+                    <Route path="/typeCustomersView" element={
+                        <ProtectedRoute permission="customers.view">
+                            <TypesCustomersView />
+                        </ProtectedRoute>
+                    } />
                     {/* usuarios */}
-                    <Route path="/usersView" element={<UsersView />} />
-                    {/* reportes */}
-                    <Route path="/reports" element={<ReportView />} />
+                    <Route path="/usersView" element={
+                        <ProtectedRoute permission="users.view">
+                            <UsersView />
+                        </ProtectedRoute>
+                    } />
+                    {/* roles */}
+                    <Route path="/rolesView" element={
+                        <ProtectedRoute permission="users.view">
+                            <RolesView />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/reports" element={
+                        <ProtectedRoute permission="leases.view">
+                            <ReportView />
+                        </ProtectedRoute>
+                    } />
                     {/*  */}
                     <Route path="/*" element={<Navigate to={"/rentalCalendarView"} />} />
                 </Routes>

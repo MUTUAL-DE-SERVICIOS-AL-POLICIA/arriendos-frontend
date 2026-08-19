@@ -4,8 +4,10 @@ import { ComponentButton } from "@/components";
 import { Add } from "@mui/icons-material";
 import { HourRangeTable, CreateHourRange } from ".";
 import { HourRangeModel } from "@/models";
+import { useAuthStore } from "@/hooks";
 
 export const HourRangeView = () => {
+  const { hasPermission } = useAuthStore();
   const [openDialog, setopenDialog] = useState(false);
   const [itemEdit, setItemEdit] = useState<HourRangeModel | null>(null);
 
@@ -24,10 +26,12 @@ export const HourRangeView = () => {
         direction="row"
         justifyContent="end"
       >
-        <ComponentButton
-          text="Nuevo rango de hora"
-          onClick={() => handleDialog(true)}
-          startIcon={<SvgIcon fontSize="small"><Add /></SvgIcon>} />
+        {hasPermission('products.add') && (
+          <ComponentButton
+            text="Nuevo rango de hora"
+            onClick={() => handleDialog(true)}
+            startIcon={<SvgIcon fontSize="small"><Add /></SvgIcon>} />
+        )}
       </Stack>
       <HourRangeTable
         handleEdit={(v) => {

@@ -1,9 +1,36 @@
+/**
+ * Tabla de gestión de usuarios.
+ *
+ * Muestra la lista de usuarios del sistema con su rol asignado.
+ * Permite:
+ * - Asignar roles a usuarios (requiere permiso users.change)
+ * - Activar/desactivar usuarios (requiere permiso users.delete)
+ *
+ * Columnas mostradas:
+ * - Cuenta: Nombre de usuario
+ * - Nombre: Nombre del usuario
+ * - Apellido: Apellido del usuario
+ * - Correo: Email del usuario
+ * - Rol: Rol asignado (o "Sin rol")
+ * - Acciones: Botones de asignar rol y activar/desactivar
+ *
+ * Restricciones:
+ * - No se puede desactivar al usuario admin
+ * - No se puede desactivar a uno mismo
+ * - Solo usuarios con permiso users.change pueden asignar roles
+ * - Solo usuarios con permiso users.delete pueden activar/desactivar
+ *
+ * Autor: Dilan Torrez
+ * Fecha: 2026
+ */
 
-import { Stack, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, } from '@mui/material';
+import { Stack, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, IconButton, Tooltip } from '@mui/material';
 import { /*ComponentSearch, */ ComponentTablePagination, SkeletonComponent } from '@/components';
 import { useEffect, useState } from 'react';
-import { useUserStore } from '@/hooks';
+import { useUserStore, useAuthStore } from '@/hooks';
 import { UserModel } from '@/models';
+import { AdminPanelSettings } from '@mui/icons-material';
+import { AssignRoleDialog } from '.';
 
 interface tableProps {
   limitInit?: number;
@@ -16,13 +43,36 @@ export const UserTable = (props: tableProps) => {
 
   /*DATA */
   const { users, flag, getUsers, toggleActivation } = useUserStore();
+  const { hasPermission, username: currentUserUsername, role: currentRole } = useAuthStore();
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(limitInit)
 
+  const [openAssignDialog, setOpenAssignDialog] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<UserModel | null>(null);
+
   useEffect(() => {//escucha si "page", "limit" o "flag" se modifico
     getUsers(page, limit).then((total) => setTotal(total))
   }, [page, limit, flag]);
+
+  const handleOpenAssign = (user: UserModel) => {
+    setSelectedUser(user);
+    setOpenAssignDialog(true);
+  };
+
+  const handleCloseAssign = () => {
+    setOpenAssignDialog(false);
+    setSelectedUser(null);
+    getUsers(page, limit);
+  };
+
+  // Verificar si el usuario es administrador
+  const isSystemAdmin = (user: UserModel) => {
+    return user.role?.name === 'Administrador';
+  };
+
+  // Verificar si el usuario actual es operador
+  const isOperador = currentRole === 'Operador';
 
   return (
     <>
@@ -39,6 +89,7 @@ export const UserTable = (props: tableProps) => {
                 <TableCell sx={{ fontWeight: 'bold' }}>Nombre</TableCell>
                 <TableCell sx={{ fontWeight: 'bold' }}>Apellido</TableCell>
                 <TableCell sx={{ fontWeight: 'bold' }}>Correo</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Rol</TableCell>
                 <TableCell sx={{ fontWeight: 'bold' }}>Acciones</TableCell>
               </TableRow>
             </TableHead>
@@ -47,6 +98,8 @@ export const UserTable = (props: tableProps) => {
                 <SkeletonComponent
                   quantity={5}
                 /> : users.map((user: UserModel) => {
+                  const isCurrentUser = user.username === currentUserUsername;
+                  const adminUser = isSystemAdmin(user);
                   return (
                     <TableRow key={user.id} sx={{ borderBottom: '2px solid #ccc' }}>
                       <TableCell>{user.username}</TableCell>
@@ -54,12 +107,42 @@ export const UserTable = (props: tableProps) => {
                       <TableCell>{user.last_name}</TableCell>
                       <TableCell>{user.email}</TableCell>
                       <TableCell>
-                        <Switch
-                          checked={user.is_active}
-                          onChange={() => toggleActivation(user)}
-                          color="success"
-                          size="small"
-                        />
+                        <Typography
+                          sx={{
+                            color: user.role ? 'success.main' : 'text.secondary',
+                            fontWeight: user.role ? 'bold' : 'normal',
+                          }}
+                        >
+                          {user.role?.name || 'Sin rol'}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Stack direction="row" spacing={1}>
+                          {hasPermission('users.change') && !(isOperador && adminUser) && (
+                            <Tooltip title="Asignar Rol">
+                              <IconButton
+                                size="small"
+                                onClick={() => handleOpenAssign(user)}
+                                color="primary"
+                              >
+                                <AdminPanelSettings fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                          )}
+                          {hasPermission('users.delete') && (
+                            <Tooltip title={isCurrentUser ? "No puedes desactivarte a ti mismo" : (isOperador && adminUser) ? "Operador no puede desactivar admin" : ""}>
+                              <span>
+                                <Switch
+                                  checked={user.is_active}
+                                  onChange={() => toggleActivation(user)}
+                                  color="success"
+                                  size="small"
+                                  disabled={isCurrentUser || (isOperador && adminUser)}
+                                />
+                              </span>
+                            </Tooltip>
+                          )}
+                        </Stack>
                       </TableCell>
                     </TableRow>
                   );
@@ -75,6 +158,14 @@ export const UserTable = (props: tableProps) => {
           limit={limit}
         />
       </Stack>
+
+      {openAssignDialog && (
+        <AssignRoleDialog
+          open={openAssignDialog}
+          handleClose={handleCloseAssign}
+          user={selectedUser}
+        />
+      )}
     </>
   );
 };

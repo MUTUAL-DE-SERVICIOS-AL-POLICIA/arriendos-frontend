@@ -1,10 +1,11 @@
 import { ItemPaper, SkeletonPropertie } from "@/components";
-import { usePropertieStore } from "@/hooks";
+import { useAuthStore, usePropertieStore } from "@/hooks";
 import { PropertieModel, RoomModel } from "@/models";
 import { AddCircle, Edit } from "@mui/icons-material";
 import { Grid, IconButton, Typography, Box } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import noimage from "@/assets/images/no-image.webp";
+import { getMediaUrl } from "@/helpers";
 import { RoomTable, CreateRoom } from "./rooms";
 
 
@@ -24,6 +25,7 @@ export const PropertieTable = (props: tableProps) => {
   } = props;
 
   const { properties = null, getPropertiesRooms } = usePropertieStore();
+  const { hasPermission } = useAuthStore();
   const [openDialog, setopenDialog] = useState(false);
   const [itemEdit, setItemEdit] = useState<any>(null);
   const [change, setChange] = useState<boolean>(true);
@@ -51,7 +53,7 @@ export const PropertieTable = (props: tableProps) => {
                     <Typography sx={{ fontWeight: 'bold' }}>{propertie.address}</Typography>
                     <Typography sx={{ fontWeight: 'bold' }}>{propertie.department}</Typography>
                     <img
-                      src={propertie.photo}
+                      src={getMediaUrl(propertie.photo)}
                       alt="Descripción de la imagen"
                       style={{ height: '180px', width: '170px', objectFit: 'cover' }}
                       onError={(e: any) => e.target.src = noimage}
@@ -59,25 +61,29 @@ export const PropertieTable = (props: tableProps) => {
                     {
                       !stateSelect &&
                       <Box sx={{ textAlign: 'center' }}>
-                        <IconButton
-                          color="success"
-                          onClick={() => onEdit!(propertie)}
-                        >
-                          <Edit />
-                        </IconButton>
+                        {hasPermission('rooms.change') && (
+                          <IconButton
+                            color="success"
+                            onClick={() => onEdit!(propertie)}
+                          >
+                            <Edit />
+                          </IconButton>
+                        )}
                         <IconButton color="error">
                           {/* <Delete /> */}
                         </IconButton>
-                        <IconButton
-                          color="warning"
-                          onClick={() => {
-                            setItemEdit({ property: propertie.id })
-                            handleDialog(true)
-                          }
-                          }
-                        >
-                          <AddCircle />
-                        </IconButton>
+                        {hasPermission('rooms.add') && (
+                          <IconButton
+                            color="warning"
+                            onClick={() => {
+                              setItemEdit({ property: propertie.id })
+                              handleDialog(true)
+                            }
+                            }
+                          >
+                            <AddCircle />
+                          </IconButton>
+                        )}
                       </Box>
                     }
                   </Grid>

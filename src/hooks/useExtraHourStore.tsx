@@ -14,7 +14,7 @@ export const useExtraHourStore = () => {
   const { extraHours = [] } = useSelector((state: any) => state.extraHours);
   const dispatch = useDispatch();
 
-  const getRegisterExtraHours = async (rental: number, canEdit: boolean = false, handleModal?: Function) => {
+  const getRegisterExtraHours = async (rental: number, canEdit: boolean = false, handleModal?: Function, canDelete: boolean = true) => {
     try {
       const { data } = await api.get('/leases/list_additional_hour_applied/', {
         params: {
@@ -30,11 +30,13 @@ export const useExtraHourStore = () => {
         detail: e.description,
         action: index == data.length - 1 ?
           <Stack>
-            <DeleteForever
-              onClick={() => deleteLastRegisteredExtraHour(data[index].selected_product, rental)}
-              color="error"
-              sx={{ cursor: 'pointer' }}
-            />
+            {canDelete && (
+              <DeleteForever
+                onClick={() => deleteLastRegisteredExtraHour(data[index].selected_product, rental)}
+                color="error"
+                sx={{ cursor: 'pointer' }}
+              />
+            )}
             { canEdit &&
               <Edit
                 onClick={() => handleModal!(true, Reason.extraHour)}

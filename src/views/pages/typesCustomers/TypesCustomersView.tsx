@@ -4,9 +4,11 @@ import { Stack, SvgIcon } from "@mui/material";
 import { useCallback, useState } from "react";
 import { CreateTypeCustomer, TypeCustomerTable } from ".";
 import { TypeCustomerModel } from "@/models";
+import { useAuthStore } from "@/hooks";
 
 
 export const TypesCustomersView = () => {
+  const { hasPermission } = useAuthStore();
 
 
   const [openDialog, setopenDialog] = useState(false);
@@ -24,10 +26,12 @@ export const TypesCustomersView = () => {
         direction="row"
         justifyContent="end"
       >
-        <ComponentButton
-          text="Nuevo tipo de Cliente"
-          onClick={() => handleDialog(true)}
-          startIcon={<SvgIcon fontSize="small"><Add /></SvgIcon>} />
+        {hasPermission('customers.add') && (
+          <ComponentButton
+            text="Nuevo tipo de Cliente"
+            onClick={() => handleDialog(true)}
+            startIcon={<SvgIcon fontSize="small"><Add /></SvgIcon>} />
+        )}
       </Stack>
       <TypeCustomerTable
         handleEdit={(v) => {

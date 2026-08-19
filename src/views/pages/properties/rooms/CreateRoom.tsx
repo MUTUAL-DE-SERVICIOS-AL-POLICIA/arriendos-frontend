@@ -117,6 +117,7 @@ export const CreateRoom = (props: any) => {
                   onChange={(V: any) => onInputChange(V, false, true)}
                   error={!!warrantyValid && formSubmitted}
                   helperText={formSubmitted ? warrantyValid : ''}
+                  disabled={!change}
                 />
               </Grid>
             </Grid>

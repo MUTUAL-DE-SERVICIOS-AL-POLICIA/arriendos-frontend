@@ -4,8 +4,10 @@ import { Stack, SvgIcon } from "@mui/material";
 import { useCallback, useState } from "react";
 import { CreateProduct, ProductTable } from ".";
 import { ProductModel } from "@/models";
+import { useAuthStore } from "@/hooks";
 
 export const ProductsView = () => {
+  const { hasPermission } = useAuthStore();
   const [openDialog, setopenDialog] = useState(false);
   const [itemEdit, setItemEdit] = useState<ProductModel | null>(null);
 
@@ -22,10 +24,12 @@ export const ProductsView = () => {
         direction="row"
         justifyContent="end"
       >
-        <ComponentButton
-          text="Nuevo Producto"
-          onClick={() => handleDialog(true)}
-          startIcon={<SvgIcon fontSize="small"><Add /></SvgIcon>} />
+        {hasPermission('products.add') && (
+          <ComponentButton
+            text="Nuevo Producto"
+            onClick={() => handleDialog(true)}
+            startIcon={<SvgIcon fontSize="small"><Add /></SvgIcon>} />
+        )}
       </Stack>
 
       <ProductTable

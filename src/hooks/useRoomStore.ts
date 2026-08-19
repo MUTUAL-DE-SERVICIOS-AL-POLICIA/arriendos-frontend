@@ -45,6 +45,40 @@ export const useRoomStore = () => {
     }
   }
 
+  const postSubRoom = async (body: object) => {
+    try {
+      await api.post('/rooms/sub_rooms/', body);
+      Swal.fire('Sub ambiente creado correctamente', '', 'success');
+      return true;
+    } catch (error: any) {
+      if (error.response && error.response.status == 403) {
+        const message = error.response.data.detail
+        Swal.fire('Acceso denegado', message, 'warning')
+      } else {
+        const message = error.response?.data?.error || 'Error al crear sub ambiente'
+        Swal.fire('Error', message, 'error');
+      }
+      return false;
+    }
+  }
+
+  const patchEditSubRoom = async (id: number, body: object) => {
+    try {
+      await api.patch(`/rooms/sub_rooms/${id}`, body);
+      Swal.fire('Sub ambiente modificado correctamente', '', 'success');
+      return true;
+    } catch (error: any) {
+      if (error.response && error.response.status == 403) {
+        const message = error.response.data.detail
+        Swal.fire('Acceso denegado', message, 'warning')
+      } else {
+        const message = error.response?.data?.error || 'Error al modificar sub ambiente'
+        Swal.fire('Error', message, 'error');
+      }
+      return false;
+    }
+  }
+
   /*MÉTODOS DE SELECTOR DE AMBIENTES */
   const selectRoom = async (data: any) => {
     dispatch(setRoomSelect({ room: data }));
@@ -59,6 +93,8 @@ export const useRoomStore = () => {
     //* Métodos
     postRoom,
     patchEditRoom,
+    postSubRoom,
+    patchEditSubRoom,
     //* Métodos de selector de ambientes
     selectRoom,
     deselectRoom,

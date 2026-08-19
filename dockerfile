@@ -1,23 +1,14 @@
-# Fase de construcción
-FROM node:18.12.1 AS build-stage
-
+FROM node:18-alpine AS build
 WORKDIR /app
-
-COPY package*.json .env ./
-
-RUN npm install
-
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
 COPY . .
+ARG VITE_DEPLOY_ENV=test
+ENV VITE_DEPLOY_ENV=$VITE_DEPLOY_ENV
+RUN yarn build
 
-RUN npm run build
-
-# Fase de producción
-FROM nginx:1.21-alpine AS production-stage
-
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
 COPY default.conf /etc/nginx/conf.d/default.conf
-
-COPY --from=build-stage /app/dist /usr/share/nginx/html
-
 EXPOSE 80
-
 CMD ["nginx", "-g", "daemon off;"]

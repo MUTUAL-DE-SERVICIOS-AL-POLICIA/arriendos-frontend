@@ -1,8 +1,8 @@
-import LoadingButton from '@mui/lab/LoadingButton'
+import { Button, CircularProgress } from '@mui/material'
 import { memo } from 'react'
 
 export const ComponentButton = memo((
-    { type, text, onClick, startIcon, endIcon, disable, margin, height, loading = false, variant = "contained",
+    { type, text, onClick, startIcon, endIcon, disable, margin, height, loading, variant = "contained",
     sx={fontWeight: 'bold',
          display: 'flex',
          margin: { margin },
@@ -10,21 +10,20 @@ export const ComponentButton = memo((
     }, color}
     : { type?: any, text: string, onClick?: any, width?: any, startIcon?: any, margin?: any, height?: any, disable?: boolean, loading?: boolean, variant?: any, endIcon?: any, sx?: object, color?: any }) => {
     return (
-        <LoadingButton
-            loading={loading}
+        <Button
             type={type}
             className='mt-2'
             variant={variant}
             disableElevation
             disableRipple
-            disabled={disable}
-            startIcon={startIcon}
-            endIcon={endIcon}
+            disabled={disable || loading}
+            startIcon={!loading ? startIcon : undefined}
+            endIcon={!loading ? endIcon : undefined}
             onClick={onClick}
             color={color}
             sx={sx}
         >
-            {text}
-        </LoadingButton>
+            {loading ? <CircularProgress size={20} color="inherit" /> : text}
+        </Button>
     )
 });
